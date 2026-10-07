@@ -137,7 +137,7 @@ jobs:
         shell: bash
         run: |
           release_tag="main-build-${{ github.run_id }}-${{ github.run_attempt }}-${{ needs.build.outputs.short_sha }}"
-          asset_name="Sketchware-AI-main-${{ needs.build.outputs.short_sha }}-run${{ github.run_number }}.apk"
+          asset_name="SketchwarePRO-AI-main-${{ needs.build.outputs.short_sha }}-run${{ github.run_number }}.apk"
 
           echo "release_tag=${release_tag}" >> "$GITHUB_OUTPUT"
           echo "asset_name=${asset_name}" >> "$GITHUB_OUTPUT"
@@ -167,7 +167,7 @@ jobs:
           gh release create "${{ steps.release_meta.outputs.release_tag }}" \
             -R "${GITHUB_REPOSITORY}" \
             "./release-assets/${{ steps.release_meta.outputs.asset_name }}" \
-            --title "SketchwareAi Build #${{ github.run_number }} (${{ needs.build.outputs.short_sha }})" \
+            --title "SketchwarePro-Ai Build #${{ github.run_number }} (${{ needs.build.outputs.short_sha }})" \
             --notes-file release-notes.md \
             --latest \
             --target "${GITHUB_SHA}"
