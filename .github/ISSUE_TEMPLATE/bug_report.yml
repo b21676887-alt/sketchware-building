@@ -1,11 +1,11 @@
 name: Bug report
-description: Create a report to help us improve Sketchware Pro
+description: Report a reproducible problem in Sketchware IA
 labels: [ "bug" ]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for helping improve Sketchware IA. Please include enough detail for us to reproduce the issue.
   - type: textarea
     id: bug-description
     attributes:
@@ -45,7 +45,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### Device and Sketchware Pro-related info:
+        ### Device and app information
   - type: input
     id: device
     attributes:
@@ -65,11 +65,19 @@ body:
   - type: input
     id: sketchware-pro-version
     attributes:
-      label: Sketchware Pro version
-      description: e.g. v6.4.0-SNAPSHOT-3d484a9-minApi26
-      placeholder: Your Sketchware Pro version
+      label: Sketchware IA version
+      description: e.g. v7.0.0 or commit hash
+      placeholder: Your Sketchware IA version
     validations:
       required: true
+  - type: input
+    id: commit-hash
+    attributes:
+      label: Commit hash
+      description: Optional, but helpful if you built from source
+      placeholder: e.g. abc1234
+    validations:
+      required: false
   - type: textarea
     id: additional-context
     attributes:

@@ -128,6 +128,8 @@ public class ResourcesEditorActivity extends BaseAppCompatActivity {
 
         setupViewPager();
         startBackgroundTask();
+        
+        invalidateOptionsMenu();
     }
 
     private void setupListeners() {

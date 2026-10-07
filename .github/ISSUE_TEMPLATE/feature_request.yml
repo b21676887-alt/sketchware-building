@@ -1,40 +1,41 @@
 name: Feature request
-description: Suggest an idea to add in Sketchware Pro
-labels: [ "feature request" ]
+description: Suggest a focused improvement for Sketchware IA
+title: "[Feature]: "
+labels: [ "enhancement" ]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to suggest a feature!
+        Thanks for suggesting an improvement. Clear, focused requests are much easier to review and build.
   - type: textarea
     id: problem
     attributes:
-      label: Is your feature request related to a problem? Please describe.
-      description: A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-      placeholder: Describe the problem...
+      label: Problem to solve
+      description: What limitation, frustration, or missing capability are you trying to address?
+      placeholder: Explain the current problem or workflow pain point.
     validations:
       required: true
   - type: textarea
-    id: solution
+    id: proposal
     attributes:
-      label: Describe the solution you'd like
-      description: A clear and concise description of what you want to happen.
-      placeholder: Describe the desired solution...
+      label: Proposed solution
+      description: Describe the improvement you would like to see.
+      placeholder: Explain the behavior, UI, or workflow you expect.
     validations:
       required: true
   - type: textarea
     id: alternatives
     attributes:
-      label: Describe alternatives you've considered
-      description: A clear and concise description of any alternative solutions or features you've considered.
-      placeholder: Describe alternatives...
+      label: Alternatives considered
+      description: What other ideas, workarounds, or designs did you consider?
+      placeholder: Share other options you evaluated.
     validations:
       required: false
   - type: textarea
-    id: context
+    id: extra-context
     attributes:
       label: Additional context
-      description: Add any other context or screenshots about the feature request here.
-      placeholder: Any other relevant information or screenshots.
+      description: Add screenshots, mockups, references, or links if helpful.
+      placeholder: Any extra context that would help evaluate this request.
     validations:
       required: false
