@@ -1,0 +1,55 @@
+name: Extract Backup 7z Split Archive
+
+on:
+  push:
+    branches:
+      - '**' # يعمل عند الرفع على أي فرع (main, dev, إلخ)
+    paths:
+      - '**/app.7z.*' # يعمل عند رفع أجزاء app.7z.001, app.7z.002 ... إلخ
+  workflow_dispatch:
+
+jobs:
+  extract:
+    name: Extract Split 7z Files
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Install 7-Zip
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y p7zip-full
+
+      - name: Extract Split 7z Archive
+        run: |
+          # البحث عن الجزء الأول من الملف المضغوط أينما وجد
+          FIRST_PART=$(find . -maxdepth 2 -name "app.7z.001" | head -n 1)
+          
+          if [ -n "$FIRST_PART" ]; then
+            TARGET_DIR=$(dirname "$FIRST_PART")
+            BASENAME=$(basename "$FIRST_PART" .001)
+            
+            echo "Extracting $FIRST_PART into $TARGET_DIR..."
+            
+            # فك الضغط باستخدام 7z إلى المجلد المستهدف
+            7z x "$FIRST_PART" -o"$TARGET_DIR" -y
+            
+            echo "Removing split archive parts..."
+            # حذف كافة الأجزاء المقسمة التابعة للملف بعد فك الضغط بنجاح
+            rm -f "$TARGET_DIR/$BASENAME".*
+            
+            echo "Extracted successfully and removed split parts."
+          else
+            echo "Warning: app.7z.001 not found in workspace."
+          fi
+
+      - name: Commit and Push Unzipped Files
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "chore: Extract app.7z split contents [skip ci]" || echo "No changes to commit"
+          git push
