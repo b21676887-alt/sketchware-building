@@ -25,11 +25,13 @@ import pro.sketchware.databinding.FragmentStoreProjectPreviewBinding;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.UI;
 
+
 public class ProjectPreviewActivity extends BaseAppCompatActivity {
     private static final long TITLE_CONTAINER_FADE_DURATION = 150L;
 
     private FragmentStoreProjectPreviewBinding binding;
     private ProjectModel.Project project;
+    private ArrayList<String> screenshots;
     private boolean isTitleContainerShown;
 
     @Override
@@ -47,9 +49,7 @@ public class ProjectPreviewActivity extends BaseAppCompatActivity {
         if (bundle == null) return;
 
         String json = bundle.getString("project_json");
-        if (json == null || json.isEmpty()) return;
         project = new Gson().fromJson(json, ProjectModel.Project.class);
-        if (project == null) return;
 
         binding.name.setText(project.getTitle());
         binding.author.setText(project.getUserName());
@@ -89,7 +89,7 @@ public class ProjectPreviewActivity extends BaseAppCompatActivity {
         binding.toolbarTitle.setText(project.getTitle());
         binding.toolbarSubtitle.setText(project.getUserName());
 
-        ArrayList<String> screenshots = new ArrayList<>();
+        screenshots = new ArrayList<>();
         for (int i = 0; i <= 4; i++) {
             String screenshot = getScreenshot(i);
             if (screenshot != null && !screenshot.isEmpty()) {
@@ -97,9 +97,11 @@ public class ProjectPreviewActivity extends BaseAppCompatActivity {
             }
         }
 
-        binding.screenshots.setAdapter(new ProjectScreenshotsAdapter(screenshots));
+        binding.screenshots.setAdapter(new ProjectScreenshotsAdapter(screenshots, this::openScreenshotViewer));
 
         UI.loadImageFromUrl(binding.icon, project.getIcon());
+        binding.icon.setOnClickListener(v -> openIconViewer());
+
         UI.addSystemWindowInsetToPadding(binding.content, true, true, true, true);
         UI.addSystemWindowInsetToMargin(binding.buttonsContainer, true, false, true, true);
         UI.addSystemWindowInsetToPadding(binding.topScrim, false, true, false, false);
@@ -151,6 +153,23 @@ public class ProjectPreviewActivity extends BaseAppCompatActivity {
         sheet.show(getSupportFragmentManager(), /* tag= */ CommentsBottomSheet.class.getSimpleName());
     }
 
+    private void openScreenshotViewer(int position) {
+        Intent intent = new Intent(this, ImageViewerActivity.class);
+        intent.putStringArrayListExtra(ImageViewerActivity.EXTRA_IMAGES, screenshots);
+        intent.putExtra(ImageViewerActivity.EXTRA_START_INDEX, position);
+        startActivity(intent);
+    }
+
+    private void openIconViewer() {
+        ArrayList<String> icon = new ArrayList<>();
+        icon.add(project.getIcon());
+
+        Intent intent = new Intent(this, ImageViewerActivity.class);
+        intent.putStringArrayListExtra(ImageViewerActivity.EXTRA_IMAGES, icon);
+        intent.putExtra(ImageViewerActivity.EXTRA_START_INDEX, 0);
+        startActivity(intent);
+    }
+
     private String getScreenshot(int index) {
         return switch (index) {
             case 0 -> project.getScreenshot1();
@@ -163,12 +182,8 @@ public class ProjectPreviewActivity extends BaseAppCompatActivity {
     }
 
     private void openProject() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://web.sketchub.in/p/" + project.getId()));
-            startActivity(intent);
-        } catch (android.content.ActivityNotFoundException e) {
-            SketchwareUtil.toastError(Helper.getResString(R.string.error_no_browser_app));
-        }
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://web.sketchub.in/p/" + project.getId()));
+        startActivity(intent);
     }
 }
