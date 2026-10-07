@@ -7,6 +7,7 @@ import static pro.sketchware.util.library.LocalLibrariesUtil.getLocalLibFile;
 import static pro.sketchware.util.library.LocalLibrariesUtil.getLocalLibraries;
 import static pro.sketchware.util.library.LocalLibrariesUtil.rewriteLocalLibFile;
 
+import android.view.WindowManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -80,6 +81,7 @@ public class ManageLocalLibraryActivity extends BaseAppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         enableEdgeToEdgeNoContrast();
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         binding = ManageLocallibrariesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 

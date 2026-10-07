@@ -3,6 +3,7 @@ package pro.sketchware.activities.main.fragments.projects;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -200,6 +201,10 @@ public class BackupRestoreManager {
         protected void onPreExecute() {
             var act = activityWeakReference.get();
             if (act == null) return;
+            
+            // إبقاء الشاشة يقظة أثناء عملية النسخ الاحتياطي
+            act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
             ProgressMsgBoxBinding loadingDialogBinding = ProgressMsgBoxBinding.inflate(LayoutInflater.from(act));
             loadingDialogBinding.tvProgress.setText(R.string.backup_msg_creating);
             dlg = new MaterialAlertDialogBuilder(act)
@@ -225,6 +230,12 @@ public class BackupRestoreManager {
 
         @Override
         protected void onPostExecute(String _result) {
+            var act = activityWeakReference.get();
+            if (act != null) {
+                // إزالة خاصية إبقاء الشاشة يقظة وإعادة السلوك الطبيعي للشاشة
+                act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+
             if (dlg != null) dlg.dismiss();
             if (backupFactory == null) return;
 
@@ -257,6 +268,10 @@ public class BackupRestoreManager {
         protected void onPreExecute() {
             var act = activityWeakReference.get();
             if (act == null) return;
+
+            // إبقاء الشاشة يقظة أثناء عملية الاستعادة
+            act.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
             ProgressMsgBoxBinding loadingDialogBinding = ProgressMsgBoxBinding.inflate(LayoutInflater.from(act));
             loadingDialogBinding.tvProgress.setText(R.string.backup_msg_restoring);
             dlg = new MaterialAlertDialogBuilder(act)
@@ -284,6 +299,12 @@ public class BackupRestoreManager {
 
         @Override
         protected void onPostExecute(String _result) {
+            var act = activityWeakReference.get();
+            if (act != null) {
+                // إزالة خاصية إبقاء الشاشة يقظة وإعادة السلوك الطبيعي للشاشة
+                act.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
+
             if (dlg != null) dlg.dismiss();
 
             if (!backupFactory.isRestoreSuccess() || error) {
