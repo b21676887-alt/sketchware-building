@@ -1,5 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
 <resources>
+    <!-- ========== 应用信息与URL (App Info & URLs) ========== -->
     <string name="app_name">Sketchware Pro</string>
     <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="besome_blog_url">http://medium.com/sketchware</string>
@@ -16,6 +16,8 @@
     <string name="title_besome_blog">Medium</string>
     <string name="title_compatible_chrome_browser">Chrome Browser Required</string>
     <string name="title_sketchware">Sketchware Pro</string>
+
+    <!-- ========== Block规格 (Block Specs) ========== -->
     <string name="block_add_list_int_body_1">to</string>
     <string name="block_add_list_int_head">add</string>
     <string name="block_add_list_int_tail" />
@@ -36,7 +38,7 @@
     <string name="block_and_body_1">and</string>
     <string name="block_and_head" />
     <string name="block_and_tail" />
-    <string name="block_bigger_body_1">&gt;</string>
+    <string name="block_bigger_body_1">></string>
     <string name="block_bigger_head" />
     <string name="block_bigger_tail" />
     <string name="block_bluetoothconnect_activate_bluetooth_head" />
@@ -1178,6 +1180,8 @@
     <string name="root_spec_on_upload_progress_tail" />
     <string name="root_spec_on_upload_success_head">onUploadSuccess</string>
     <string name="root_spec_on_upload_success_tail" />
+
+    <!-- ========== Block管理 (Block Management) ========== -->
     <string name="block_move_to_bin">Move to recycle bin</string>
     <string name="block_type_regular">regular</string>
     <string name="blocks_add_title">Add a new block</string>
@@ -1284,6 +1288,8 @@
     <string name="share_block_select_required_sounds_step_desc">Select sound needed for this block</string>
     <string name="share_block_select_required_sounds_step_name">Select Sound</string>
     <string name="used_custom_blocks">Used Custom Blocks</string>
+
+    <!-- ========== Block选择器 (Block Selector) ========== -->
     <string name="selector_confirm_delete">Are you sure you want to delete this selector?</string>
     <string name="selector_dialog_button_create">Create</string>
     <string name="selector_dialog_title_edit">Edit selector</string>
@@ -1296,6 +1302,8 @@
     <string name="selector_title_actions">Actions</string>
     <string name="selector_title_attention">Attention</string>
     <string name="selector_title_new_item">New Selector Item</string>
+
+    <!-- ========== 通用词汇 (Common Words) ========== -->
     <string name="action_delete">Delete</string>
     <string name="action_edit">Edit</string>
     <string name="action_export">Export</string>
@@ -1457,6 +1465,8 @@ Please click on Settings to allow permission for Storage. Without this permissio
     <string name="s7">Test Ad</string>
     <string name="search">Search</string>
     <string name="searching">Searching…</string>
+
+    <!-- ========== 通用对话框与提示 (Common Dialogs & Hints) ========== -->
     <string name="bottom_sheet_behavior">com.google.android.material.bottomsheet.BottomSheetBehavior</string>
     <string name="create_enter_name_format">Enter a name for the new %s</string>
     <string name="create_file_class">Class</string>
@@ -1504,6 +1514,8 @@ Please click on Settings to allow permission for Storage. Without this permissio
     <string name="text_title_menu_permission">Permission Manager</string>
     <string name="text_title_menu_resource">Resource Manager</string>
     <string name="text_title_menu_resource_editor">Resource Editor</string>
+
+    <!-- ========== 通用错误消息 (Error Messages) ========== -->
     <string name="common_error_activity_not_found">Activity not found</string>
     <string name="common_error_an_error_occurred">An error occurred!</string>
     <string name="common_error_failed_to_connect_server">Failed to connect to the server</string>
@@ -1637,10 +1649,12 @@ Please click on Settings to allow permission for Storage. Without this permissio
     <string name="invalid_value_rule_2">Only use letters(a-z), numbers and Special characters(.)</string>
     <string name="invalid_value_rule_3">Only use letters(a-z), numbers and Special characters(_)</string>
     <string name="invalid_value_rule_4">Only use small letters(a-z), numbers and special character(_)</string>
-    <string name="invalid_value_rule_5">"Special letters(&amp;, &lt;, &gt;, \", ') are not allowed"</string>
+    <string name="invalid_value_rule_5">"Special letters(&amp;, &lt;, >, \", ') are not allowed"</string>
     <string name="invalid_value_rule_6">Spaces aren\'t allowed</string>
     <string name="unknown_attr">Unknown Attribute</string>
     <string name="var_is_required">%s is required</string>
+
+    <!-- ========== Toast消息 (Toast Messages) ========== -->
     <string name="toast_activity_not_in_manifest">Activity was not defined in AndroidManifest.</string>
     <string name="toast_activity_removed">Activity removed</string>
     <string name="toast_added">Added</string>
@@ -1700,11 +1714,17 @@ Please click on Settings to allow permission for Storage. Without this permissio
     <string name="toast_save_completed">Save completed</string>
     <string name="toast_select_file_type">Select a file type</string>
     <string name="toast_service_not_in_manifest">Service was not defined in AndroidManifest.</string>
+
+    <!-- ========== 解析错误 (Parse Errors) ========== -->
     <string name="parse_error_message_format">Failed to parse %1$s from file %2$s. Fix by renaming old file to %3$s? If not, no %1$s will be used.</string>
     <string name="parse_error_title_format">Couldn\'t get %s</string>
+
+    <!-- ========== 输入验证 (Input Validation) ========== -->
     <string name="attr_already_exist">This attribute already exists</string>
     <string name="attr_title_create">Create new attribute</string>
     <string name="attr_title_edit">Edit attribute</string>
+
+    <!-- ========== 备份与恢复 (Backup & Restore) ========== -->
     <string name="backup_button_back_up">Back up</string>
     <string name="backup_button_copy_libs">Copy</string>
     <string name="backup_button_dont_copy_libs">Don\'t copy</string>
@@ -1721,6 +1741,8 @@ Please click on Settings to allow permission for Storage. Without this permissio
     <string name="backup_toast_restored_refresh">Restored successfully. Refresh to see the project</string>
     <string name="backup_restore_local_libs_single">Looks like the backup file you selected contains some Local libraries. Do you want to copy them to your local_libs directory (if they do not already exist)?</string>
     <string name="backup_restore_local_libs_multi">Looks like backup file %1$s (%2$d out of %3$d) contains some Local libraries. Do you want to copy them to your local_libs directory (if they do not already exist)?</string>
+
+    <!-- ========== 组件系统 (Components) ========== -->
     <string name="component_add_docs_button_title_go_to_docs">Read Documentation</string>
     <string name="component_add_message_docs_updated_soon">The docs page will be updated soon</string>
     <string name="component_context_menu_title">Component menu</string>
@@ -1822,6 +1844,8 @@ ex)\"*/*\", \"image/*\", \"audio/*\", \"text/*\""</string>
     <string name="developer_tools_component_type_name">Type Name</string>
     <string name="developer_tools_component_url">Document URL (Optional)</string>
     <string name="developer_tools_component_var_type_name">Variable Type Name</string>
+
+    <!-- ========== 设计活动 (Design Activity) ========== -->
     <string name="create_view_both">Both</string>
     <string name="create_view_hidden">Hidden</string>
     <string name="create_view_hint_name">Enter name</string>
@@ -2100,6 +2124,8 @@ Choosing a theme mode lets you personalize the app\'s appearance, notes:\n
     <string name="view_panel_title_widgets">Widgets</string>
     <string name="view_title_create_new">Create new</string>
     <string name="view_title_edit">Edit %s</string>
+
+    <!-- ========== 事件系统 (Events) ========== -->
     <string name="event_context_menu_title">Event Menu</string>
     <string name="event_context_menu_title_delete_event">Delete Event</string>
     <string name="event_context_menu_title_delete_more_block">Delete moreBlock</string>
@@ -2225,6 +2251,8 @@ Do you want to continue?"</string>
     <string name="events_no_events">No events</string>
     <string name="events_properties_title">Event Properties</string>
     <string name="events_start_creating">Start by creating a new one</string>
+
+    <!-- ========== 逻辑编辑器 (Logic Editor) ========== -->
     <string name="button_delete_permanently">Delete permanently</string>
     <string name="button_move">Move</string>
     <string name="button_recycle_bin">Recycle bin</string>
@@ -2515,6 +2543,8 @@ But, components should be added manually for working correctly."</string>
     <string name="menu_select_theme">Select theme</string>
     <string name="menu_select_transcript_mode">Select transcript mode</string>
     <string name="menu_select_variable_format">Select a %s Variable</string>
+
+    <!-- ========== AndroidManifest管理 (Manifest) ========== -->
     <string name="manifest_activities">Activities</string>
     <string name="manifest_add_attribute">Add new attribute</string>
     <string name="manifest_add_permission">Add new permission</string>
@@ -2541,6 +2571,8 @@ But, components should be added manually for working correctly."</string>
     <string name="manifest_option_permissions">Permissions</string>
     <string name="manifest_option_permissions_desc">Add custom Permissions to the app</string>
     <string name="manifest_title">AndroidManifest Manager</string>
+
+    <!-- ========== 项目管理 (Project Management) ========== -->
     <string name="main_drawer_context_menu_title_slack_invitation">Get my invitation</string>
     <string name="main_drawer_context_menu_title_slack_open">Open in Slack (Invitation Required)</string>
     <string name="main_drawer_title_ad_label">Another Apps of Sketchware</string>
@@ -2694,6 +2726,8 @@ Do you want to continue?"</string>
     <string name="title_company_intro">Company Description</string>
     <string name="title_company_tel">Telephone</string>
     <string name="title_company_url">Website</string>
+
+    <!-- ========== 文件/资源管理器 (File & Resource Managers) ========== -->
     <string name="assets_manager_add_file">Import file</string>
     <string name="assets_manager_add_new">Create new</string>
     <string name="assets_manager_nofiles_body">You don\'t have any files here yet, try creating one.</string>
@@ -2788,6 +2822,8 @@ Do you want to continue?"</string>
     <string name="sound_add_to_collection">Add to my collection</string>
     <string name="sound_hint_name">Enter sound name</string>
     <string name="sound_manager_title">Sound Manager</string>
+
+    <!-- ========== 库管理 (Library Management) ========== -->
     <string name="exclude_libs_excluded_title">Excluded built-in libraries</string>
     <string name="exclude_libs_fab">Exclude library</string>
     <string name="exclude_libs_no_content">No excluded built-in libraries found</string>
@@ -2809,7 +2845,7 @@ Do you want to continue?"</string>
     <string name="local_lib_error_invalid_assets">Invalid assets path of enabled Local library #%d</string>
     <string name="local_lib_error_invalid_config">Invalid Local library configuration found! Temporarily using none</string>
     <string name="local_lib_error_invalid_dex">Invalid DEX path of enabled Local library #%d</string>
-    <string name="local_lib_error_invalid_jar">Invalid JAR path of enabled Local library #%1$d-&gt;%2$s</string>
+    <string name="local_lib_error_invalid_jar">Invalid JAR path of enabled Local library #%1$d->%2$s</string>
     <string name="local_lib_error_invalid_package">Invalid package name of enabled Local library #%d</string>
     <string name="local_lib_error_invalid_proguard">Invalid ProGuard path of enabled Local library #%d</string>
     <string name="local_lib_error_invalid_res">Invalid res/ folder path of enabled Local library #%d</string>
@@ -2827,6 +2863,8 @@ Do you want to continue?"</string>
     <string name="local_library_manager_skip_downloading_dependencies">Skip downloading sub-dependencies</string>
     <string name="menu_auto_merge_local_library_manifests">Auto-merge local library manifests</string>
     <string name="select_lib_hint_search">Search for libraries</string>
+
+    <!-- ========== 构建系统 (Build System) ========== -->
     <string name="build_error_failed_create_directory">Failed to create directory / directories!</string>
     <string name="build_error_missing_directory_msg">A directory important for building is missing. Sketchware Pro can try creating %s if you\'d like to.</string>
     <string name="build_error_missing_directory_title">Missing directory detected</string>
@@ -2888,6 +2926,8 @@ Do you want to continue?"</string>
     <string name="proguard_select_local_libs">Select Local libraries</string>
     <string name="proguard_title">Code Shrinking Manager</string>
     <string name="signatures_title">Signatures</string>
+
+    <!-- ========== 通知 (Notifications) ========== -->
     <string name="notification_building_project">Building project</string>
     <string name="notification_cancel_build">Cancel build</string>
     <string name="notification_channel_build">Build Notifications</string>
@@ -2895,6 +2935,8 @@ Do you want to continue?"</string>
     <string name="notification_channel_firebase">Sketchware Pro Notifications</string>
     <string name="notification_starting_build">Starting build…</string>
     <string name="snackbar_show_compile_log">Show compile log</string>
+
+    <!-- ========== 应用设置 (App Settings & Configuration) ========== -->
     <string name="apk_sign_select_file">Please select an APK file to sign</string>
     <string name="apk_sign_success">Successfully saved signed APK to: /Internal storage/sketchware/signed_apk/%s</string>
     <string name="app_settings_action_delete">Delete</string>
@@ -3009,6 +3051,8 @@ Do you want to continue?"</string>
     <string name="theme_system_default_desc">Follow system theme settings</string>
     <string name="theme_title_create">Create new theme</string>
     <string name="theme_title_edit">Edit theme</string>
+
+    <!-- ========== 语言设置 (Language Settings) ========== -->
     <string name="language_settings_title">Language Settings</string>
     <string name="language_settings_desc">Export and import translation files</string>
     <string name="language_settings_current_language">Current Language</string>
@@ -3041,6 +3085,8 @@ Do you want to continue?"</string>
     <string name="language_settings_import_success_title">Import Successful</string>
     <string name="language_settings_import_success_msg">Import complete.\n\nTotal strings: %1$d\nMatched: %2$d\nFailed: %3$d\n\nThe translations are now active. Some UI elements may need the app to be restarted to fully reflect the changes.</string>
     <string name="language_settings_help">How it works:\n\n1. Tap \"Export Strings\" to generate an XML file with all app strings.\n2. Translate the strings in the exported file.\n3. Tap \"Import Strings\" to load your translated file.\n\nThe imported strings will override the default display language. You can clear the override at any time to restore the defaults.</string>
+
+    <!-- ========== 编辑器 (Editors) ========== -->
     <string name="array_attr_hint_name">Enter Item Name</string>
     <string name="array_attr_hint_value">Enter Item Value</string>
     <string name="array_hint_header">Array header value ( optional )</string>
@@ -3257,6 +3303,8 @@ ACTION_VIEW
     <string name="xml_command_select_xml">Select an XML</string>
     <string name="xml_command_title">XML Command Manager</string>
     <string name="xml_strings">XML Strings</string>
+
+    <!-- ========== 代码编辑器菜单 (Code Editor Menu) ========== -->
     <string name="menu_about_team">About the team</string>
     <string name="menu_add_lowercase">add</string>
     <string name="menu_add_to_manifest">Add to AndroidManifest</string>
@@ -3313,6 +3361,8 @@ ACTION_VIEW
     <string name="menu_variables">Variables</string>
     <string name="menu_views">Views</string>
     <string name="menu_word_wrap">Word wrap</string>
+
+    <!-- ========== AppCompat ========== -->
     <string name="appcompat_add_attr">Add new attribute</string>
     <string name="appcompat_disabled_msg">Please enable AppCompat in the Library Manager to use it.</string>
     <string name="appcompat_disabled_title">AppCompat is disabled.</string>
@@ -3323,6 +3373,8 @@ ACTION_VIEW
     <string name="appcompat_not_available_msg">You\'re not currently in the Activity layout.</string>
     <string name="appcompat_not_available_title">Not available.</string>
     <string name="appcompat_reset_confirm_msg">Are you sure you want to reset appcompat attributes for %s?</string>
+
+    <!-- ========== 关于页面 (About Page) ========== -->
     <string name="about_badge_contributor">Contributor</string>
     <string name="about_badge_core_team">Core Team</string>
     <string name="about_beta_changes_title">Beta Changes</string>
@@ -3360,6 +3412,8 @@ ACTION_VIEW
     <string name="about_variant_official">Official</string>
     <string name="github_api_date_unavailable">Date unavailable</string>
     <string name="github_api_error_message">Something went wrong. Please wait and try again.</string>
+
+    <!-- ========== 社区与分享 (Community & Sharing) ========== -->
     <string name="collection_duplicated_name">Duplicate file name in my collection</string>
     <string name="collection_failed_to_copy">Failed to save to my collection</string>
     <string name="collection_no_exist_file">File does not exist</string>
@@ -3595,21 +3649,27 @@ Please try again later"</string>
     <string name="title_community">Social Network</string>
     <string name="title_discord_community">Discord</string>
     <string name="title_telegram_community">Telegram</string>
+
+    <!-- ========== 社交链接与团队 (Links & Team) ========== -->
     <string name="link_about_team">https://sketchware-pro.github.io/Sketchware-Pro/about.json</string>
     <string name="link_discord_invite">https://discord.gg/kq39yhT4rX</string>
     <string name="link_docs_url">https://docs.sketchware.pro</string>
-    <string name="link_github_commits_url">https://api.github.com/repos/Sketchware-Pro/Sketchware-Pro/commits?per_page=%s&amp;page=%s</string>
+    <string name="link_github_commits_url"><![CDATA[https://api.github.com/repos/Sketchware-Pro/Sketchware-Pro/commits?per_page=%s&page=%s]]></string>
     <string name="link_github_release">https://github.com/Sketchware-Pro/Sketchware-Pro/releases</string>
     <string name="link_github_url">https://github.com/Sketchware-Pro/Sketchware-Pro</string>
     <string name="link_ideas_url">https://discord.gg/4uxhMwCt</string>
     <string name="link_sw_assist">https://play.google.com/store/apps/details?id=com.w3wide.swassist</string>
     <string name="link_telegram_invite">https://t.me/sketchwarepro</string>
+
+    <!-- ========== AdMob ========== -->
     <string name="admob_ad_name_label">Ad Name : </string>
     <string name="admob_ad_unit_id_label">Ad Unit ID : </string>
     <string name="admob_edit">EDIT</string>
     <string name="admob_edit_label">EDIT</string>
     <string name="admob_no_ad_units">No Ad Units to display</string>
     <string name="admob_rewarded_ad">Rewarded Ad</string>
+
+    <!-- ========== 图标 (Icons) ========== -->
     <string name="filter_icons_baseline">Baseline</string>
     <string name="filter_icons_outlined">Outlined</string>
     <string name="filter_icons_round">Round</string>
@@ -3643,6 +3703,8 @@ Please try again later"</string>
     <string name="save_icon_hint_name">Enter icon name</string>
     <string name="save_icon_licence">This icon is available under the Apache Licence Version 2.0. Press to read more.</string>
     <string name="title_activity_icon_creator">IconCreatorActivity</string>
+
+    <!-- ========== Widget ========== -->
     <string name="create_new_widget">Create a widget</string>
     <string name="view_widget_delete_description">Are you sure you want to delete this view and its child elements? \nYou can undo this action if necessary</string>
     <string name="view_widget_delete_title">Delete Widget</string>
@@ -3660,6 +3722,8 @@ Please try again later"</string>
     <string name="widget_editor">Widget editor</string>
     <string name="widget_type_title">Widget type</string>
     <string name="widgets_select_json">Select .json widgets files</string>
+
+    <!-- ========== 搜索 (Search) ========== -->
     <string name="search_error_message">Nothing found,\ntry again with something else</string>
     <string name="search_header">"  Search…"</string>
     <string name="search_hint">Search…</string>
@@ -3692,19 +3756,27 @@ Please try again later"</string>
     <string name="search_recent_title_delete_keyword_dialog">Delete Keyword</string>
     <string name="search_result_message_no_data">No search result to show. :(</string>
     <string name="search_result_title">Search Result of %s</string>
+
+    <!-- ========== 版本控制 (Version Control) ========== -->
     <string name="version_control_title">Advanced Version Control</string>
     <string name="version_error_invalid_code">Invalid Version Code</string>
     <string name="version_error_invalid_name">Invalid Version Name</string>
     <string name="version_hint_code">Version code</string>
     <string name="version_hint_name">Version name</string>
     <string name="version_hint_name_extra">Version name extra</string>
+
+    <!-- ========== 密钥库 (Keystore) ========== -->
     <string name="keystore_export_path_format">Export path: %s</string>
     <string name="keystore_helper_algorithm">Example: SHA256withRSA</string>
     <string name="keystore_hint_algorithm">Signing algorithm</string>
     <string name="keystore_hint_alias">Keystore alias</string>
     <string name="keystore_hint_password">Alias password</string>
     <string name="keystore_hint_signing_mode">Signing mode</string>
+
+    <!-- ========== MoreBlock ========== -->
     <string name="moreblock_dialog_title_select">Select a more block</string>
+
+    <!-- ========== 字体 (Font) ========== -->
     <string name="font_add_to_collection">Add to my collection</string>
     <string name="font_clear">Clear</string>
     <string name="font_hint_name">Font name</string>
@@ -3713,6 +3785,8 @@ Please try again later"</string>
     <string name="font_preview_sample">This is how your font looks like.</string>
     <string name="font_preview_title">Font preview</string>
     <string name="font_select">Select</string>
+
+    <!-- ========== Material3 ========== -->
     <string name="material3_dark">Dark</string>
     <string name="material3_daynight">DayNight</string>
     <string name="material3_description">Modern Material design with adaptive dynamic theming</string>
@@ -3720,26 +3794,56 @@ Please try again later"</string>
     <string name="material3_enable">Enable Material3</string>
     <string name="material3_light">Light</string>
     <string name="material3_theme_pref">Material3 Theme Preference :</string>
+
+    <!-- ========== 构建错误 (Build Errors) ========== -->
+
+    <!-- ========== 块管理 (Block Manager) ========== -->
+
+    <!-- ========== 通用按钮 (Common Buttons) ========== -->
     <string name="button_download">Download</string>
     <string name="button_apply">Apply</string>
+
+    <!-- ========== 通用对话框 (Common Dialogs) ========== -->
     <string name="dialog_title_actions">Actions</string>
     <string name="dialog_title_attention">Attention</string>
     <string name="dialog_title_rename">Rename</string>
     <string name="dialog_title_create_new">Create new</string>
+
+    <!-- ========== 事件管理器 (Events Manager) ========== -->
     <string name="events_new_title">New Event</string>
+
+    <!-- ========== 块选择器 (Block Selector) ========== -->
     <string name="selector_new_title">New selector</string>
     <string name="selector_edit_title">Edit selector</string>
     <string name="selector_new_item_title">New Selector Item</string>
+
+    <!-- ========== 文件选择器 (File Picker) ========== -->
     <string name="file_picker_select_json_selector">Select .json selector file</string>
+
+    <!-- ========== 库管理 (Library Manager) ========== -->
+
+    <!-- ========== 本地库管理 (Native Library Manager) ========== -->
     <string name="nativelib_manager_title">Native Library Manager</string>
     <string name="nativelib_import_title">Import Native Libraries</string>
     <string name="folder_create_title">Create a new folder</string>
     <string name="folder_create_msg">Enter the name of the new folder</string>
+
+    <!-- ========== Java/Kotlin管理 ========== -->
     <string name="java_manager_title">Java/Kotlin Manager</string>
     <string name="java_create_msg">File extension will be added automatically based on the file type you select</string>
+
+    <!-- ========== 代码编辑器 (Code Editor) ========== -->
     <string name="editor_select_theme_title">Select Theme</string>
     <string name="editor_select_language_title">Select Language</string>
+
+    <!-- ========== Proguard ========== -->
     <string name="proguard_select_libraries_title">Select Local libraries</string>
+
+    <!-- ========== Firebase ========== -->
+
+    <!-- ========== GoogleMap ========== -->
+
+    <!-- ========== 编辑器预览 (Editor Preview) ========== -->
     <string name="editor_preview_statusbar">StatusBar</string>
     <string name="editor_preview_toolbar">Toolbar</string>
     <string name="editor_preview_drawer">Drawer</string>
@@ -3750,8 +3854,31 @@ Please try again later"</string>
     <string name="editor_preview_webview">WebView</string>
     <string name="editor_preview_spinner">Spinner</string>
     <string name="editor_preview_mapview">MapView</string>
+
+    <!-- ========== 视图管理 (View Manager) ========== -->
     <string name="view_title_edit_format">Edit %s</string>
+
+    <!-- ========== 错误报告 (Error Report) ========== -->
+
+    <!-- ========== 小部件 (Widgets) ========== -->
     <string name="widgets_select_json_title">Select .json widgets files</string>
+
+    <!-- ========== 资源编辑器 - 补充 ========== -->
+    <string name="array_select_type_title">Select Array Type</string>
+    <string name="item_title_create">Create new item</string>
+    <string name="item_title_edit">Edit item</string>
+    <string name="editor_preview_statusbar">StatusBar</string>
+    <string name="editor_preview_toolbar">Toolbar</string>
+    <string name="editor_preview_drawer">Drawer</string>
+    <string name="editor_preview_fab">FAB</string>
+    <string name="editor_preview_tab1">Tab 1</string>
+    <string name="editor_preview_tab2">Tab 2</string>
+    <string name="editor_preview_tab3">Tab 3</string>
+    <string name="editor_preview_webview">WebView</string>
+    <string name="editor_preview_spinner">Spinner</string>
+    <string name="editor_preview_mapview">MapView</string>    
+    <string name="view_title_edit_format">Edit %s</string>       
+    <string name="widgets_select_json_title">Select .json widgets files</string>   
     <string name="array_select_type_title">Select Array Type</string>
     <string name="item_title_create">Create new item</string>
     <string name="item_title_edit">Edit item</string>
@@ -3763,33 +3890,47 @@ Please try again later"</string>
     <string name="global_search_searchproject">Search Project</string>
     <string name="global_search_noresultsfound">No results found</string>
     <string name="global_search_searching_project">Searching project...</string>
+    
+    <!-- Source Code Dialog Options -->
     <string name="title_source_code">Source Code</string>
     <string name="option_view_source_code">View Source Code</string>
     <string name="option_code_to_blocks">Code to Blocks</string>
     <string name="option_generate_with_ai">Generate with AI</string>
+
+    <!-- AI Generation Dialog & Process -->
     <string name="ai_code_subtitle_format">Describe what this \"%1$s\" event should do. AI will write the logic and convert it to blocks.</string>
     <string name="ai_code_hint">e.g. show a toast saying Hello when this runs</string>
+
     <string name="ai_toast_enter_description">Describe what this event should do first.</string>
     <string name="ai_toast_enter_description_alt">Enter a description to generate the code.</string>
     <string name="ai_toast_no_result">No result was obtained from the provider.</string>
     <string name="ai_toast_generation_failed">Code generation failed: %1$s</string>
     <string name="ai_toast_request_error">Request error: %1$s</string>
     <string name="ai_dialog_generating">Generating code</string>
+
+    <!-- Conversion & Blocks Process -->
     <string name="converter_error_failed">Converter failed: %1$s</string>
     <string name="converter_error_could_not_convert">Couldn\'t convert the code: %1$s</string>
     <string name="converter_no_result">no result</string>
+
     <string name="word_block">block</string>
     <string name="word_blocks">blocks</string>
+
     <string name="conversion_summary_msg">Here\'s what we found:\n\n✅  %1$d native %2$s\n⚠️  %3$d \"Add Source Directly\" %4$s\n\nReady to add %5$d %6$s to your project?</string>
     <string name="conversion_dialog_title">Ready to Insert?</string>
     <string name="conversion_btn_go_back">Wait, go back</string>
     <string name="conversion_btn_insert">Yes, insert them</string>
+
     <string name="blocks_toast_no_blocks">No blocks to insert.</string>
     <string name="blocks_toast_inserted">%1$d %2$s inserted.</string>
+
+    <!-- Code To Blocks Dialog -->
     <string name="code_to_blocks_title">Code to Blocks</string>
     <string name="code_to_blocks_subtitle">Paste your Java snippet below. Supported syntax (loops, variables, APIs) will become blocks. Unrecognized code is wrapped safely.</string>
     <string name="code_to_blocks_hint">public void myLogic() {\n    // Code here\n}</string>
     <string name="code_to_blocks_error_empty">Oops! You forgot to paste the code.</string>
+
+    <!-- Common UI Actions -->
     <string name="btn_cancel">Cancel</string>
     <string name="btn_generate">Generate</string>
     <string name="btn_convert">Convert</string>
@@ -3799,4 +3940,5 @@ Please try again later"</string>
     <string name="title_backuprestore_category">Backup and Restore</string>
     <string name="title_versioncontrol_category">Version Control</string>
     <string name="title_rootfeatures_category">Root Features</string>
+
 </resources>
