@@ -30,6 +30,12 @@
     <color name="main_tab_indicator_color">#ff71bce9</color>
     <color name="main_tab_selected_text_color">#ff007cc9</color>
     <color name="main_tab_text_color">#ff007cc9</color>
+        <color name="project_type_android_studio_bg">#E8F4FF</color>
+    <color name="project_type_android_studio_stroke">#2E84C6</color>
+    <color name="project_type_android_studio_text">#14507E</color>
+    <color name="project_type_native_bg">#EAF7ED</color>
+    <color name="project_type_native_stroke">#2E8B57</color>
+    <color name="project_type_native_text">#17613A</color>
     <color name="sc_item_bg">#fffff9ac</color>
     <color name="scolor_black_01">#ff1d2129</color>
     <color name="scolor_black_02">#ff757575</color>
