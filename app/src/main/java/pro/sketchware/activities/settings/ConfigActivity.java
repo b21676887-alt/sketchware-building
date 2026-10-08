@@ -225,7 +225,7 @@ public class ConfigActivity extends BaseAppCompatActivity {
                 createSwitchPreference(R.drawable.ic_mtrl_puzzle, R.string.pref_built_in_blocks_title, R.string.pref_built_in_blocks_summary, SETTING_SHOW_BUILT_IN_BLOCKS),
                 createSwitchPreference(R.drawable.ic_mtrl_view_module, R.string.pref_show_all_palette_blocks_title, R.string.pref_show_all_palette_blocks_summary, SETTING_SHOW_EVERY_SINGLE_BLOCK),
                 createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_block_highlighting_title, R.string.pref_block_highlighting_summary, SETTING_USE_ASD_HIGHLIGHTER),
-                createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_project_encryption_title, R.string.pref_project_encryption_summary, SETTING_PROJECT_DATA_ENCRYP)
+                createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_project_encryption_title, R.string.pref_project_encryption_summary, SETTING_PROJECT_DATA_ENCRYPTION)
         ));
 
         content.addView(createCategoryHeader(Helper.getResString(R.string.title_explorer_project_category)));
