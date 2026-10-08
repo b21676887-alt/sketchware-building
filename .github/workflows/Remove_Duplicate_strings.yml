@@ -18,6 +18,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -29,15 +32,13 @@ jobs:
           DRY_RUN: 'false'   # set to 'true' for testing without writing
         run: |
           python - <<'PY'
-          import glob, shutil, os, sys
+          import glob, shutil, os, sys, tempfile
           import xml.etree.ElementTree as ET
           from pathlib import Path
 
-          # Policy: keep first occurrence, but if first value empty and later non-empty -> replace
           dry_run = os.environ.get("DRY_RUN", "false").lower() == "true"
 
           def text_of(elem):
-              # join text inside element (handles nested tags)
               return "".join(elem.itertext()).strip() if elem is not None else ""
 
           changed_files = []
@@ -51,8 +52,9 @@ jobs:
           for file_path in files:
               p = Path(file_path)
               print(f"Processing {file_path}...")
-              # backup
-              bak = p.with_suffix(p.suffix + '.bak')
+
+              # Backup outside repo so we do not create .bak files inside the branch
+              bak = Path(tempfile.gettempdir()) / (p.name + ".bak")
               try:
                   shutil.copy2(p, bak)
               except Exception as e:
@@ -67,9 +69,8 @@ jobs:
 
               seen = {}
               removed = []
-              # iterate over a snapshot of children to allow safe removal
+
               for elem in list(root):
-                  # handle <string name="..."/>, <plurals name="...">..., <string-array name="...">...
                   name = elem.get('name')
                   tag = elem.tag
                   if name:
@@ -79,26 +80,22 @@ jobs:
                           prev_text = text_of(prev)
                           cur_text = text_of(elem)
                           if not prev_text and cur_text:
-                              # replace previous with current (prefer non-empty)
                               idx_prev = list(root).index(prev)
                               root.insert(idx_prev, elem)
                               root.remove(prev)
                               seen[key] = elem
                               removed.append((name, tag, "replaced previous empty with non-empty"))
                           else:
-                              # remove current duplicate
                               root.remove(elem)
                               removed.append((name, tag, "removed duplicate (kept first)"))
                       else:
                           seen[key] = elem
                   else:
-                      # no name attribute (ignore)
                       continue
 
               if removed:
                   reports.append((file_path, removed))
                   if not dry_run:
-                      # pretty indent if available (Python 3.9+)
                       try:
                           ET.indent(tree, space="    ")
                       except Exception:
@@ -111,7 +108,6 @@ jobs:
               else:
                   print(f"No duplicates found in {file_path}.")
 
-          # Print detailed report
           if reports:
               print("\n=== Duplicate removal report ===")
               for fp, items in reports:
@@ -121,28 +117,41 @@ jobs:
           else:
               print("\nNo duplicates detected across processed files.")
 
-          # Exit with non-zero if dry-run would have changed files (for CI awareness)
           if dry_run and reports:
               print("\nDRY RUN MODE: changes were detected but not applied.")
               sys.exit(2)
 
-          # Print changed files for next step
           if changed_files:
               print("\nCHANGED_FILES:" + ",".join(changed_files))
           PY
 
       - name: Commit and Push Cleaned Files (only changed files)
+        shell: bash
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          # read changed files printed by previous step
-          CHANGED=$(git status --porcelain | awk '/strings.xml/ {print $2}' | uniq || true)
+
+          BRANCH="${GITHUB_REF_NAME:-${GITHUB_REF#refs/heads/}}"
+
+          # Make sure we're based on latest remote state before pushing
+          git fetch origin "${BRANCH}"
+          git rebase "origin/${BRANCH}" || git pull --rebase origin "${BRANCH}" || true
+
+          # Remove any accidental .bak files if they exist
+          git rm --ignore-unmatch $(git ls-files '*.bak') || true
+          find . -name '*.bak' -type f -delete || true
+
+          # Only include actual strings.xml files; do not include strings.xml.bak
+          CHANGED=$(git status --porcelain | awk '/strings\.xml$/ {print $2}' | uniq || true)
+
           if [ -n "$CHANGED" ]; then
             echo "Committing changed files:"
             echo "$CHANGED"
-            for f in $CHANGED; do git add "$f"; done
+            for f in $CHANGED; do
+              git add "$f"
+            done
             git commit -m "chore: remove duplicate string keys [skip ci]" || echo "No commit needed"
-            git push
+            git push origin HEAD:"${BRANCH}"
           else
             echo "No strings.xml changes to commit."
           fi
