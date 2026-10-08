@@ -180,9 +180,9 @@ public class ConfigActivity extends BaseAppCompatActivity {
             case SETTING_ALWAYS_SHOW_BLOCKS,
                  SETTING_ROOT_AUTO_INSTALL_PROJECTS, SETTING_SHOW_BUILT_IN_BLOCKS,
                  SETTING_SHOW_EVERY_SINGLE_BLOCK, SETTING_USE_NEW_VERSION_CONTROL,
-                 SETTING_USE_ASD_HIGHLIGHTER, SETTING_PROJECT_DATA_ENCRYPTION,
-                 SETTING_TREE_VIEW, SETTING_JAVA_TREE_VIEW, SETTING_ASSETS_TREE_VIEW,
+                 SETTING_USE_ASD_HIGHLIGHTER,SETTING_TREE_VIEW, SETTING_JAVA_TREE_VIEW, SETTING_ASSETS_TREE_VIEW,
                  SETTING_CPP_TREE_VIEW, SETTING_RESOURCE_TREE_VIEW -> false;
+                 case SETTING_PROJECT_DATA_ENCRYPTION -> true;
             case SETTING_BACKUP_DIRECTORY ->
                     SketchwarePaths.toExternalStorageRelativePath(SketchwarePaths.getBackupsPath());
             case SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING -> true;
