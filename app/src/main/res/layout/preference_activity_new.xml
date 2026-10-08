@@ -2,6 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
@@ -15,13 +17,13 @@
         app:liftOnScroll="false">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/top_app_bar"
+            android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            app:title="@string/common_word_settings"
+            app:navigationIcon="@drawable/ic_mtrl_arrow_back"
+            app:title="App Settings"
             app:titleTextAppearance="?attr/textAppearanceTitleLarge" />
-            
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -35,8 +37,7 @@
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="24dp"
+            android:paddingBottom="32dp"
             android:orientation="vertical" />
             
     </androidx.core.widget.NestedScrollView>

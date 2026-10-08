@@ -55,6 +55,7 @@
         app:title="@string/pref_backup_filename_title" />
 
     <SwitchPreferenceCompat
+        app:defaultValue="true"
         app:iconSpaceReserved="false"
         app:key="project-data-encryption"
         app:summary="@string/pref_project_encryption_summary"

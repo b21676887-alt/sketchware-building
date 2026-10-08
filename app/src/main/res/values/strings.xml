@@ -3867,5 +3867,78 @@ Please try again later"</string>
     <string name="array_select_type_title">Select Array Type</string>
     <string name="item_title_create">Create new item</string>
     <string name="item_title_edit">Edit item</string>
+    <string name="editor_preview_statusbar">StatusBar</string>
+    <string name="editor_preview_toolbar">Toolbar</string>
+    <string name="editor_preview_drawer">Drawer</string>
+    <string name="editor_preview_fab">FAB</string>
+    <string name="editor_preview_tab1">Tab 1</string>
+    <string name="editor_preview_tab2">Tab 2</string>
+    <string name="editor_preview_tab3">Tab 3</string>
+    <string name="editor_preview_webview">WebView</string>
+    <string name="editor_preview_spinner">Spinner</string>
+    <string name="editor_preview_mapview">MapView</string>    
+    <string name="view_title_edit_format">Edit %s</string>       
+    <string name="widgets_select_json_title">Select .json widgets files</string>   
+    <string name="array_select_type_title">Select Array Type</string>
+    <string name="item_title_create">Create new item</string>
+    <string name="item_title_edit">Edit item</string>
+    <string name="global_search_title">Global Search</string>
+    <string name="global_search_all">All</string>
+    <string name="global_search_Layouts">Layouts</string>
+    <string name="global_search_Logic">Logic</string>
+    <string name="global_search_Components">Components</string>
+    <string name="global_search_searchproject">Search Project</string>
+    <string name="global_search_noresultsfound">No results found</string>
+    <string name="global_search_searching_project">Searching project...</string>
+    
+    <!-- Source Code Dialog Options -->
+    <string name="title_source_code">Source Code</string>
+    <string name="option_view_source_code">View Source Code</string>
+    <string name="option_code_to_blocks">Code to Blocks</string>
+    <string name="option_generate_with_ai">Generate with AI</string>
+
+    <!-- AI Generation Dialog & Process -->
+    <string name="ai_code_subtitle_format">Describe what this \"%1$s\" event should do. AI will write the logic and convert it to blocks.</string>
+    <string name="ai_code_hint">e.g. show a toast saying Hello when this runs</string>
+
+    <string name="ai_toast_enter_description">Describe what this event should do first.</string>
+    <string name="ai_toast_enter_description_alt">Enter a description to generate the code.</string>
+    <string name="ai_toast_no_result">No result was obtained from the provider.</string>
+    <string name="ai_toast_generation_failed">Code generation failed: %1$s</string>
+    <string name="ai_toast_request_error">Request error: %1$s</string>
+    <string name="ai_dialog_generating">Generating code</string>
+
+    <!-- Conversion & Blocks Process -->
+    <string name="converter_error_failed">Converter failed: %1$s</string>
+    <string name="converter_error_could_not_convert">Couldn\'t convert the code: %1$s</string>
+    <string name="converter_no_result">no result</string>
+
+    <string name="word_block">block</string>
+    <string name="word_blocks">blocks</string>
+
+    <string name="conversion_summary_msg">Here\'s what we found:\n\n✅  %1$d native %2$s\n⚠️  %3$d \"Add Source Directly\" %4$s\n\nReady to add %5$d %6$s to your project?</string>
+    <string name="conversion_dialog_title">Ready to Insert?</string>
+    <string name="conversion_btn_go_back">Wait, go back</string>
+    <string name="conversion_btn_insert">Yes, insert them</string>
+
+    <string name="blocks_toast_no_blocks">No blocks to insert.</string>
+    <string name="blocks_toast_inserted">%1$d %2$s inserted.</string>
+
+    <!-- Code To Blocks Dialog -->
+    <string name="code_to_blocks_title">Code to Blocks</string>
+    <string name="code_to_blocks_subtitle">Paste your Java snippet below. Supported syntax (loops, variables, APIs) will become blocks. Unrecognized code is wrapped safely.</string>
+    <string name="code_to_blocks_hint">public void myLogic() {\n    // Code here\n}</string>
+    <string name="code_to_blocks_error_empty">Oops! You forgot to paste the code.</string>
+
+    <!-- Common UI Actions -->
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_generate">Generate</string>
+    <string name="btn_convert">Convert</string>
+    <string name="title_explorer_project_category">Project Explorer</string>
+    <string name="pref_enable_treeview_title">Enable Tree View</string>
+    <string name="pref_enable_treeview_summary">Display project files in a hierarchical tree structure</string>
+    <string name="title_backuprestore_category">Backup and Restore</string>
+    <string name="title_versioncontrol_category">Version Control</string>
+    <string name="title_rootfeatures_category">Root Features</string>
 
 </resources>

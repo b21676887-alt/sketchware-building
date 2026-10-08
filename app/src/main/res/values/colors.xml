@@ -100,5 +100,66 @@
 
     <color name="splash_bg_color">@color/md_theme_light_background</color>
     <color name="splash_content_color">@color/md_theme_light_on_background</color>
+        <!-- Chat Design Colors -->
+    <color name="chat_background">#F6F9FF</color>
+    <color name="kelivo_tool_surface">#F3F0FA</color>
+    <color name="chat_surface">#ffe6eff8</color>
+    <color name="chat_surface_soft">#ECF4FE</color>
+    <color name="chat_accent">#6B5CE7</color>
+    <color name="store_play_blue">#0B57D0</color>
+    <color name="chat_accent_soft">#EDE9FE</color>
+    <color name="kelivo_surface_soft">#F2F2F7</color>
+    <color name="kelivo_border_soft">#E5E5EA</color>
+    <color name="kelivo_user_bubble">#E8E4F8</color>
+    <color name="kelivo_avatar_bg">#E8E4F8</color>
+    <color name="kelivo_avatar_text">#5B4FCF</color>
+    <color name="kelivo_selected_row">#F0EDFA</color>
+    <color name="kelivo_send_bg">#8E8E93</color>
+    <color name="chat_warning">#B7791F</color>
+    <color name="chat_code_background">#F2EFE7</color>
+    <color name="chat_success">#22C55E</color>
+    <color name="chat_error">#EF4444</color>
+    <color name="chat_text_primary">#1C1C1E</color>
+    <color name="chat_text_secondary">#8E8E93</color>
+    <color name="chat_text_hint">#AEAEB2</color>
+    <color name="chat_divider">#E5E5EA</color>
+    <color name="chat_border">#B1C0CE</color>
+    <color name="provider_status_on_bg">#DCF5E3</color>
+    <color name="provider_status_on_text">#1F9D55</color>
+    <color name="provider_status_off_bg">#FCEFD9</color>
+    <color name="provider_status_off_text">#C77A1F</color>
+    <color name="chat_diff_background">#00000000</color>
+    <color name="chat_diff_header">#F8FAFC</color>
+    <color name="chat_diff_hunk">#EAF3FF</color>
+    <color name="chat_diff_added">#EAF8EF</color>
+    <color name="chat_diff_removed">#FDECEC</color>
+    <color name="chat_diff_line_text">#1F2937</color>
+    <color name="chat_diff_muted_text">#64748B</color>
+
+    <!-- Android Studio project editor -->
+    <color name="studio_background">@color/chat_background</color>
+    <color name="studio_surface">@color/chat_surface</color>
+    <color name="studio_surface_alt">@color/chat_surface_soft</color>
+    <color name="studio_accent">@color/chat_accent</color>
+    <color name="studio_accent_soft">@color/chat_accent_soft</color>
+    <color name="studio_border">@color/chat_border</color>
+    <color name="studio_text_primary">@color/chat_text_primary</color>
+    <color name="studio_text_secondary">@color/chat_text_secondary</color>
+    <color name="studio_code_background">@color/chat_surface</color>
+    <color name="studio_output_background">@color/chat_surface</color>
+    <color name="studio_status_background">@color/chat_surface_soft</color>
+    <color name="studio_file_selected">@color/chat_accent_soft</color>
+    <color name="studio_tree_line">@color/chat_border</color>
+    <color name="studio_folder_code">#4EA1FF</color>
+    <color name="studio_folder_resource">#6ACB8F</color>
+    <color name="studio_folder_config">#D8A348</color>
+    <color name="studio_folder_default">@color/studio_text_secondary</color>
+    <color name="studio_file_kotlin">#B56DFF</color>
+    <color name="studio_file_java">#F18A54</color>
+    <color name="studio_file_xml">#6ACB8F</color>
+    <color name="studio_file_config">#D8A348</color>
+    <color name="studio_file_json">#E5C84F</color>
+    <color name="studio_file_image">#63C7D8</color>
+    <color name="studio_file_default">@color/studio_text_secondary</color>
 
 </resources>

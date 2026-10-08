@@ -2,24 +2,32 @@ package pro.sketchware.activities.settings;
 
 import static pro.sketchware.util.GsonUtils.getGson;
 
-import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.preference.Preference;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceDataStore;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreferenceCompat;
 
-import pro.sketchware.activities.base.BaseAppCompatActivity;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.JsonParseException;
 import com.topjohnwu.superuser.Shell;
 
@@ -29,15 +37,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pro.sketchware.activities.base.BaseAppCompatActivity;
+import pro.sketchware.core.project.SketchwarePaths;
+import pro.sketchware.databinding.PreferenceActivityNewBinding;
+import pro.sketchware.R;
+import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.Helper;
 import pro.sketchware.util.LogUtil;
-import pro.sketchware.R;
-import pro.sketchware.core.project.SketchwarePaths;
-import pro.sketchware.util.UI;
-import pro.sketchware.databinding.DialogCreateNewFileLayoutBinding;
-import pro.sketchware.databinding.PreferenceActivityBinding;
-import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
+import pro.sketchware.util.ThemeUtils;
 
 public class ConfigActivity extends BaseAppCompatActivity {
 
@@ -56,6 +64,13 @@ public class ConfigActivity extends BaseAppCompatActivity {
     public static final String SETTING_BLOCKMANAGER_DIRECTORY_BLOCK_FILE_PATH = "blockDir";
     public static final String SETTING_PROJECT_DATA_ENCRYPTION = "project-data-encryption";
     public static final String SETTING_LAST_RESTORE_DIRECTORY = "last-restore-dir";
+    public static final String SETTING_TREE_VIEW = "enable-tree-view";
+    public static final String SETTING_JAVA_TREE_VIEW = "enable-java-tree-view"; 
+    public static final String SETTING_ASSETS_TREE_VIEW = "enable-assets-tree-view"; 
+    public static final String SETTING_CPP_TREE_VIEW    = "cpp_tree_view";
+    public static final String SETTING_RESOURCE_TREE_VIEW = "enable-resource-tree-view";
+
+    private PreferenceActivityNewBinding binding;
 
     public static String getBackupPath() {
         return DataStore.getInstance().getString(SETTING_BACKUP_DIRECTORY,
@@ -80,7 +95,6 @@ public class ConfigActivity extends BaseAppCompatActivity {
         } else {
             dataStore.putString(settingKey, toReturnAndSetIfNotFound);
             dataStore.persist();
-
             return toReturnAndSetIfNotFound;
         }
     }
@@ -120,10 +134,8 @@ public class ConfigActivity extends BaseAppCompatActivity {
                 }
 
                 toLog = new NullPointerException("settings == null");
-                // fall-through to shared error handler
             } catch (JsonParseException e) {
                 toLog = e;
-                // fall-through to shared error handler
             }
 
             SketchwareUtil.toastError(Helper.getResString(R.string.config_error_parse_settings));
@@ -138,7 +150,8 @@ public class ConfigActivity extends BaseAppCompatActivity {
     private static void restoreDefaultSettings(HashMap<String, Object> settings) {
         settings.clear();
 
-        List<String> keys = Arrays.asList(SETTING_ALWAYS_SHOW_BLOCKS,
+        List<String> keys = Arrays.asList(
+                SETTING_ALWAYS_SHOW_BLOCKS,
                 SETTING_BACKUP_DIRECTORY,
                 SETTING_ROOT_AUTO_INSTALL_PROJECTS,
                 SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING,
@@ -148,7 +161,13 @@ public class ConfigActivity extends BaseAppCompatActivity {
                 SETTING_USE_ASD_HIGHLIGHTER,
                 SETTING_BLOCKMANAGER_DIRECTORY_PALETTE_FILE_PATH,
                 SETTING_BLOCKMANAGER_DIRECTORY_BLOCK_FILE_PATH,
-                SETTING_PROJECT_DATA_ENCRYPTION);
+                SETTING_PROJECT_DATA_ENCRYPTION,
+                SETTING_TREE_VIEW,
+                SETTING_JAVA_TREE_VIEW,
+                SETTING_ASSETS_TREE_VIEW,
+                SETTING_CPP_TREE_VIEW,
+                SETTING_RESOURCE_TREE_VIEW
+        );
 
         for (String key : keys) {
             settings.put(key, getDefaultValue(key));
@@ -161,7 +180,9 @@ public class ConfigActivity extends BaseAppCompatActivity {
             case SETTING_ALWAYS_SHOW_BLOCKS,
                  SETTING_ROOT_AUTO_INSTALL_PROJECTS, SETTING_SHOW_BUILT_IN_BLOCKS,
                  SETTING_SHOW_EVERY_SINGLE_BLOCK, SETTING_USE_NEW_VERSION_CONTROL,
-                 SETTING_USE_ASD_HIGHLIGHTER, SETTING_PROJECT_DATA_ENCRYPTION -> false;
+                 SETTING_USE_ASD_HIGHLIGHTER, SETTING_PROJECT_DATA_ENCRYPTION,
+                 SETTING_TREE_VIEW, SETTING_JAVA_TREE_VIEW, SETTING_ASSETS_TREE_VIEW,
+                 SETTING_CPP_TREE_VIEW, SETTING_RESOURCE_TREE_VIEW -> false;
             case SETTING_BACKUP_DIRECTORY ->
                     SketchwarePaths.toExternalStorageRelativePath(SketchwarePaths.getBackupsPath());
             case SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING -> true;
@@ -179,123 +200,291 @@ public class ConfigActivity extends BaseAppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         enableEdgeToEdgeNoContrast();
         super.onCreate(savedInstanceState);
-        var binding = PreferenceActivityBinding.inflate(getLayoutInflater());
+        
+        binding = PreferenceActivityNewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         binding.topAppBar.setTitle(R.string.settings_title);
         binding.topAppBar.setNavigationOnClickListener(Helper.getBackPressedClickListener(this));
-        var fragment = new PreferenceFragment();
-        fragment.setSnackbarView(binding.getRoot());
-        getSupportFragmentManager().beginTransaction()
-                .replace(binding.fragmentContainer.getId(), fragment)
-                .commit();
-        UI.addSystemWindowInsetToPadding(binding.appBarLayout, true, true, true, false);
-        UI.addSystemWindowInsetToPadding(binding.fragmentContainer, true, false, true, true);
+
+        setupPreferences(binding.content);
     }
 
-    public static class PreferenceFragment extends PreferenceFragmentCompat {
-        private View snackbarView;
-        private DataStore dataStore;
+    private void setupPreferences(ViewGroup content) {
+        content.removeAllViews();
 
-        @Override
-        public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-            dataStore = DataStore.getInstance();
-            getPreferenceManager().setPreferenceDataStore(dataStore);
-            setPreferencesFromResource(R.xml.preferences_config_activity, rootKey);
-            Preference backupDir = findPreference("backup-dir");
-            assert backupDir != null;
-            backupDir.setOnPreferenceClickListener(preference -> {
-                DialogCreateNewFileLayoutBinding binding = DialogCreateNewFileLayoutBinding.inflate(getLayoutInflater());
-                binding.inputText.setText(getBackupPath());
-                binding.chipGroupTypes.setVisibility(View.GONE);
-                AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
-                        .setView(binding.getRoot())
-                        .setTitle(R.string.settings_backup_directory_title)
-                        .setMessage(R.string.settings_backup_directory_msg)
-                        .setNegativeButton(R.string.common_word_cancel, null)
-                        .setPositiveButton(R.string.common_word_save, null)
-                        .create();
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_general_category)));
+        content.addView(createPreferenceCard(
+                createSwitchPreference(R.drawable.ic_mtrl_block, R.string.pref_show_all_var_blocks_title, R.string.pref_show_all_var_blocks_summary, SETTING_ALWAYS_SHOW_BLOCKS),
+                createSwitchPreference(R.drawable.ic_mtrl_puzzle, R.string.pref_built_in_blocks_title, R.string.pref_built_in_blocks_summary, SETTING_SHOW_BUILT_IN_BLOCKS),
+                createSwitchPreference(R.drawable.ic_mtrl_view_module, R.string.pref_show_all_palette_blocks_title, R.string.pref_show_all_palette_blocks_summary, SETTING_SHOW_EVERY_SINGLE_BLOCK),
+                createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_block_highlighting_title, R.string.pref_block_highlighting_summary, SETTING_USE_ASD_HIGHLIGHTER),
+                createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_project_encryption_title, R.string.pref_project_encryption_summary, SETTING_PROJECT_DATA_ENCRYP)
+        ));
 
-                dialog.setOnShowListener(dialogInterface -> {
-                    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(
-                            Helper.getDialogDismissListener(dialogInterface));
-                    Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                    positiveButton.setOnClickListener(view -> {
-                        getDataStore().putString(SETTING_BACKUP_DIRECTORY, Helper.getText(binding.inputText));
-                        dialog.dismiss();
-                    });
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_explorer_project_category)));
+        content.addView(createPreferenceCard(
+                createSwitchPreference(R.drawable.ic_mtrl_tree_view, R.string.pref_enable_treeview_title, R.string.pref_enable_treeview_summary, SETTING_TREE_VIEW)
+        ));
 
-                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                    binding.inputText.requestFocus();
-                });
-                dialog.show();
-                return true;
-            });
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_backuprestore_category)));
+        TextView[] backupDirDesc = new TextView[1];
+        TextView[] backupNameDesc = new TextView[1];
+        content.addView(createPreferenceCard(
+                createActionPreference(R.drawable.ic_mtrl_folder, R.string.pref_backup_dir_title, getBackupPath(), v -> showBackupDirDialog(backupDirDesc[0]), backupDirDesc),
+                createActionPreference(R.drawable.ic_mtrl_file, R.string.pref_backup_filename_title, R.string.pref_backup_filename_summary, v -> showBackupNameDialog(), backupNameDesc)
+        ));
 
-            SwitchPreferenceCompat installWithRoot = findPreference("root-auto-install-projects");
-            assert installWithRoot != null;
-            installWithRoot.setOnPreferenceClickListener(preference -> {
-                if (installWithRoot.isChecked()) {
-                    Shell.getShell(shell -> {
-                        if (!shell.isRoot()) {
-                            Snackbar.make(snackbarView, Helper.getResString(R.string.config_error_no_root), BaseTransientBottomBar.LENGTH_SHORT).show();
-                            installWithRoot.setChecked(false);
-                        }
-                    });
-                }
-                return true;
-            });
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_versioncontrol_category)));
+        content.addView(createPreferenceCard(
+                createSwitchPreference(R.drawable.ic_mtrl_version_control, R.string.pref_new_version_control_title, R.string.pref_new_version_control_summary, SETTING_USE_NEW_VERSION_CONTROL)
+        ));
 
-            Preference backupFilename = findPreference("backup-filename");
-            assert backupFilename != null;
-            backupFilename.setOnPreferenceClickListener(preference -> {
-                DialogCreateNewFileLayoutBinding binding = DialogCreateNewFileLayoutBinding.inflate(getLayoutInflater());
-                binding.chipGroupTypes.setVisibility(View.GONE);
-                binding.inputText.setText(getBackupFileName());
-
-                AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
-                        .setView(binding.getRoot())
-                        .setTitle(R.string.settings_backup_filename_title)
-                        .setMessage(R.string.config_backup_filename_msg)
-                        .setNegativeButton(R.string.common_word_cancel, null)
-                        .setPositiveButton(R.string.common_word_save, null)
-                        .setNeutralButton(R.string.common_word_reset, (dialogInterface, which) -> {
-                            getDataStore().putString(SETTING_BACKUP_FILENAME, null);
-                            Snackbar.make(snackbarView, Helper.getResString(R.string.config_toast_reset_default), BaseTransientBottomBar.LENGTH_SHORT).show();
-                        })
-                        .create();
-
-                dialog.setOnShowListener(dialogInterface -> {
-                    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(
-                            Helper.getDialogDismissListener(dialog));
-                    Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                    positiveButton.setOnClickListener(view -> {
-                        getDataStore().putString(SETTING_BACKUP_FILENAME, Helper.getText(binding.inputText));
-                        dialog.dismiss();
-                    });
-                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                    binding.inputText.requestFocus();
-                });
-                dialog.show();
-                return true;
-            });
-        }
-
-        public DataStore getDataStore() {
-            return dataStore;
-        }
-
-        public void setSnackbarView(View snackbarView) {
-            this.snackbarView = snackbarView;
-        }
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_rootfeatures_category)));
+        content.addView(createPreferenceCard(
+                createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_root_install_title, R.string.pref_root_install_summary, SETTING_ROOT_AUTO_INSTALL_PROJECTS),
+                createSwitchPreference(R.drawable.ic_mtrl_apk_install, R.string.pref_root_launch_title, R.string.pref_root_launch_summary, SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING)
+        ));
     }
 
-    /**
-     * An in-memory caching store for settings listed in {@link ConfigActivity}.
-     * Persists to {@link #SETTINGS_FILE}.
-     *
-     * @see #persist()
-     */
+    private View createCategoryHeader(String titleText) {
+        TextView tv = new TextView(this);
+        tv.setText(titleText);
+        tv.setTextSize(14f);
+        tv.setTypeface(null, Typeface.BOLD);
+        tv.setTextColor(ThemeUtils.getColor(this, R.attr.colorPrimary));
+        int padLeft = SketchwareUtil.dpToPx(32);
+        tv.setPadding(padLeft, SketchwareUtil.dpToPx(16), padLeft, SketchwareUtil.dpToPx(8));
+        return tv;
+    }
+
+    private MaterialCardView createPreferenceCard(View... items) {
+        MaterialCardView card = new MaterialCardView(this);
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        cardParams.setMargins(SketchwareUtil.dpToPx(16), 0, SketchwareUtil.dpToPx(16), SketchwareUtil.dpToPx(8));
+        card.setLayoutParams(cardParams);
+        
+        card.setRadius(SketchwareUtil.dpToPx(16));
+        card.setCardElevation(0);
+        card.setStrokeWidth(SketchwareUtil.dpToPx(1));
+        card.setStrokeColor(ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOutlineVariant));
+        card.setCardBackgroundColor(ThemeUtils.getColor(this, com.google.android.material.R.attr.colorSurfaceContainerLow));
+        card.setClipChildren(true);
+
+        LinearLayout cardContent = new LinearLayout(this);
+        cardContent.setOrientation(LinearLayout.VERTICAL);
+        cardContent.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        for (int i = 0; i < items.length; i++) {
+            cardContent.addView(items[i]);
+            if (i < items.length - 1) {
+                View divider = new View(this);
+                LinearLayout.LayoutParams divParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SketchwareUtil.dpToPx(1));
+                divParams.setMargins(SketchwareUtil.dpToPx(56), 0, SketchwareUtil.dpToPx(16), 0);
+                divider.setLayoutParams(divParams);
+                divider.setBackgroundColor(ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOutlineVariant));
+                cardContent.addView(divider);
+            }
+        }
+        card.addView(cardContent);
+        return card;
+    }
+
+    private View createSwitchPreference(int iconRes, int titleRes, int descRes, String prefKey) {
+        return createSwitchPreference(iconRes, getString(titleRes), getString(descRes), prefKey);
+    }
+    
+    private View createActionPreference(int iconRes, int titleRes, int descRes, View.OnClickListener listener, TextView[] outDescView) {
+        return createActionPreference(iconRes, getString(titleRes), getString(descRes), listener, outDescView);
+    }
+    
+    private View createActionPreference(int iconRes, int titleRes, String desc, View.OnClickListener listener, TextView[] outDescView) {
+        return createActionPreference(iconRes, getString(titleRes), desc, listener, outDescView);
+    }
+
+    private View createSwitchPreference(int iconRes, String title, String desc, String prefKey) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setClickable(true);
+        row.setFocusable(true);
+        
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        row.setBackgroundResource(outValue.resourceId);
+        
+        int padH = SketchwareUtil.dpToPx(16);
+        int padV = SketchwareUtil.dpToPx(16);
+        row.setPadding(padH, padV, padH, padV);
+
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(iconRes);
+        icon.setColorFilter(ThemeUtils.getColor(this, R.attr.colorOnSurfaceVariant));
+        row.addView(icon, new LinearLayout.LayoutParams(SketchwareUtil.dpToPx(24), SketchwareUtil.dpToPx(24)));
+
+        LinearLayout textContainer = new LinearLayout(this);
+        textContainer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        textParams.setMargins(SketchwareUtil.dpToPx(16), 0, SketchwareUtil.dpToPx(16), 0);
+        row.addView(textContainer, textParams);
+
+        TextView tvTitle = new TextView(this);
+        tvTitle.setText(title);
+        tvTitle.setTextSize(16f);
+        tvTitle.setTextColor(ThemeUtils.getColor(this, R.attr.colorOnSurface));
+        textContainer.addView(tvTitle);
+
+        TextView tvDesc = new TextView(this);
+        tvDesc.setText(desc);
+        tvDesc.setTextSize(13f);
+        tvDesc.setTextColor(ThemeUtils.getColor(this, R.attr.colorOnSurfaceVariant));
+        tvDesc.setPadding(0, SketchwareUtil.dpToPx(2), 0, 0);
+        textContainer.addView(tvDesc);
+
+        MaterialSwitch mSwitch = new MaterialSwitch(this);
+        DataStore ds = DataStore.getInstance();
+        mSwitch.setChecked(ds.getBoolean(prefKey, (Boolean) getDefaultValue(prefKey)));
+        row.addView(mSwitch);
+
+        row.setOnClickListener(v -> mSwitch.toggle());
+
+        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (prefKey.equals(SETTING_ROOT_AUTO_INSTALL_PROJECTS) && isChecked) {
+                Shell.getShell(shell -> {
+                    if (!shell.isRoot()) {
+                        Snackbar.make(binding.getRoot(), Helper.getResString(R.string.config_error_no_root), BaseTransientBottomBar.LENGTH_SHORT).show();
+                        mSwitch.setChecked(false);
+                    } else {
+                        ds.putBoolean(prefKey, true);
+                    }
+                });
+            } else {
+                ds.putBoolean(prefKey, isChecked);
+            }
+        });
+
+        return row;
+    }
+
+    private View createActionPreference(int iconRes, String title, String desc, View.OnClickListener listener, TextView[] outDescView) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setClickable(true);
+        row.setFocusable(true);
+        
+        TypedValue outValue = new TypedValue();
+        getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        row.setBackgroundResource(outValue.resourceId);
+        
+        int padH = SketchwareUtil.dpToPx(16);
+        int padV = SketchwareUtil.dpToPx(16);
+        row.setPadding(padH, padV, padH, padV);
+        row.setOnClickListener(listener);
+
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(iconRes);
+        icon.setColorFilter(ThemeUtils.getColor(this, R.attr.colorOnSurfaceVariant));
+        row.addView(icon, new LinearLayout.LayoutParams(SketchwareUtil.dpToPx(24), SketchwareUtil.dpToPx(24)));
+
+        LinearLayout textContainer = new LinearLayout(this);
+        textContainer.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f);
+        textParams.setMargins(SketchwareUtil.dpToPx(16), 0, SketchwareUtil.dpToPx(16), 0);
+        row.addView(textContainer, textParams);
+
+        TextView tvTitle = new TextView(this);
+        tvTitle.setText(title);
+        tvTitle.setTextSize(16f);
+        tvTitle.setTextColor(ThemeUtils.getColor(this, R.attr.colorOnSurface));
+        textContainer.addView(tvTitle);
+
+        TextView tvDesc = new TextView(this);
+        tvDesc.setText(desc);
+        tvDesc.setTextSize(13f);
+        tvDesc.setTextColor(ThemeUtils.getColor(this, R.attr.colorOnSurfaceVariant));
+        tvDesc.setPadding(0, SketchwareUtil.dpToPx(2), 0, 0);
+        textContainer.addView(tvDesc);
+
+        if (outDescView != null && outDescView.length > 0) {
+            outDescView[0] = tvDesc;
+        }
+
+        return row;
+    }
+
+    private void showBackupDirDialog(TextView descView) {
+        showInputDialog(Helper.getResString(R.string.settings_backup_directory_title), "e.g. " + getDefaultValue(SETTING_BACKUP_DIRECTORY), getBackupPath(), text -> {
+            DataStore.getInstance().putString(SETTING_BACKUP_DIRECTORY, text);
+            if (descView != null) descView.setText(text);
+        });
+    }
+
+    private void showBackupNameDialog() {
+        String hint = "Variables: $projectName, $versionCode, $versionName, $pkgName, $timeInMs";
+        showInputDialog(Helper.getResString(R.string.settings_backup_filename_title), hint, getBackupFileName(), text -> {
+            DataStore.getInstance().putString(SETTING_BACKUP_FILENAME, text);
+        });
+    }
+
+    private void showInputDialog(String title, String hint, String currentVal, OnInputSaved listener) {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        int pad = SketchwareUtil.dpToPx(24);
+        layout.setPadding(pad, pad, pad, pad);
+
+        TextView tvTitle = new TextView(this);
+        tvTitle.setText(title);
+        tvTitle.setTextSize(20f);
+        tvTitle.setTypeface(null, Typeface.BOLD);
+        tvTitle.setTextColor(ThemeUtils.getColor(this, R.attr.colorOnSurface));
+        layout.addView(tvTitle);
+
+        TextView tvHint = new TextView(this);
+        tvHint.setText(hint);
+        tvHint.setTextSize(14f);
+        tvHint.setTextColor(ThemeUtils.getColor(this, R.attr.colorOnSurfaceVariant));
+        tvHint.setPadding(0, SketchwareUtil.dpToPx(8), 0, SketchwareUtil.dpToPx(16));
+        layout.addView(tvHint);
+
+        TextInputLayout til = new TextInputLayout(this);
+        til.setBoxBackgroundMode(TextInputLayout.BOX_BACKGROUND_OUTLINE);
+        til.setBoxCornerRadii(28f, 28f, 28f, 28f);
+
+        TextInputEditText et = new TextInputEditText(this);
+        et.setText(currentVal);
+        et.setTextColor(ThemeUtils.getColor(this, R.attr.colorOnSurface));
+        til.addView(et);
+        layout.addView(til, new LinearLayout.LayoutParams(-1, -2));
+
+        MaterialButton btnSave = new MaterialButton(this);
+        btnSave.setText(Helper.getResString(R.string.common_word_save));
+        btnSave.setCornerRadius(SketchwareUtil.dpToPx(24));
+        LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(-1, -2);
+        btnParams.topMargin = SketchwareUtil.dpToPx(16);
+        layout.addView(btnSave, btnParams);
+
+        btnSave.setOnClickListener(v -> {
+            listener.onSave(et.getText().toString().trim());
+            dialog.dismiss();
+        });
+
+        dialog.setContentView(layout);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        dialog.show();
+    }
+
+    interface OnInputSaved {
+        void onSave(String text);
+    }
+
     public static class DataStore extends PreferenceDataStore {
         private static DataStore INSTANCE;
         private final Map<String, Object> settings;
@@ -312,10 +501,6 @@ public class ConfigActivity extends BaseAppCompatActivity {
             return settings;
         }
 
-        /**
-         * Blocking method that writes its data to {@link #SETTINGS_FILE}. Should be called manually,
-         * since there's no automatic persist. Meaning, every write, unless they are in batches.
-         */
         public void persist() {
             FileUtil.writeFile(SETTINGS_FILE.getAbsolutePath(), getGson().toJson(settings));
         }
