@@ -381,6 +381,8 @@ public class ImageListFragment extends BaseFragment implements MenuProvider {
         } else if (id == R.id.menu_image_import) {
             openImportIconActivity();
             return true;
+        } else if (id == R.id.menu_image_web_search) {
+            openImageWebSearchActivity();
         }
         return false;
     }

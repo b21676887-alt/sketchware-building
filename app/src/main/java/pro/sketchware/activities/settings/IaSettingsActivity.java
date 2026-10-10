@@ -26,7 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.besome.sketch.lib.base.BaseAppCompatActivity;
+import pro.sketchware.activities.base.BaseAppCompatActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -47,7 +47,7 @@ import pro.sketchware.activities.chat.port.VoidPortProviderMaxTokens;
 import pro.sketchware.activities.chat.port.VoidPortSettings;
 import pro.sketchware.databinding.ActivityIaSettingsBinding;
 import pro.sketchware.databinding.ItemProviderRowBinding;
-import pro.sketchware.utility.TranslationFunction;
+
 
 public class IaSettingsActivity extends BaseAppCompatActivity {
 
