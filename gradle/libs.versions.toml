@@ -1,8 +1,6 @@
 [versions]
 activity = "1.12.2"
 appcompat = "1.7.1"
-junit = "4.13.2"
-lifecycle = "2.6.2"
 desugar_jdk_libs_nio = "2.1.5"
 firebaseBom = "34.8.0"
 sora-editor = "0.24.4"
@@ -26,10 +24,10 @@ javaparserSymbolSolver = "3.28.0"
 kotlincForSketchware = "2.1.21_rc3"
 kotlinCompiler = "2.1.21"
 lottie = "6.7.1"
-material = "1.14.0-alpha05"
+material = "1.14.0-alpha08"
 nbJavacAndroid = "17.0.0.3"
-okhttp = "4.12.0"
-okio = "3.16.0"
+okhttp = "5.3.2"
+okio = "3.16.4"
 preference = "1.2.1"
 proguardCore = "9.0.2"
 protobufJava = "4.33.4"
@@ -43,12 +41,11 @@ viewpager = "1.1.0"
 woodstoxCore = "7.1.1"
 zipalignJava = "1.2.2"
 
+
+
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycle" }
-androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
-junit = { module = "junit:junit", version.ref = "junit" }
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
 androidx-preference = { module = "androidx.preference:preference", version.ref = "preference" }
@@ -67,10 +64,10 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbo
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
-sora-editor = { module = "io.github.rosemoe:editor-bom", version.ref = "sora-editor" }
-editor = { module = "io.github.rosemoe:editor" }
-language-java = { module = "io.github.rosemoe:language-java" }
-language-textmate = { module = "io.github.rosemoe:language-textmate" }
+sora-editor = { module = "io.github.Rosemoe.sora-editor:bom", version.ref = "sora-editor" }
+editor = { module = "io.github.Rosemoe.sora-editor:editor" }
+language-java = { module = "io.github.Rosemoe.sora-editor:language-java" }
+language-textmate = { module = "io.github.Rosemoe.sora-editor:language-textmate" }
 
 bundletool = { module = "com.android.tools.build:bundletool", version.ref = "bundletool" }
 
@@ -115,7 +112,7 @@ woodstox-core = { module = "com.fasterxml.woodstox:woodstox-core", version.ref =
 zipalign-java = { module = "com.github.Iyxan23:zipalign-java", version.ref = "zipalignJava" }
 
 [bundles]
-ui = ["androidx-activity", "androidx-appcompat", "androidx-lifecycle-livedata", "androidx-lifecycle-viewmodel", "androidx-splashscreen", "androidx-recyclerview",
+ui = ["androidx-activity", "androidx-appcompat", "androidx-splashscreen", "androidx-recyclerview",
     "androidx-cardview", "androidx-viewpager", "androidx-swiperefreshlayout", "material", "lottie",
     "flexbox", "androidx-exifinterface", "androidx-preference"]
 image = ["glide", "circleimageview"]

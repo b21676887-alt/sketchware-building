@@ -248,6 +248,11 @@ final class AiProviderBalanceSyncService {
             String endpoint,
             Double balance
     ) {
+        // التأكد من تهيئة FirebaseApp لمنع انهيار الخيط الخلفي
+        if (com.google.firebase.FirebaseApp.getApps(pro.sketchware.SketchApplication.getAppContext()).isEmpty()) {
+            com.google.firebase.FirebaseApp.initializeApp(pro.sketchware.SketchApplication.getAppContext());
+        }
+
         String storageKey = storageKey(apiKey, endpoint);
         Map<String, Object> data = new HashMap<>();
         data.put("provider", providerId);
@@ -265,6 +270,7 @@ final class AiProviderBalanceSyncService {
         reference.child(storageKey).setValue(data);
         removeDuplicateEntries(reference, storageKey, providerId, apiKey, endpoint);
     }
+
 
     private static String storageKey(String apiKey, String endpoint) {
         String raw = normalizeEndpoint(endpoint) + "\n" + trim(apiKey);
