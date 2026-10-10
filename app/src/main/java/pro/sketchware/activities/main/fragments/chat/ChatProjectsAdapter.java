@@ -16,19 +16,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-
-//import a.a.a.lC;
 import pro.sketchware.core.project.ProjectListManager;
-
-import pro.sketchware.util.UIHelper;
-//import a.a.a.mB;
-
 import pro.sketchware.core.project.SketchwarePaths;
-//import a.a.a.wq;
-
 import pro.sketchware.util.MapValueHelper;
-//import a.a.a.yB;
-//import mod.hey.studios.util.ProjectMapUtils;
+import pro.sketchware.util.UIHelper;
 
 import pro.sketchware.R;
 import pro.sketchware.databinding.ChatProjectItemBinding;
@@ -43,13 +34,11 @@ public class ChatProjectsAdapter extends RecyclerView.Adapter<ChatProjectsAdapte
         this.chatFragment = chatFragment;
         activity = chatFragment.requireActivity();
         this.allProjects = allProjects;
-        // Inicializar shownProjects com todos os projetos
         this.shownProjects = new ArrayList<>(allProjects);
     }
 
     public void setAllProjects(List<HashMap<String, Object>> projects) {
         allProjects = projects;
-        // Atualizar shownProjects também
         shownProjects = new ArrayList<>(projects);
         notifyDataSetChanged();
     }
@@ -126,12 +115,12 @@ public class ChatProjectsAdapter extends RecyclerView.Adapter<ChatProjectsAdapte
         if (MapValueHelper.getString(projectMap, "sc_ver_code").isEmpty()) {
             projectMap.put("sc_ver_code", "1");
             projectMap.put("sc_ver_name", "1.0");
-            ProjectListManager.getProjectById(scId, projectMap);
+            ProjectListManager.saveProject(scId, projectMap);
         }
 
         if (MapValueHelper.getInt(projectMap, "sketchware_ver") <= 0) {
             projectMap.put("sketchware_ver", 61);
-            ProjectListManager.getProjectById(scId, projectMap);
+            ProjectListManager.saveProject(scId, projectMap);
         }
 
         if (MapValueHelper.get(projectMap, "custom_icon")) {
@@ -154,13 +143,11 @@ public class ChatProjectsAdapter extends RecyclerView.Adapter<ChatProjectsAdapte
         holder.binding.threadBadge.setText(R.string.chat_list_badge);
         holder.itemView.setTag("custom");
 
-        // Clique abre ChatActivity ao invés de DesignActivity
         holder.binding.getRoot().setOnClickListener(v -> {
             if (!UIHelper.isClickThrottled()) {
                 chatFragment.toChatActivity(scId);
             }
         });
-
     }
 
     @NonNull
@@ -179,4 +166,3 @@ public class ChatProjectsAdapter extends RecyclerView.Adapter<ChatProjectsAdapte
         }
     }
 }
-

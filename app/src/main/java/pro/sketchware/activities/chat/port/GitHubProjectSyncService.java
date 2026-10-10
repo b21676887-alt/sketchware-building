@@ -144,9 +144,6 @@ public final class GitHubProjectSyncService {
         if (projectRoot == null || !projectRoot.isDirectory()) {
             throw new IllegalArgumentException(text(R.string.github_sync_project_folder_missing));
         }
-        if (!ProjectPathResolver.isAndroidStudioProject(scId)) {
-            throw new IllegalArgumentException(text(R.string.github_sync_android_studio_only));
-        }
         if (binding == null || !binding.isValid()) {
             throw new IllegalArgumentException(text(R.string.github_sync_project_not_bound));
         }

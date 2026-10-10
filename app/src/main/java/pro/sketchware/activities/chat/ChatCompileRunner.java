@@ -71,7 +71,7 @@ final class ChatCompileRunner implements BuildProgressReceiver {
 
             workspace.createBuildDirectories(context);
             workspace.deleteValuesV21Directory();
-            workspace.copyAppIcon(SketchwarePaths.getIconsPath("600"));
+            workspace.copyAppIcon(SketchwarePaths.getIconsPath());
             if (MapValueHelper.get(ProjectListManager.getProjectById(scId), "custom_icon")) {
                 workspace.copyMipmapFolder(SketchwarePaths.getIconsPath() + File.separator + scId + File.separator + "mipmaps");
                 if (MapValueHelper.get(ProjectListManager.getProjectById(scId), "isIconAdaptive", false)) {
