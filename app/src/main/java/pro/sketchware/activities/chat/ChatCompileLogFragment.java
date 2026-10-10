@@ -13,8 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import mod.hey.studios.util.CompileLogHelper;
-import mod.jbk.diagnostic.CompileErrorSaver;
+import pro.sketchware.util.CompileLogHelper;
+import pro.sketchware.core.build.CompileErrorSaver;
 import pro.sketchware.R;
 
 public class ChatCompileLogFragment extends Fragment {
