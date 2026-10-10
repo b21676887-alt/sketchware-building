@@ -299,7 +299,7 @@ public class MainActivity extends BasePermissionAppCompatActivity {
             if (id == R.id.item_projects) {
                 navigateToProjectsFragment();
                 return true;
-            } else if (id == R.id.item_sketchub || id == R.id.item_store) {
+            } else if (id == R.id.item_store || id == R.id.item_store) {
                 navigateToSketchubFragment();
                 return true;
             } else if (id == R.id.item_web_service) {
@@ -338,7 +338,7 @@ public class MainActivity extends BasePermissionAppCompatActivity {
     private Fragment getFragmentForNavId(int navItemId) {
         if (navItemId == R.id.item_projects) {
             return projectsFragment;
-        } else if (navItemId == R.id.item_sketchub || navItemId == R.id.item_store) {
+        } else if (navItemId == R.id.item_store || navItemId == R.id.item_store) {
             return projectsStoreFragment;
         } else if (navItemId == R.id.item_web_service) {
             return webServiceFragment;
@@ -395,7 +395,7 @@ public class MainActivity extends BasePermissionAppCompatActivity {
         transaction.commit();
 
         activeFragment = projectsStoreFragment;
-        currentNavItemId = R.id.item_sketchub;
+        currentNavItemId = R.id.item_store;
     }
 
     private void navigateToWebServiceFragment() {

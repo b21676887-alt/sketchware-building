@@ -81,10 +81,6 @@ public class IaSettingsActivity extends BaseAppCompatActivity {
         reloadProviders();
     }
 
-    @Override
-    public android.content.res.Resources getResources() {
-        return TranslationFunction.wrapResources(this, super.getResources());
-    }
 
     private void setupToolbar() {
         binding.topAppBar.setTitle(R.string.ia_settings_title);

@@ -154,10 +154,6 @@ public class ChatActivity extends AppCompatActivity {
     private Uri pendingCameraImageUri;
     private File pendingCameraImageFile;
 
-    @Override
-    public Resources getResources() {
-        return TranslationFunction.wrapResources(this, super.getResources());
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
