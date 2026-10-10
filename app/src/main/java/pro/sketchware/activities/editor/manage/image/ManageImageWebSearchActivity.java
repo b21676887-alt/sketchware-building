@@ -83,10 +83,6 @@ public class ManageImageWebSearchActivity extends AppCompatActivity {
     private View emptyView;
     private String pinterestAppVersion;
 
-    @Override
-    public Resources getResources() {
-        return TranslationFunction.wrapResources(this, super.getResources());
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

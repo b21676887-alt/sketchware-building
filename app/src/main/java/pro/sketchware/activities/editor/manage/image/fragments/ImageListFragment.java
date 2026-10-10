@@ -32,6 +32,7 @@ import pro.sketchware.beans.ProjectResourceBean;
 import pro.sketchware.activities.base.BaseFragment;
 import pro.sketchware.activities.editor.manage.image.AddImageActivity;
 import pro.sketchware.activities.editor.manage.image.ManageImageActivity;
+import com.besome.sketch.editor.manage.image.ManageImageWebSearchActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
@@ -96,6 +97,25 @@ public class ImageListFragment extends BaseFragment implements MenuProvider {
 
             addImage(icon);
             SketchToast.toast(requireActivity(), Helper.getResString(R.string.design_manager_message_add_complete), SketchToast.TOAST_NORMAL).show();
+        }
+    });
+    private final ActivityResultLauncher<Intent> openImageWebSearchActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            var data = result.getData();
+            if (data == null || !isAdded() || binding == null) return;
+            ArrayList<ProjectResourceBean> addedImages;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                addedImages = data.getParcelableArrayListExtra("images", ProjectResourceBean.class);
+            } else {
+                addedImages = data.getParcelableArrayListExtra("images");
+            }
+            if (addedImages != null && !addedImages.isEmpty()) {
+                images.addAll(addedImages);
+                adapter.notifyItemRangeInserted(images.size() - addedImages.size(), addedImages.size());
+                updateGuideVisibility();
+                ((ManageImageActivity) requireActivity()).getCollectionFragment().refreshData();
+                SketchToast.toast(requireActivity(), Helper.getResString(R.string.design_manager_message_add_complete), SketchToast.TOAST_NORMAL).show();
+            }
         }
     });
     private final ActivityResultLauncher<Intent> showAddImageDialog = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -297,6 +317,12 @@ public class ImageListFragment extends BaseFragment implements MenuProvider {
         openImportIconActivity.launch(intent);
     }
 
+    private void openImageWebSearchActivity() {
+        Intent intent = new Intent(requireActivity(), ManageImageWebSearchActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        openImageWebSearchActivity.launch(intent);
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -383,6 +409,7 @@ public class ImageListFragment extends BaseFragment implements MenuProvider {
             return true;
         } else if (id == R.id.menu_image_web_search) {
             openImageWebSearchActivity();
+            return true;
         }
         return false;
     }

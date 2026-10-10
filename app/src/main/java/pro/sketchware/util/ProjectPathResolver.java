@@ -39,7 +39,7 @@ public final class ProjectPathResolver {
     }
 
     public static File getSketchwareRoot() {
-        return new File(SketchwarePaths.getSketchwareRoot());
+        return new File(SketchwarePaths.getSketchwareRootPath());
     }
 
     public static File getDefaultWorkingRoot(String scId) {
