@@ -83,7 +83,7 @@ public class SketchwareFileEncryptor {
     }
 
     private static boolean shouldEncrypt(File file, String relativePath) {
-        if (relativePath != null && relativePath.startsWith(a.a.a.wq.ANDROID_STUDIO_PROJECTS + "/")) {
+        if (relativePath != null) {
             return false;
         }
 
