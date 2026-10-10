@@ -16,15 +16,15 @@ import pro.sketchware.core.project.SketchwarePaths;
 import pro.sketchware.core.build.ProjectFilePaths;
 import pro.sketchware.core.exception.SimpleException;
 
-import mod.hey.studios.compiler.kotlin.KotlinCompilerBridge;
-import mod.hey.studios.project.proguard.ProguardHandler;
-import mod.hey.studios.project.stringfog.StringfogHandler;
-import mod.hey.studios.util.ProjectMapUtils;
-import mod.jbk.build.BuildProgressReceiver;
-import mod.jbk.build.BuiltInLibraries;
-import mod.jbk.diagnostic.CompileErrorSaver;
-import mod.jbk.diagnostic.MissingFileException;
-import pro.sketchware.utility.FileUtil;
+import pro.sketchware.core.build.compiler.KotlinCompilerBridge;
+import pro.sketchware.core.project.ProguardHandler;
+import pro.sketchware.core.project.StringfogHandler;
+import pro.sketchware.util.MapValueHelper;
+import pro.sketchware.core.build.BuildProgressReceiver;
+import pro.sketchware.util.library.BuiltInLibraries;
+import pro.sketchware.core.build.CompileErrorSaver;
+import pro.sketchware.core.exception.MissingFileException;
+import pro.sketchware.util.FileUtil;
 
 final class ChatCompileRunner implements BuildProgressReceiver {
     interface Listener {
