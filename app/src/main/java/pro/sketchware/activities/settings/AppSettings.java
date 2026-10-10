@@ -44,6 +44,8 @@ import pro.sketchware.activities.editor.LogReaderActivity;
 import pro.sketchware.R;
 import pro.sketchware.activities.editor.component.ManageCustomComponentActivity;
 import pro.sketchware.activities.settings.SettingsActivity;
+import pro.sketchware.activities.settings.GithubSettingsActivity;
+import pro.sketchware.activities.settings.IaSettingsActivity;
 import pro.sketchware.core.async.BackgroundTasks;
 import pro.sketchware.core.project.SketchwarePaths;
 import pro.sketchware.core.async.TaskHost;
@@ -88,6 +90,8 @@ public class AppSettings extends BaseAppCompatActivity {
 
         generalCategory.addLibraryItem(createPreference(R.drawable.ic_mtrl_settings_applications, Helper.getResString(R.string.app_settings_app_settings), Helper.getResString(R.string.app_settings_app_settings_desc), new ActivityLauncher(new Intent(getApplicationContext(), ConfigActivity.class))), true);
         generalCategory.addLibraryItem(createPreference(R.drawable.ic_mtrl_palette, Helper.getResString(R.string.settings_appearance), Helper.getResString(R.string.settings_appearance_description), openSettingsActivity(SettingsActivity.SETTINGS_APPEARANCE_FRAGMENT)), true);
+        generalCategory.addLibraryItem(createPreference(R.drawable.ic_mtrl_settings, Helper.getResString(R.string.ia_settings_title), Helper.getResString(R.string.ia_settings_subtitle), new ActivityLauncher(new Intent(getApplicationContext(), IaSettingsActivity.class))), true);
+        generalCategory.addLibraryItem(createPreference(R.drawable.ic_github, Helper.getResString(R.string.title_github_settings), Helper.getResString(R.string.subtitle_github_settings), new ActivityLauncher(new Intent(getApplicationContext(), GithubSettingsActivity.class))), true);
         generalCategory.addLibraryItem(createPreference(R.drawable.ic_mtrl_folder, Helper.getResString(R.string.app_settings_open_working_dir), Helper.getResString(R.string.app_settings_open_working_dir_desc), v -> openWorkingDirectory()), true);
         generalCategory.addLibraryItem(createPreference(R.drawable.ic_mtrl_apk_document, Helper.getResString(R.string.app_settings_sign_apk), Helper.getResString(R.string.app_settings_sign_apk_desc), v -> signApkFileDialog()), true);
         generalCategory.addLibraryItem(createPreference(R.drawable.ic_mtrl_language, Helper.getResString(R.string.language_settings_title), Helper.getResString(R.string.language_settings_desc), openSettingsActivity(SettingsActivity.LANGUAGE_SETTINGS_FRAGMENT)), true);

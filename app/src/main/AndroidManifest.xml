@@ -93,6 +93,11 @@
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.SketchwarePro.SmallToolbar" />
         <activity
+            android:name="pro.sketchware.activities.chat.ChatActivity"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.SketchwarePro" />
+        <activity
             android:name="pro.sketchware.activities.main.activities.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
@@ -132,6 +137,9 @@
             android:configChanges="orientation|screenSize" />
         <activity
             android:name="pro.sketchware.activities.editor.manage.image.ManageImageImportActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name="com.besome.sketch.editor.manage.image.ManageImageWebSearchActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name="pro.sketchware.activities.editor.manage.font.ManageFontActivity"
@@ -297,6 +305,9 @@
             android:theme="@style/Theme.SketchwarePro.ProjectPreview" />
 
         <activity android:name="pro.sketchware.activities.settings.SettingsActivity" />
+        <activity android:name="pro.sketchware.activities.settings.IaSettingsActivity" />
+        <activity android:name="pro.sketchware.activities.settings.ProviderDetailActivity" />
+        <activity android:name="pro.sketchware.activities.settings.GithubSettingsActivity" />
 
         <activity android:name="pro.sketchware.activities.resourceseditor.ResourcesEditorActivity" />
 

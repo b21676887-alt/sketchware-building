@@ -54,6 +54,8 @@ import pro.sketchware.R;
 import pro.sketchware.activities.about.AboutActivity;
 import pro.sketchware.activities.main.fragments.projects.ProjectsFragment;
 import pro.sketchware.activities.main.fragments.projects_store.ProjectsStoreFragment;
+import pro.sketchware.activities.main.fragments.web_service.WebServiceFragment;
+import pro.sketchware.activities.main.fragments.chat.ChatFragment;
 import pro.sketchware.databinding.MainBinding;
 import pro.sketchware.lib.base.BottomSheetDialogView;
 import pro.sketchware.util.DataResetter;
@@ -65,6 +67,8 @@ public class MainActivity extends BasePermissionAppCompatActivity {
     private ActivityResultLauncher<Intent> programInfoLauncher;
     private static final String PROJECTS_FRAGMENT_TAG = "projects_fragment";
     private static final String PROJECTS_STORE_FRAGMENT_TAG = "projects_store_fragment";
+    private static final String WEB_SERVICE_FRAGMENT_TAG = "web_service_fragment";
+    private static final String CHAT_FRAGMENT_TAG = "chat_fragment";
     private ActionBarDrawerToggle drawerToggle;
     private SharedPrefsHelper sharedPrefs;
     private Snackbar storageAccessDenied;
@@ -78,6 +82,8 @@ public class MainActivity extends BasePermissionAppCompatActivity {
     };
     private ProjectsFragment projectsFragment;
     private ProjectsStoreFragment projectsStoreFragment;
+    private WebServiceFragment webServiceFragment;
+    private ChatFragment chatFragment;
     private Fragment activeFragment;
     @IdRes
     private int currentNavItemId = R.id.item_projects;
@@ -293,8 +299,14 @@ public class MainActivity extends BasePermissionAppCompatActivity {
             if (id == R.id.item_projects) {
                 navigateToProjectsFragment();
                 return true;
-            } else if (id == R.id.item_sketchub) {
+            } else if (id == R.id.item_sketchub || id == R.id.item_store) {
                 navigateToSketchubFragment();
+                return true;
+            } else if (id == R.id.item_web_service) {
+                navigateToWebServiceFragment();
+                return true;
+            } else if (id == R.id.item_chat) {
+                navigateToChatFragment();
                 return true;
             }
             return false;
@@ -303,12 +315,18 @@ public class MainActivity extends BasePermissionAppCompatActivity {
         if (savedInstanceState != null) {
             projectsFragment = (ProjectsFragment) getSupportFragmentManager().findFragmentByTag(PROJECTS_FRAGMENT_TAG);
             projectsStoreFragment = (ProjectsStoreFragment) getSupportFragmentManager().findFragmentByTag(PROJECTS_STORE_FRAGMENT_TAG);
+            webServiceFragment = (WebServiceFragment) getSupportFragmentManager().findFragmentByTag(WEB_SERVICE_FRAGMENT_TAG);
+            chatFragment = (ChatFragment) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT_TAG);
             currentNavItemId = savedInstanceState.getInt("selected_tab_id");
             Fragment current = getFragmentForNavId(currentNavItemId);
             if (current instanceof ProjectsFragment) {
                 navigateToProjectsFragment();
             } else if (current instanceof ProjectsStoreFragment) {
                 navigateToSketchubFragment();
+            } else if (current instanceof WebServiceFragment) {
+                navigateToWebServiceFragment();
+            } else if (current instanceof ChatFragment) {
+                navigateToChatFragment();
             }
 
             return;
@@ -320,8 +338,12 @@ public class MainActivity extends BasePermissionAppCompatActivity {
     private Fragment getFragmentForNavId(int navItemId) {
         if (navItemId == R.id.item_projects) {
             return projectsFragment;
-        } else if (navItemId == R.id.item_sketchub) {
+        } else if (navItemId == R.id.item_sketchub || navItemId == R.id.item_store) {
             return projectsStoreFragment;
+        } else if (navItemId == R.id.item_web_service) {
+            return webServiceFragment;
+        } else if (navItemId == R.id.item_chat) {
+            return chatFragment;
         }
         throw new IllegalArgumentException();
     }
@@ -374,6 +396,50 @@ public class MainActivity extends BasePermissionAppCompatActivity {
 
         activeFragment = projectsStoreFragment;
         currentNavItemId = R.id.item_sketchub;
+    }
+
+    private void navigateToWebServiceFragment() {
+        if (webServiceFragment == null) {
+            webServiceFragment = new WebServiceFragment();
+        }
+
+        boolean shouldShow = true;
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+
+        binding.createNewProject.hide();
+        if (activeFragment != null) transaction.hide(activeFragment);
+        if (fm.findFragmentByTag(WEB_SERVICE_FRAGMENT_TAG) == null) {
+            shouldShow = false;
+            transaction.add(binding.container.getId(), webServiceFragment, WEB_SERVICE_FRAGMENT_TAG);
+        }
+        if (shouldShow) transaction.show(webServiceFragment);
+        transaction.commit();
+
+        activeFragment = webServiceFragment;
+        currentNavItemId = R.id.item_web_service;
+    }
+
+    private void navigateToChatFragment() {
+        if (chatFragment == null) {
+            chatFragment = new ChatFragment();
+        }
+
+        boolean shouldShow = true;
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+
+        binding.createNewProject.hide();
+        if (activeFragment != null) transaction.hide(activeFragment);
+        if (fm.findFragmentByTag(CHAT_FRAGMENT_TAG) == null) {
+            shouldShow = false;
+            transaction.add(binding.container.getId(), chatFragment, CHAT_FRAGMENT_TAG);
+        }
+        if (shouldShow) transaction.show(chatFragment);
+        transaction.commit();
+
+        activeFragment = chatFragment;
+        currentNavItemId = R.id.item_chat;
     }
 
     @NonNull
