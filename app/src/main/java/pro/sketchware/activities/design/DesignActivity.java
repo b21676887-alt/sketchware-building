@@ -110,7 +110,7 @@ import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.apk.ApkSignatures;
 import pro.sketchware.beans.HistoryViewBean;
-import pro.sketchware.managers.inject.InjectRootLayoutManager;
+import pro.sketchware.tools.InjectRootLayoutManager;
 import pro.sketchware.tools.ViewBeanParser;
 import mod.sketchlibx.search.GlobalSearchDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
