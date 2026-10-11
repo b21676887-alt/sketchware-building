@@ -6,7 +6,6 @@
         android:icon="@drawable/ic_mtrl_search"
         android:orderInCategory="100"
         android:title="@string/logic_search_events"
-        android:visible="false"
         app:showAsAction="always" />
 
     <item

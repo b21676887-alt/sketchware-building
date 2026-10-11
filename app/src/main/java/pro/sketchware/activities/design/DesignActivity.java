@@ -109,6 +109,12 @@ import pro.sketchware.dialogs.BuildSettingsBottomSheet;
 import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.apk.ApkSignatures;
+import pro.sketchware.beans.HistoryViewBean;
+import pro.sketchware.managers.inject.InjectRootLayoutManager;
+import pro.sketchware.tools.ViewBeanParser;
+import mod.sketchlibx.search.GlobalSearchDialog;
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class DesignActivity extends BaseAppCompatActivity implements View.OnClickListener {
     private String sc_id;
@@ -132,6 +138,7 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
     private TextView fileName;
     private String currentJavaFileName;
     private ViewEditorFragment viewTabAdapter;
+    private StringsTabFragment stringsTabAdapter;
     private final ActivityResultLauncher<Intent> openCollectionManager = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == RESULT_OK) {
             if (viewTabAdapter != null) {
@@ -558,6 +565,14 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
             }
             return true;
         });
+        bottomMenu.add(Menu.NONE, 9, Menu.NONE, Helper.getResString(R.string.design_menu_reset_layout)).setOnMenuItemClickListener(item -> {
+            resetRootLayout();
+            return true;
+        });
+        bottomMenu.add(Menu.NONE, 10, Menu.NONE, Helper.getResString(R.string.design_menu_transcribe_to_Material)).setOnMenuItemClickListener(item -> {
+            transcribeToMaterial3();
+            return true;
+        });
         bottomPopupMenu.setOnDismissListener(menu -> btnOptions.setChecked(false));
 
         xmlLayoutOrientation = findViewById(R.id.img_orientation);
@@ -591,12 +606,16 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                 if (position == 0) {
                     bottomMenu.findItem(7).setVisible(true);
                     bottomMenu.findItem(8).setVisible(true);
+                    bottomMenu.findItem(9).setVisible(true);
+                    bottomMenu.findItem(10).setVisible(true);
                     if (viewTabAdapter != null) {
                         viewTabAdapter.showHidePropertyView(true);
                     }
                 } else if (position == 1) {
                     bottomMenu.findItem(7).setVisible(false);
                     bottomMenu.findItem(8).setVisible(false);
+                    bottomMenu.findItem(9).setVisible(false);
+                    bottomMenu.findItem(10).setVisible(false);
                     if (viewTabAdapter != null) {
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_code);
                         viewTabAdapter.showHidePropertyView(false);
@@ -604,15 +623,29 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                             eventTabAdapter.refreshEvents();
                         }
                     }
-                } else {
+                } else if (position == 2) {
                     bottomMenu.findItem(7).setVisible(false);
                     bottomMenu.findItem(8).setVisible(false);
+                    bottomMenu.findItem(9).setVisible(false);
+                    bottomMenu.findItem(10).setVisible(false);
                     if (viewTabAdapter != null) {
                         xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_code);
                         viewTabAdapter.showHidePropertyView(false);
                         if (componentTabAdapter != null) {
                             componentTabAdapter.refreshData();
                         }
+                    }
+                } else if (position == 3) {
+                    bottomMenu.findItem(7).setVisible(false);
+                    bottomMenu.findItem(8).setVisible(false);
+                    bottomMenu.findItem(9).setVisible(false);
+                    bottomMenu.findItem(10).setVisible(false);
+                    if (viewTabAdapter != null) {
+                        xmlLayoutOrientation.setImageResource(R.drawable.ic_mtrl_code);
+                        viewTabAdapter.showHidePropertyView(false);
+                    }
+                    if (stringsTabAdapter != null) {
+                        stringsTabAdapter.refreshList();
                     }
                 }
                 currentTabNumber = position;
@@ -665,7 +698,7 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
         getMenuInflater().inflate(R.menu.design_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.design_option_menu_search);
         if (searchItem != null) {
-            searchItem.setVisible(currentTabNumber == 1);
+            searchItem.setVisible(currentTabNumber == 1 || currentTabNumber == 0 || currentTabNumber == 3);
         }
         return true;
     }
@@ -680,14 +713,510 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
         } else if (itemId == R.id.design_option_menu_title_save_project) {
             saveProject();
         } else if (itemId == R.id.design_option_menu_search) {
-            if (eventTabAdapter != null) {
-                eventTabAdapter.toggleSearchBar();
-            }
+            handleSearchIconClick();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+    
+    
+    // ==========================================
+    // الخدمات المضافة: 1. الذكاء الاصطناعي وتوليد التخطيطات
+    // ==========================================
+    public void launchAiGenerateLayout() {
+        try {
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_ai_layout_generation, null);
+            TextInputEditText promptInput = dialogView.findViewById(R.id.input_text);
+            TextInputLayout promptContainer = dialogView.findViewById(R.id.input_layout_container);
+            TextInputEditText referenceNotesInput = dialogView.findViewById(R.id.reference_image_notes);
+            aiLayoutReferenceImageLabel = dialogView.findViewById(R.id.reference_image_label);
+            aiLayoutReferenceImagePreviewList = dialogView.findViewById(R.id.reference_image_preview_list);
+            MaterialButton selectReferenceImageButton = dialogView.findViewById(R.id.button_select_reference_image);
+            aiLayoutReferenceImageUris.clear();
+            updateAiLayoutReferenceImagePreview();
+            if (selectReferenceImageButton != null) {
+                selectReferenceImageButton.setOnClickListener(v -> selectAiLayoutReferenceImages.launch("image/*"));
+            }
+
+            var dialog = new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.ai_layout_generator_title)
+                    .setView(dialogView)
+                    .setPositiveButton(R.string.common_word_generate, null)
+                    .setNegativeButton(R.string.common_word_cancel, null)
+                    .create();
+
+            dialog.setOnShowListener(unused -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String prompt = promptInput != null && promptInput.getText() != null
+                        ? promptInput.getText().toString().trim()
+                        : "";
+
+                if (prompt.isEmpty()) {
+                    if (promptContainer != null) {
+                        promptContainer.setError(getString(R.string.ai_layout_generator_empty_prompt));
+                    }
+                    if (promptInput != null) {
+                        promptInput.requestFocus();
+                    }
+                    return;
+                }
+
+                if (promptContainer != null) {
+                    promptContainer.setError(null);
+                }
+
+                dialog.dismiss();
+                showAiLayoutLoadingDialog(
+                        R.string.ai_layout_generator_loading_title,
+                        getString(R.string.ai_layout_generator_loading_subtitle)
+                );
+                String referenceNotes = referenceNotesInput != null && referenceNotesInput.getText() != null
+                        ? referenceNotesInput.getText().toString().trim()
+                        : "";
+                generateAndApplyLayoutAsync(prompt, isIncludeCurrentLayoutEnabled(dialogView), referenceNotes, new ArrayList<>(aiLayoutReferenceImageUris));
+            }));
+
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAiLayoutErrorDialog(getString(R.string.ai_layout_generator_error_generate, getAiLayoutErrorDetail(e)));
+        }
+    }
+
+    private boolean isIncludeCurrentLayoutEnabled(View dialogView) {
+        View checkboxView = dialogView.findViewById(R.id.checkbox_include_current);
+        return checkboxView instanceof CheckBox checkBox && checkBox.isChecked();
+    }
+
+    private void showAiLayoutLoadingDialog(int titleResId, String subtitle) {
+        dismissAiLayoutLoadingDialog();
+
+        View loadingView = getLayoutInflater().inflate(R.layout.dialog_ai_layout_loading, null);
+        aiLayoutLoadingTitle = loadingView.findViewById(R.id.text_loading_title);
+        aiLayoutLoadingSubtitle = loadingView.findViewById(R.id.text_loading_subtitle);
+        if (aiLayoutLoadingTitle != null) {
+            aiLayoutLoadingTitle.setText(titleResId);
+        }
+        if (aiLayoutLoadingSubtitle != null) {
+            aiLayoutLoadingSubtitle.setText(subtitle);
+        }
+
+        aiLayoutLoadingDialog = new MaterialAlertDialogBuilder(this)
+                .setView(loadingView)
+                .setCancelable(false)
+                .create();
+
+        if (!isFinishing() && !isDestroyed()) {
+            aiLayoutLoadingDialog.show();
+        }
+    }
+
+    private void updateAiLayoutLoadingDialog(String subtitle) {
+        runOnUiThread(() -> {
+            if (aiLayoutLoadingSubtitle != null) {
+                aiLayoutLoadingSubtitle.setText(subtitle);
+            }
+        });
+    }
+
+    private void dismissAiLayoutLoadingDialog() {
+        runOnUiThread(() -> {
+            try {
+                if (aiLayoutLoadingDialog != null && aiLayoutLoadingDialog.isShowing()) {
+                    aiLayoutLoadingDialog.dismiss();
+                }
+            } catch (Exception ignored) {
+            } finally {
+                aiLayoutLoadingDialog = null;
+                aiLayoutLoadingTitle = null;
+                aiLayoutLoadingSubtitle = null;
+            }
+        });
+    }
+
+    public void transcribeToMaterial3() {
+        showAiLayoutLoadingDialog(
+                R.string.ai_layout_generator_m3_loading_title,
+                getString(R.string.ai_layout_generator_m3_loading_subtitle)
+        );
+        generateAndApplyLayoutAsync("Refactor this layout into a modern Material 3 design. " +
+                "CRITICAL: You must preserve the original hierarchy and architecture of the user's layout. " +
+                "DO NOT add Toolbars, ActionBars, or any outer components. " +
+                "Only swap individual widgets for their modern Material 3 equivalents while maintaining all properties.", true, "", new ArrayList<>());
+    }
+
+    private void resetRootLayout() {
+        ProjectFileBean activeFile = editorViewModel.getActiveProjectFile();
+        if (activeFile == null) return;
+        String xmlName = activeFile.getXmlName();
+        try {
+            var rootLayoutManager = new InjectRootLayoutManager(sc_id);
+            rootLayoutManager.set(xmlName, InjectRootLayoutManager.getDefaultRootLayout());
+            
+            if (viewTabAdapter != null) {
+                viewTabAdapter.refreshAllViews();
+                refreshViewTabAdapter();
+            }
+            SketchwareUtil.toast("Root layout reset to default");
+        } catch (Exception e) {
+            SketchwareUtil.toastError("Failed to reset root: " + e.getMessage());
+        }
+    }
+
+    private void refreshViewTabAdapter() {
+        ProjectFileBean activeFile = editorViewModel.getActiveProjectFile();
+        if (viewTabAdapter != null && activeFile != null) {
+            viewTabAdapter.initialize(activeFile);
+        }
+    }
+
+    private void generateAndApplyLayoutAsync(String prompt, boolean includeCurrentLayout, String referenceNotes, List<Uri> referenceImageUris) {
+        ProjectFileBean activeFile = editorViewModel.getActiveProjectFile();
+        if (activeFile == null) {
+            dismissAiLayoutLoadingDialog();
+            showAiLayoutErrorDialog(getString(R.string.ai_layout_generator_error_no_file));
+            return;
+        }
+        List<Uri> referenceImageUrisSnapshot = referenceImageUris == null ? new ArrayList<>() : new ArrayList<>(referenceImageUris);
+        new Thread(() -> {
+            try {
+                String currentLayoutXml = null;
+                String xmlName = activeFile.getXmlName();
+                
+                pro.sketchware.ia.LayoutHistoryManager historyManager = new pro.sketchware.ia.LayoutHistoryManager(getApplicationContext());
+                List<pro.sketchware.ia.LayoutHistoryManager.HistoryEntry> history = historyManager.getHistory(sc_id, xmlName);
+                
+                if (includeCurrentLayout) {
+                    updateAiLayoutLoadingDialog(getString(R.string.ai_layout_generator_reading_context));
+                    try {
+                        var xmlGenerator = new LayoutGenerator(projectFilePaths.buildConfig, activeFile);
+                        var projectDataManager = ProjectDataManager.getProjectDataManager(sc_id);
+                        xmlGenerator.setViews(ProjectDataStore.getSortedRootViews(projectDataManager.getViews(xmlName)), projectDataManager.getFabView(xmlName));
+                        currentLayoutXml = xmlGenerator.toXmlString();
+                    } catch (Exception e) {
+                        Log.e("DesignActivity", "Erro ao obter layout atual", e);
+                    }
+                }
+                
+                String referenceContext = buildReferenceContext(referenceNotes, referenceImageUrisSnapshot);
+                List<String> availableDrawables = getAvailableProjectDrawables();
+                List<String> referenceImageDataUrls = buildReferenceImageDataUrls(referenceImageUrisSnapshot);
+
+                updateAiLayoutLoadingDialog(getString(R.string.ai_layout_generator_loading_subtitle));
+                pro.sketchware.ia.GeradorDeLayout gerador = new pro.sketchware.ia.GeradorDeLayout(
+                        prompt, currentLayoutXml, history, referenceContext,
+                        availableDrawables, referenceImageDataUrls);
+                final String cleanXml = gerador.gerarLayout();
+                ParsedGeneratedLayout generatedLayout = prepareGeneratedLayout(cleanXml);
+
+                updateAiLayoutLoadingDialog(getString(R.string.ai_layout_generator_loading_applying));
+
+                runOnUiThread(() -> {
+                    try {
+                        var rootLayoutManager = new InjectRootLayoutManager(sc_id);
+                        rootLayoutManager.set(xmlName, InjectRootLayoutManager.toRoot(generatedLayout.rootAttributes));
+
+                        var bean = new HistoryViewBean();
+                        bean.actionOverride(generatedLayout.parsedLayout, ProjectDataManager.getProjectDataManager(sc_id).getViews(xmlName));
+                        
+                        if (viewTabAdapter != null) {
+                            viewTabAdapter.refreshAllViews();
+                            refreshViewTabAdapter();
+                        }
+
+                        SketchwareUtil.toast(getString(R.string.ai_layout_generator_success, xmlName));
+                        historyManager.saveHistoryEntry(sc_id, xmlName, prompt, cleanXml);
+                    } catch (Exception parseExp) {
+                        showAiLayoutErrorDialog(getString(R.string.ai_layout_generator_error_apply, getAiLayoutErrorDetail(parseExp)));
+                    } finally {
+                        dismissAiLayoutLoadingDialog();
+                    }
+                });
+            } catch (Exception e) {
+                dismissAiLayoutLoadingDialog();
+                showAiLayoutErrorDialog(getString(R.string.ai_layout_generator_error_generate, getAiLayoutErrorDetail(e)));
+            }
+        }).start();
+    }
+
+    private void showAiLayoutErrorDialog(String message) {
+        runOnUiThread(() -> {
+            if (isFinishing() || isDestroyed()) return;
+            String safeMessage = message == null || message.trim().isEmpty() ? getString(R.string.common_error_an_error_occurred) : message;
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.ai_layout_generator_error_dialog_title)
+                    .setMessage(safeMessage)
+                    .setPositiveButton(R.string.common_word_copy, (dialog, which) -> {
+                        ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        if (clipboardManager != null) {
+                            clipboardManager.setPrimaryClip(ClipData.newPlainText(getString(R.string.ai_layout_generator_error_dialog_title), safeMessage));
+                        }
+                    })
+                    .setNegativeButton(R.string.common_word_close, null)
+                    .show();
+        });
+    }
+
+    private String getAiLayoutErrorDetail(Throwable throwable) {
+        if (throwable == null) return getString(R.string.common_error_an_error_occurred);
+        String message = throwable.getMessage();
+        if (message == null || message.trim().isEmpty()) return getString(R.string.common_error_an_error_occurred);
+        return message.trim();
+    }
+
+    private String getReferenceImageDisplayName(Uri uri) {
+        if (uri == null) return "";
+        String path = uri.getLastPathSegment();
+        if (path == null || path.trim().isEmpty()) return uri.toString();
+        int slash = path.lastIndexOf('/');
+        return slash >= 0 ? path.substring(slash + 1) : path;
+    }
+
+    private void updateAiLayoutReferenceImagePreview() {
+        if (aiLayoutReferenceImageLabel != null) {
+            if (aiLayoutReferenceImageUris.isEmpty()) {
+                aiLayoutReferenceImageLabel.setText(R.string.ai_layout_generator_reference_image_none);
+            } else if (aiLayoutReferenceImageUris.size() == 1) {
+                aiLayoutReferenceImageLabel.setText(getString(R.string.ai_layout_generator_reference_image_selected, getReferenceImageDisplayName(aiLayoutReferenceImageUris.get(0))));
+            } else {
+                aiLayoutReferenceImageLabel.setText(getString(R.string.ai_layout_generator_reference_images_selected, aiLayoutReferenceImageUris.size()));
+            }
+        }
+
+        if (aiLayoutReferenceImagePreviewList == null) return;
+
+        aiLayoutReferenceImagePreviewList.removeAllViews();
+        aiLayoutReferenceImagePreviewList.setVisibility(aiLayoutReferenceImageUris.isEmpty() ? View.GONE : View.VISIBLE);
+        for (Uri uri : aiLayoutReferenceImageUris) {
+            CircleImageView imageView = new CircleImageView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dp(50), dp(50));
+            params.setMarginEnd(dp(8));
+            imageView.setLayoutParams(params);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setContentDescription(getReferenceImageDisplayName(uri));
+            imageView.setImageURI(uri);
+            aiLayoutReferenceImagePreviewList.addView(imageView);
+        }
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private String buildReferenceContext(String referenceNotes, List<Uri> referenceImageUris) {
+        StringBuilder context = new StringBuilder();
+        if (referenceImageUris != null && !referenceImageUris.isEmpty()) {
+            context.append("Selected reference image URIs:\n");
+            for (int i = 0; i < referenceImageUris.size(); i++) {
+                Uri uri = referenceImageUris.get(i);
+                context.append(i + 1).append(". ").append(uri).append("\n");
+            }
+        }
+        if (referenceNotes != null && !referenceNotes.trim().isEmpty()) {
+            if (context.length() > 0) context.append('\n');
+            context.append("User reference notes: ").append(referenceNotes.trim());
+        }
+        return context.toString();
+    }
+
+    private List<String> buildReferenceImageDataUrls(List<Uri> uris) {
+        List<String> images = new ArrayList<>();
+        if (uris == null) return images;
+        for (Uri uri : uris) {
+            if (images.size() >= 3 || uri == null) break;
+            try (InputStream input = getContentResolver().openInputStream(uri);
+                 ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                if (input == null) continue;
+                byte[] buffer = new byte[8192];
+                int read;
+                while ((read = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, read);
+                }
+                String mime = getContentResolver().getType(uri);
+                if (mime == null || !mime.startsWith("image/")) mime = "image/jpeg";
+                images.add("data:" + mime + ";base64," + Base64.encodeToString(output.toByteArray(), Base64.NO_WRAP));
+            } catch (Exception e) {
+                Log.e("DesignActivity", "Failed to prepare AI reference image", e);
+            }
+        }
+        return images;
+    }
+
+    // ==========================================
+    // الخدمات المضافة: 2. تنظيف وهيكلة التخطيط
+    // ==========================================
+    private List<String> getAvailableProjectDrawables() {
+        Set<String> drawables = new HashSet<>();
+        try {
+            var resources = ProjectDataManager.getResourceManager(sc_id);
+            if (resources != null) {
+                // استخراج الموارد المتاحة
+            }
+        } catch (Exception e) {
+            Log.e("DesignActivity", "Failed to read project drawable resources", e);
+        }
+        return new ArrayList<>(drawables);
+    }
+
+    private android.util.Pair<String, java.util.Map<String, String>> sanitizeGeneratedRoot(android.util.Pair<String, java.util.Map<String, String>> rootAttributes) {
+        if (rootAttributes == null || rootAttributes.first == null || rootAttributes.first.trim().isEmpty()) {
+            InjectRootLayoutManager.Root defaultRoot = InjectRootLayoutManager.getDefaultRootLayout();
+            return android.util.Pair.create("LinearLayout", new LinkedHashMap<>(defaultRoot.getAttributes()));
+        }
+
+        Map<String, String> sanitized = new LinkedHashMap<>();
+        Map<String, String> attrs = rootAttributes.second != null ? rootAttributes.second : new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : attrs.entrySet()) {
+            String key = entry.getKey();
+            if (key == null) continue;
+            sanitized.put(key.trim(), entry.getValue());
+        }
+        sanitized.put("android:layout_width", "match_parent");
+        sanitized.put("android:layout_height", "match_parent");
+        return android.util.Pair.create(rootAttributes.first, sanitized);
+    }
+
+    private static class ParsedGeneratedLayout {
+        ArrayList<ViewBean> parsedLayout;
+        android.util.Pair<String, java.util.Map<String, String>> rootAttributes;
+
+        ParsedGeneratedLayout(ArrayList<ViewBean> parsedLayout, android.util.Pair<String, java.util.Map<String, String>> rootAttributes) {
+            this.parsedLayout = parsedLayout;
+            this.rootAttributes = rootAttributes;
+        }
+    }
+
+    private ParsedGeneratedLayout prepareGeneratedLayout(String xml) throws Exception {
+        ViewBeanParser parser = new ViewBeanParser(xml);
+        parser.setSkipRoot(true);
+        ArrayList<ViewBean> parsedLayout = parser.parse();
+        if (parsedLayout == null || parsedLayout.isEmpty()) {
+            throw new java.io.IOException("The AI response did not contain editable views.");
+        }
+        android.util.Pair<String, java.util.Map<String, String>> rootAttributes = sanitizeGeneratedRoot(parser.getRootAttributes());
+        return new ParsedGeneratedLayout(parsedLayout, rootAttributes);
+    }
+
+    // ==========================================
+    // الخدمات المضافة: 4. نظام البحث المتطور والشامل
+    // ==========================================
+    private void handleSearchIconClick() {
+        if (currentTabNumber == 1) {
+            showEventSearchPopup();
+        } else {
+            openGlobalSearch();
+        }
+    }
+    
+    private void openGlobalSearch() {
+        GlobalSearchDialog dialog = new GlobalSearchDialog(sc_id, this);
+        dialog.show(getSupportFragmentManager(), "GlobalSearch");
+    }
+    
+    private void showEventSearchPopup() {
+        View anchor = toolbar.findViewById(R.id.design_option_menu_search);
+        if (anchor == null) anchor = toolbar;
+
+        PopupMenu searchPopupMenu = new PopupMenu(this, anchor);
+        searchPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, Helper.getResString(R.string.global_search_title));
+        searchPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, Helper.getResString(R.string.logic_search_events));
+        searchPopupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == 1) {
+                openGlobalSearch();
+            } else if (item.getItemId() == 2) {
+                if (eventTabAdapter != null) eventTabAdapter.toggleSearchBar();
+            }
+            return true;
+        });
+        searchPopupMenu.show();
+    }
+    
+    public void handleSearchResult(mod.sketchlibx.search.SearchResult result) {
+        ProjectFileBean fileBean = ProjectDataManager.getFileManager(sc_id).getFileByXmlName(result.fileName);
+        if (fileBean == null) {
+            fileBean = ProjectDataManager.getFileManager(sc_id).getActivityByJavaName(result.fileName);
+        }
+        
+        if (fileBean != null) {
+            showLoadingDialog();
+            editorViewModel.selectProjectFile(fileBean);
+            refreshFileSelector();
+            viewPager.setCurrentItem(result.tabIndex, false);
+            refresh();
+            
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                try {
+                    if (result.category.equals("View") && result.targetId != null) {
+                        if (viewTabAdapter != null) {
+                            viewTabAdapter.showHidePropertyView(true);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("DeepLink", "Failed to resolve deep link", e);
+                } finally {
+                    dismissLoadingDialog();
+                }
+            }, 500);
+        } else {
+            SketchwareUtil.toastError("Could not find file: " + result.fileName);
+        }
+    }
+    
+    private void openGlobalSearch() {
+        GlobalSearchDialog dialog = new GlobalSearchDialog(sc_id, this);
+        dialog.show(getSupportFragmentManager(), "GlobalSearch");
+    }
+    
+    private void showEventSearchPopup() {
+        View anchor = toolbar.findViewById(R.id.design_option_menu_search);
+        if (anchor == null) anchor = toolbar;
+
+        PopupMenu searchPopupMenu = new PopupMenu(this, anchor);
+        searchPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, Helper.getResString(R.string.global_search_title));
+        searchPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, Helper.getResString(R.string.logic_search_events));
+        searchPopupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == 1) {
+                openGlobalSearch();
+            } else if (item.getItemId() == 2) {
+                if (eventTabAdapter != null) eventTabAdapter.toggleSearchBar();
+            }
+            return true;
+        });
+        searchPopupMenu.show();
+    }
+    
+    public void handleSearchResult(mod.sketchlibx.search.SearchResult result) {
+        ProjectFileBean fileBean = ProjectDataManager.getFileManager(sc_id).getFileByXmlName(result.fileName);
+        if (fileBean == null) {
+            fileBean = ProjectDataManager.getFileManager(sc_id).getActivityByJavaName(result.fileName);
+        }
+        
+        if (fileBean != null) {
+            showLoadingDialog();
+            editorViewModel.selectProjectFile(fileBean);
+            refreshFileSelector();
+            viewPager.setCurrentItem(result.tabIndex, false);
+            refresh();
+            
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                try {
+                    if (result.category.equals("View") && result.targetId != null) {
+                        if (viewTabAdapter != null) {
+                            viewTabAdapter.showHidePropertyView(true);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("DeepLink", "Failed to resolve deep link", e);
+                } finally {
+                    dismissLoadingDialog();
+                }
+            }, 500);
+        } else {
+            SketchwareUtil.toastError("Could not find file: " + result.fileName);
+        }
+    }    
+    
+   
 
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
@@ -1094,12 +1623,13 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
             labels = new String[]{
                     Helper.getResString(R.string.design_tab_title_view),
                     Helper.getResString(R.string.design_tab_title_event),
-                    Helper.getResString(R.string.design_tab_title_component)};
+                    Helper.getResString(R.string.design_tab_title_component),
+                    Helper.getResString(R.string.design_tab_title_strings)};
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -1115,8 +1645,10 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                 viewTabAdapter = (ViewEditorFragment) fragment;
             } else if (position == 1) {
                 eventTabAdapter = (EventListFragment) fragment;
-            } else {
+            } else if (position == 2) {
                 componentTabAdapter = (ComponentListFragment) fragment;
+            } else if (position == 3) {
+                stringsTabAdapter = (StringsTabFragment) fragment;
             }
 
             return fragment;
@@ -1127,10 +1659,12 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
         public Fragment getItem(int position) {
             if (position == 0) {
                 return ViewEditorFragment.newInstance(sc_id);
+            } else if (position == 1) {
+                return EventListFragment.newInstance(sc_id);
+            } else if (position == 2) {
+                return ComponentListFragment.newInstance(sc_id);
             } else {
-                return position == 1
-                        ? EventListFragment.newInstance(sc_id)
-                        : ComponentListFragment.newInstance(sc_id);
+                return new StringsTabFragment();
             }
         }
     }

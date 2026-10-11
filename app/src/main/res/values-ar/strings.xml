@@ -306,7 +306,6 @@
     <string name="common_signin_button_text">تسجيل الدخول</string>
     <string name="common_signin_button_text_long">تسجيل الدخول عبر Google</string>
     <string name="common_word_accept">حفظ</string>
-    <string name="common_word_activity">نشاط (Activity)</string>
     <string name="common_word_add">إضافة</string>
     <string name="common_word_add_activtiy">إضافة نشاط (Activity)</string>
     <string name="common_word_agree">موافقة</string>
@@ -319,7 +318,6 @@
     <string name="common_word_choose">اختيار</string>
     <string name="common_word_close">إغلاق</string>
     <string name="common_word_collection">المجموعة</string>
-    <string name="common_word_component">مكوّن (Component)</string>
     <string name="common_word_continue">متابعة</string>
     <string name="common_word_contributor">مساهم</string>
     <string name="common_word_copied">تم النسخ</string>
@@ -335,7 +333,6 @@
     <string name="common_word_detail">التفاصيل</string>
     <string name="common_word_dismiss">تجاهل</string>
     <string name="common_word_download">تنزيل</string>
-    <string name="common_word_drawer">القائمة الجانبية (Drawer)</string>
     <string name="common_word_duplicate">تكرار</string>
     <string name="common_word_edit">تعديل</string>
     <string name="common_word_ended">انتهى</string>
@@ -358,7 +355,6 @@
     <string name="common_word_information">معلومات</string>
     <string name="common_word_locale">اللغة المحلية (Locale)</string>
     <string name="common_word_modify">تعديل</string>
-    <string name="common_word_moreblock">Moreblock (بلوك مخصص)</string>
     <string name="common_word_new">جديد</string>
     <string name="common_word_next">التالي</string>
     <string name="common_word_no">لا</string>
@@ -399,7 +395,11 @@
     <string name="common_word_update">تحديث</string>
     <string name="common_word_upload">رفع</string>
     <string name="common_word_variable">متغير (Variable)</string>
-    <string name="common_word_view">عنصر واجهة (View)</string>
+    <string name="common_word_view">عنصر واجهة\n(View)</string>
+    <string name="common_word_component">مكوّن\n(Component)</string>
+    <string name="common_word_moreblock">Moreblock\n(بلوك مخصص)</string>
+    <string name="common_word_drawer">القائمة الجانبية\n(Drawer)</string>
+    <string name="common_word_activity">نشاط\n(Activity)</string>
     <string name="common_word_warning">تحذير</string>
     <string name="common_word_watch">مشاهدة</string>
     <string name="common_word_widget">أداة (Widget)</string>
