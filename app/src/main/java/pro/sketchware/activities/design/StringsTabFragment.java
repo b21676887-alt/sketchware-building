@@ -25,6 +25,7 @@ import pro.sketchware.databinding.ViewStringEditorAddBinding;
 import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.XmlUtil;
+import pro.sketchware.core.project.SketchwarePaths;
 
 
 public class StringsTabFragment extends Fragment {
@@ -61,8 +62,10 @@ public class StringsTabFragment extends Fragment {
         binding.recyclerView.setAdapter(adapter);
 
         // default path
-        String baseDir = SketchwarePaths.getDataPath(((DesignActivity) requireActivity()).getScId()) + "/files/resource/values/";
-        filePath = baseDir + "strings.xml";
+        String baseDir = pro.sketchware.core.project.SketchwarePaths
+        .getDataPath(((DesignActivity) requireActivity()).getScId())
+        + "/files/resource/values/";
+         filePath = baseDir + "strings.xml";
 
         // initial load
         updateStringsList(filePath, 0, false);
