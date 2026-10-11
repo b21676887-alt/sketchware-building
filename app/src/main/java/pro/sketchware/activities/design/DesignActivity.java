@@ -25,6 +25,23 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.widget.LinearLayout;
+import android.widget.CheckBox;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import android.util.Base64;
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import pro.sketchware.beans.ViewBean;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -139,6 +156,15 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
     private String currentJavaFileName;
     private ViewEditorFragment viewTabAdapter;
     private StringsTabFragment stringsTabAdapter;
+    
+    private Toolbar toolbar;
+    private AlertDialog aiLayoutLoadingDialog;
+    private TextView aiLayoutLoadingTitle;
+    private TextView aiLayoutLoadingSubtitle;
+    private TextView aiLayoutReferenceImageLabel;
+    private LinearLayout aiLayoutReferenceImagePreviewList;
+    private final ArrayList<Uri> aiLayoutReferenceImageUris = new ArrayList<>();
+    
     private final ActivityResultLauncher<Intent> openCollectionManager = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == RESULT_OK) {
             if (viewTabAdapter != null) {
