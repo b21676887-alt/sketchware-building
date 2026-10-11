@@ -194,6 +194,13 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
             refresh();
         }
     });
+    private final ActivityResultLauncher<String> selectAiLayoutReferenceImages = registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), uris -> {
+        if (uris != null && !uris.isEmpty()) {
+            aiLayoutReferenceImageUris.clear();
+            aiLayoutReferenceImageUris.addAll(uris);
+            updateAiLayoutReferenceImagePreview();
+        }
+    });
     public final ActivityResultLauncher<Intent> changeOpenFile = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             var data = result.getData();
@@ -1188,61 +1195,7 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
         }
     }
     
-    private void openGlobalSearch() {
-        GlobalSearchDialog dialog = new GlobalSearchDialog(sc_id, this);
-        dialog.show(getSupportFragmentManager(), "GlobalSearch");
-    }
     
-    private void showEventSearchPopup() {
-        View anchor = toolbar.findViewById(R.id.design_option_menu_search);
-        if (anchor == null) anchor = toolbar;
-
-        PopupMenu searchPopupMenu = new PopupMenu(this, anchor);
-        searchPopupMenu.getMenu().add(Menu.NONE, 1, Menu.NONE, Helper.getResString(R.string.global_search_title));
-        searchPopupMenu.getMenu().add(Menu.NONE, 2, Menu.NONE, Helper.getResString(R.string.logic_search_events));
-        searchPopupMenu.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == 1) {
-                openGlobalSearch();
-            } else if (item.getItemId() == 2) {
-                if (eventTabAdapter != null) eventTabAdapter.toggleSearchBar();
-            }
-            return true;
-        });
-        searchPopupMenu.show();
-    }
-    
-    public void handleSearchResult(mod.sketchlibx.search.SearchResult result) {
-        ProjectFileBean fileBean = ProjectDataManager.getFileManager(sc_id).getFileByXmlName(result.fileName);
-        if (fileBean == null) {
-            fileBean = ProjectDataManager.getFileManager(sc_id).getActivityByJavaName(result.fileName);
-        }
-        
-        if (fileBean != null) {
-            showLoadingDialog();
-            editorViewModel.selectProjectFile(fileBean);
-            refreshFileSelector();
-            viewPager.setCurrentItem(result.tabIndex, false);
-            refresh();
-            
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                try {
-                    if (result.category.equals("View") && result.targetId != null) {
-                        if (viewTabAdapter != null) {
-                            viewTabAdapter.showHidePropertyView(true);
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.e("DeepLink", "Failed to resolve deep link", e);
-                } finally {
-                    dismissLoadingDialog();
-                }
-            }, 500);
-        } else {
-            SketchwareUtil.toastError("Could not find file: " + result.fileName);
-        }
-    }    
-    
-   
 
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
