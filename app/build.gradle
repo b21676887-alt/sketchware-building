@@ -1,14 +1,9 @@
-def googleServicesJson = System.getenv("GOOGLE_SERVICES_JSON")
-def googleServicesJsonBase64 = System.getenv("GOOGLE_SERVICES_JSON_BASE64")
-def decodedBase64 = googleServicesJsonBase64 != null ? new String(java.util.Base64.decoder.decode(googleServicesJsonBase64), "UTF-8") : null
-def secrets = googleServicesJson != null ? googleServicesJson : decodedBase64
-def googleServicesFile = file("$projectDir/google-services.json")
-def analyticsEnabled = (secrets != null) || googleServicesFile.exists()
-
-apply plugin: "com.android.application"
-apply plugin: "kotlin-android"
-apply plugin: "com.google.gms.google-services"
-apply plugin: "com.google.firebase.crashlytics"
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+    id "com.google.gms.google-services"
+    id "com.google.firebase.crashlytics"
+}
 
 android {
     compileSdk = 36
@@ -41,15 +36,6 @@ android {
         buildConfigField("String", "SKETCHUB_API_KEY", "\"${System.getenv("SKETCHUB_API_KEY")}\"")
     }
 
-    signingConfigs {
-        debug {
-            storeFile = file("../testkey.keystore")
-            storePassword = "testkey"
-            keyAlias = "testkey"
-            keyPassword = "testkey"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled = false
@@ -57,13 +43,13 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
-    
-    
 
     packaging {
-        resources.excludes += "license/*"
-        resources.excludes += "META-INF/DEPENDENCIES"
-        resources.pickFirsts += "api_database/*"
+        resources {
+            excludes += "license/*"
+            excludes += "META-INF/DEPENDENCIES"
+            pickFirsts += "api_database/*"
+        }
     }
 
     compileOptions {
@@ -78,6 +64,15 @@ android {
 
     androidResources {
         additionalParameters.addAll("--stable-ids", "${rootDir}/public-stable-ids.txt")
+    }
+
+    signingConfigs {
+        debug {
+            storeFile = file("../testkey.keystore")
+            storePassword = "testkey"
+            keyAlias = "testkey"
+            keyPassword = "testkey"
+        }
     }
 
     buildFeatures {
@@ -96,6 +91,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+
+    testImplementation libs.junit
 
     implementation libs.bundles.ui
 
@@ -127,41 +124,49 @@ dependencies {
     implementation libs.bundles.kotlin.compiler
     compileOnly libs.kotlin.compiler
 
-    implementation libs.dependencyresolver
+    implementation project(':resolver')
+    implementation project(':vendor-dx')
     implementation libs.filepicker
 
     implementation libs.libsu
     implementation libs.insetter
-    implementation 'com.google.android.gms:play-services-ads:25.4.0'
-    implementation 'com.google.android.ump:user-messaging-platform:4.0.0'
+
+    // User Messaging Platform
+    implementation 'com.google.android.ump:user-messaging-platform:3.0.0'
+
+    testImplementation "org.json:json:20240303"
 
     implementation(libs.javaparser.symbol.solver) {
         exclude group: "com.google.guava", module: "guava"
     }
 
-    // Analytics and Crashlytics
-    if (secrets != null) {
-        googleServicesFile.text = secrets
-    }
     implementation platform("com.google.firebase:firebase-bom:34.16.0")
     implementation "com.google.firebase:firebase-crashlytics"
     implementation "com.google.firebase:firebase-analytics"
     implementation "com.google.firebase:firebase-messaging"
     implementation "com.google.firebase:firebase-database"
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs_nio:2.1.5"
-    testImplementation "junit:junit:4.13.2"
-    testImplementation "org.json:json:20240303"
+    implementation libs.bundles.firebase
+
+    coreLibraryDesugaring libs.desugar.jdk.libs.nio
 }
 
+// Create or write google-services.json automatically if provided, otherwise create a mock file
 tasks.register('createMockGoogleServices') {
     doLast {
-        if (secrets != null) {
-            new File("$projectDir/google-services.json").text = secrets
+        def secretProp = project.hasProperty("secrets") ? project.property("secrets") : null
+        def secretEnv = System.getenv("GOOGLE_SERVICES_JSON") ?: System.getenv("SECRETS")
+        def secretsContent = (secretProp ?: secretEnv)?.toString()
+
+        def destFile = file("${projectDir}/google-services.json")
+
+        if (secretsContent) {
+            destFile.parentFile?.mkdirs()
+            destFile.text = secretsContent
+            println "Wrote google-services.json from provided secrets to ${destFile}"
             return
         }
-        def mockFile = file("src/debug/google-services.json")
-        if (!mockFile.exists()) {
-            mockFile.parentFile.mkdirs()
+
+        if (!destFile.exists()) {
             def mockContent = """{
   "project_info": {
     "project_number": "123456789000",
@@ -192,7 +197,11 @@ tasks.register('createMockGoogleServices') {
   ],
   "configuration_version": "1"
 }"""
-            mockFile.text = mockContent
+            destFile.parentFile?.mkdirs()
+            destFile.text = mockContent
+            println "Created mock google-services.json at ${destFile}"
+        } else {
+            println "google-services.json already exists at ${destFile}"
         }
     }
 }

@@ -123,6 +123,16 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:src="@drawable/ic_mtrl_delete" />
+            
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/aiExplainButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="@string/compile_log_action_ai_explain"
+            android:src="@drawable/selector_info_popup" />
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

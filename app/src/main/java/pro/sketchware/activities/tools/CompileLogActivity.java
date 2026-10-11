@@ -22,6 +22,11 @@ import pro.sketchware.util.Helper;
 import pro.sketchware.R;
 import pro.sketchware.core.build.CompileErrorSaver;
 import pro.sketchware.databinding.CompileLogBinding;
+import pro.sketchware.network.AiProviderService;
+import io.noties.markwon.Markwon;
+import android.os.Environment;
+import java.io.File;
+import pro.sketchware.core.project.ProjectTracker;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.UI;
 
@@ -117,6 +122,10 @@ public class CompileLogActivity extends BaseAppCompatActivity {
         applyLogViewerPreferences();
 
         setErrorText();
+        
+        if (binding.aiExplainButton != null) {
+            binding.aiExplainButton.setOnClickListener(v -> explainLogWithAI());
+        }
     }
 
     private void setErrorText() {
@@ -206,5 +215,129 @@ public class CompileLogActivity extends BaseAppCompatActivity {
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+    
+    private void explainLogWithAI() {
+        CharSequence cs = binding.tvCompileLog.getText();
+        String logText = cs != null ? cs.toString().trim() : "";
+        if (logText.isEmpty()) {
+            SketchwareUtil.toastError(getString(R.string.compile_log_no_log_to_analyze));
+            return;
+        }
+        if (!SketchwareUtil.isConnected()) {
+            SketchwareUtil.toastError(getString(R.string.common_message_check_network));
+            return;
+        }
+
+        // Diálogo de carregamento com Lottie
+        View loadingView = LayoutInflater.from(this).inflate(R.layout.dialog_ai_layout_loading, null);
+        TextView titleView = loadingView.findViewById(R.id.text_loading_title);
+        TextView subtitleView = loadingView.findViewById(R.id.text_loading_subtitle);
+
+        if (titleView != null) titleView.setText(R.string.ai_explain_loading_title);
+        if (subtitleView != null) subtitleView.setText(R.string.ai_explain_loading_subtitle);
+
+        var progressDialog = new MaterialAlertDialogBuilder(this)
+            .setView(loadingView)
+            .setCancelable(false)
+            .create();
+        progressDialog.show();
+
+        new Thread(() -> {
+            try {
+                String prompt = "Analyze this Sketchware Android compile log. "
+                        + "Explain the root cause, identify the affected screen or generated source when possible, "
+                        + "and give concrete correction steps without modifying the project.\n\n"
+                        + logText;
+                
+                String deviceLanguage = Locale.getDefault().getLanguage();
+                String systemInstruction = "You analyze Sketchware Android compile logs. Respond in language code: " + deviceLanguage + ".";
+
+                String response = AiProviderService.getInstance().sendTextMessage(
+                        systemInstruction,
+                        prompt
+                );
+                runOnUiThread(() -> {
+                    try {
+                        progressDialog.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                    showScrollableDialog(getString(R.string.ai_explain_title), response);
+                });
+            } catch (IOException e) {
+                runOnUiThread(() -> {
+                    try {
+                        progressDialog.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                    SketchwareUtil.showAnErrorOccurredDialog(this, e.getMessage());
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    try {
+                        progressDialog.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                    SketchwareUtil.showAnErrorOccurredDialog(this, getString(R.string.ai_explain_error_processing_response));
+                });
+            }
+        }).start();
+    }
+    
+    private void showScrollableDialog(String title, String content) {
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.setFillViewport(true);
+
+        TextView textView = new TextView(this);
+        // Renderiza Markdown usando Markwon
+        Markwon markwon = Markwon.create(this);
+        markwon.setMarkdown(textView, content);
+        textView.setTextIsSelectable(true);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        textView.setPadding(pad, pad, pad, pad);
+
+        scrollView.addView(textView, new ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        var dialog = new MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setView(scrollView)
+            .setPositiveButton(R.string.common_word_close, null)
+            .setNeutralButton(R.string.common_word_copy, null)
+            .create();
+
+        dialog.setOnShowListener(d -> {
+            var btnCopy = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL);
+            btnCopy.setOnClickListener(v -> {
+                try {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (cm != null) {
+                        cm.setPrimaryClip(ClipData.newPlainText("ia_response", content));
+                        SketchwareUtil.toast(getString(R.string.common_word_copied));
+                    }
+                } catch (Exception ignored) {
+                }
+            });
+        });
+
+        dialog.show();
+    }
+    
+    private String limitAiText(String content, int maxChars) {
+        if (content == null) {
+            return "";
+        }
+
+        String normalized = content.replaceAll("\\s+", " ").trim();
+        if (normalized.length() <= maxChars) {
+            return normalized;
+        }
+
+        if (maxChars <= 3) {
+            return normalized.substring(0, Math.max(0, maxChars));
+        }
+
+        return normalized.substring(0, maxChars - 3).trim() + "...";
     }
 }
