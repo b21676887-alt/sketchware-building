@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.PopupMenu;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.view.LayoutInflater;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 
