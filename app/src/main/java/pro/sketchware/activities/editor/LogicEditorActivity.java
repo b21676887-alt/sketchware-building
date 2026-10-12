@@ -136,6 +136,8 @@ import pro.sketchware.databinding.SearchWithRecyclerViewBinding;
 import pro.sketchware.activities.editor.logic.ExtraMenuBean;
 import pro.sketchware.util.FilePathUtil;
 import pro.sketchware.util.SvgUtils;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import pro.sketchware.logic.LogicSyntaxChecker;
 // AI / Clipboard / dialogs
 import android.app.AlertDialog;
@@ -2784,11 +2786,11 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		
 		syntaxExecutor.execute(() -> {
 			LogicSyntaxChecker.SyntaxResult result = LogicSyntaxChecker.check(
-			projectFile.getActivityName(),
-			ProjectFilePaths.buildConfig,
-			blockPane.getBlocks(),
-			isViewBindingEnabled
-			);
+                projectFile.getActivityName(),
+                projectFilePaths.buildConfig,
+                blockPane.getBlocks(),
+                isViewBindingEnabled
+            );
 			
 			runOnUiThread(() -> {
 				if (isFinishing() || isDestroyed()) return;
