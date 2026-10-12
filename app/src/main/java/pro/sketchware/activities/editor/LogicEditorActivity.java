@@ -3457,22 +3457,21 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 	}
 	
 	private void insertConvertedBlocks(java.util.ArrayList<pro.sketchware.beans.BlockBean> blocks) {
-		if (blocks == null || blocks.isEmpty()) {
-			pro.sketchware.util.SketchwareUtil.toastError(getString(R.string.blocks_toast_no_blocks));
-			return;
-		}
-		int[] oLoc = new int[2];
-		blockPane.getLocationOnScreen(oLoc);
-		int insertX = oLoc[0] + pro.sketchware.util.SketchwareUtil.dpToPx(16);
-		int insertY = oLoc[1] + pro.sketchware.util.SketchwareUtil.dpToPx(80);
-		
-		java.util.ArrayList<pro.sketchware.beans.BlockBean> inserted = addBlockBeans(blocks, insertX, insertY, true);
-		BlockHistoryManager.getInstance(scId).recordAddMultiple(buildHistoryKey(), insertX - oLoc[0], insertY - oLoc[1], null, null);
-		refreshOptionsMenu();
-		
-		
-		String insertedBlockWord = getString(inserted.size() != 1 ? R.string.word_blocks : R.string.word_block);
-		pro.sketchware.util.SketchwareUtil.toast(
-		getString(R.string.blocks_toast_inserted, inserted.size(), insertedBlockWord));
-	}
+        if (blocks == null || blocks.isEmpty()) {
+            pro.sketchware.util.SketchwareUtil.toastError(getString(R.string.blocks_toast_no_blocks));
+            return;
+        }
+        int[] oLoc = new int[2];
+        blockPane.getLocationOnScreen(oLoc);
+        int insertX = oLoc[0] + pro.sketchware.util.SketchwareUtil.dpToPx(16);
+        int insertY = oLoc[1] + pro.sketchware.util.SketchwareUtil.dpToPx(80);
+    
+        java.util.ArrayList<pro.sketchware.beans.BlockBean> inserted = addBlockBeans(blocks, insertX, insertY, true);
+        BlockHistoryManager.getInstance(scId).recordAddMultiple(buildHistoryKey(), inserted, insertX - oLoc[0], insertY - oLoc[1], null, null);
+        refreshOptionsMenu();
+    
+        String insertedBlockWord = getString(inserted.size() != 1 ? R.string.word_blocks : R.string.word_block);
+        pro.sketchware.util.SketchwareUtil.toast(
+            getString(R.string.blocks_toast_inserted, inserted.size(), insertedBlockWord));
+    }
 }
