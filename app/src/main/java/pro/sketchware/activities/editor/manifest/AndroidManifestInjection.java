@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.io.File;
 
 import pro.sketchware.core.async.BackgroundTasks;
 import pro.sketchware.core.project.ProjectDataManager;
@@ -65,6 +66,7 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
         setupCustomToolbar();
         checkAttrs();
         setupOptions();
+        setupManifestMode();
         refreshList();
         checkAttrs();
 
@@ -412,6 +414,137 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
         parent.icon.setImageResource(icon);
         parent.title.setText(title);
         parent.description.setText(description);
+    }
+
+    private String safeReadFile(String path) {
+        if (path == null) return "";
+        if (FileUtil.isExistFile(path)) {
+            String s = FileUtil.readFile(path);
+            return s != null ? s : "";
+        }
+        return "";
+    }
+
+    private void loadDefaultManifestIntoTextArea(TextInputEditText manifestInput) {
+        manifestInput.setText("Loading default manifest...");
+        BackgroundTasks.callIoIfAlive(TaskHost.of(this), "AndroidManifestInjection", () ->
+                new ProjectFilePaths(getApplicationContext(), sc_id).getDefaultManifestSrc(
+                        ProjectDataManager.getFileManager(sc_id),
+                        ProjectDataManager.getProjectDataManager(sc_id),
+                        ProjectDataManager.getLibraryManager(sc_id)), defaultManifest -> {
+            if (!isFinishing()) {
+                manifestInput.setText(!defaultManifest.isEmpty() ? defaultManifest : "Failed to generate default manifest.");
+                SketchwareUtil.toast("Default manifest loaded for editing");
+            }
+        }, error -> {
+            if (!isFinishing()) {
+                manifestInput.setText("Error loading default manifest.");
+                SketchwareUtil.toast("Error loading default manifest");
+            }
+        });
+    }
+
+    private void setupManifestMode() {
+        android.widget.RadioGroup manifestModeGroup = findViewById(R.id.manifest_mode_group);
+        android.widget.RadioButton radioDefault = findViewById(R.id.radio_default);
+        android.widget.RadioButton radioCustom = findViewById(R.id.radio_custom);
+        View manifestContainer = findViewById(R.id.manifest_input_container);
+        TextInputEditText manifestInput = findViewById(R.id.manifest_input);
+
+        android.widget.Button btnSaveManifest = findViewById(R.id.btn_save_manifest);
+        android.widget.Button btnLoadDefault = findViewById(R.id.btn_load_default);
+        android.widget.Button btnResetManifest = findViewById(R.id.btn_reset_manifest);
+
+        if (manifestModeGroup == null || manifestInput == null) {
+            return;
+        }
+
+        final String INJECTION_MANIFEST_DIR = SketchwarePaths.getMyscPath(sc_id) + File.separator + "Injection" + File.separator + "androidmanifest" + File.separator;
+        final String MANIFEST_MODE_PATH = INJECTION_MANIFEST_DIR + "manifest_mode.txt";
+        final String CUSTOM_MANIFEST_PATH = INJECTION_MANIFEST_DIR + "custom_manifest.xml";
+
+        final String BASE_MANIFEST_FLAG_PATH = SketchwarePaths.getMyscPath(sc_id) + File.separator + "Manifast";
+        final String BASE_MANIFEST_XML_PATH = SketchwarePaths.getMyscPath(sc_id) + File.separator + "Manifast.xml";
+
+        File dir = new File(INJECTION_MANIFEST_DIR);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        if (!FileUtil.isExistFile(CUSTOM_MANIFEST_PATH)) {
+            FileUtil.writeFile(CUSTOM_MANIFEST_PATH, "");
+        }
+        if (!FileUtil.isExistFile(MANIFEST_MODE_PATH)) {
+            FileUtil.writeFile(MANIFEST_MODE_PATH, "default");
+        }
+        if (!FileUtil.isExistFile(BASE_MANIFEST_FLAG_PATH)) {
+            FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "false");
+        }
+        if (!FileUtil.isExistFile(BASE_MANIFEST_XML_PATH)) {
+            FileUtil.writeFile(BASE_MANIFEST_XML_PATH, "");
+        }
+
+        String mode = safeReadFile(MANIFEST_MODE_PATH).trim();
+        if ("custom".equals(mode)) {
+            radioCustom.setChecked(true);
+            manifestContainer.setVisibility(View.VISIBLE);
+            String saved = safeReadFile(CUSTOM_MANIFEST_PATH);
+            manifestInput.setText(saved);
+            FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "true");
+            FileUtil.writeFile(BASE_MANIFEST_XML_PATH, saved != null ? saved : "");
+        } else {
+            radioDefault.setChecked(true);
+            manifestContainer.setVisibility(View.GONE);
+            FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "false");
+            FileUtil.writeFile(BASE_MANIFEST_XML_PATH, "");
+        }
+
+        manifestModeGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.radio_custom) {
+                manifestContainer.setVisibility(View.VISIBLE);
+                FileUtil.writeFile(MANIFEST_MODE_PATH, "custom");
+                FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "true");
+
+                String currentContent = safeReadFile(CUSTOM_MANIFEST_PATH);
+                if (currentContent.trim().isEmpty()) {
+                    loadDefaultManifestIntoTextArea(manifestInput);
+                } else {
+                    manifestInput.setText(currentContent);
+                }
+
+                FileUtil.writeFile(BASE_MANIFEST_XML_PATH, manifestInput.getText().toString());
+                SketchwareUtil.toast("Custom manifest selected");
+            } else {
+                manifestContainer.setVisibility(View.GONE);
+                FileUtil.writeFile(MANIFEST_MODE_PATH, "default");
+                FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "false");
+                FileUtil.writeFile(BASE_MANIFEST_XML_PATH, "");
+                SketchwareUtil.toast("Default manifest selected");
+            }
+        });
+
+        btnSaveManifest.setOnClickListener(v -> {
+            String content = Helper.getText(manifestInput);
+            FileUtil.writeFile(CUSTOM_MANIFEST_PATH, content);
+            FileUtil.writeFile(BASE_MANIFEST_XML_PATH, content);
+            FileUtil.writeFile(MANIFEST_MODE_PATH, "custom");
+            FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "true");
+            SketchwareUtil.toast("Custom manifest saved");
+        });
+
+        btnLoadDefault.setOnClickListener(v -> {
+            loadDefaultManifestIntoTextArea(manifestInput);
+        });
+
+        btnResetManifest.setOnClickListener(v -> {
+            FileUtil.writeFile(CUSTOM_MANIFEST_PATH, "");
+            FileUtil.writeFile(BASE_MANIFEST_XML_PATH, "");
+            FileUtil.writeFile(MANIFEST_MODE_PATH, "default");
+            FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "false");
+            manifestInput.setText("");
+            radioDefault.setChecked(true);
+            SketchwareUtil.toast("Custom manifest reset");
+        });
     }
 
     private class ListAdapter extends BaseAdapter {
