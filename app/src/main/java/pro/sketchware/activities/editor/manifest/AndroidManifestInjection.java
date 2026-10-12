@@ -428,10 +428,12 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
     private void loadDefaultManifestIntoTextArea(TextInputEditText manifestInput) {
         manifestInput.setText("Loading default manifest...");
         BackgroundTasks.callIoIfAlive(TaskHost.of(this), "AndroidManifestInjection", () ->
-                new ProjectFilePaths(getApplicationContext(), sc_id).getDefaultManifestSrc(
+                new ProjectFilePaths(getApplicationContext(), sc_id).getFileSrc(
+                        "AndroidManifest.xml",
                         ProjectDataManager.getFileManager(sc_id),
                         ProjectDataManager.getProjectDataManager(sc_id),
-                        ProjectDataManager.getLibraryManager(sc_id)), defaultManifest -> {
+                        ProjectDataManager.getLibraryManager(sc_id)
+                ), (String defaultManifest) -> {
             if (!isFinishing()) {
                 manifestInput.setText(!defaultManifest.isEmpty() ? defaultManifest : "Failed to generate default manifest.");
                 SketchwareUtil.toast("Default manifest loaded for editing");
