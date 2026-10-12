@@ -2345,7 +2345,19 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
         } else if (itemId == R.id.menu_logic_undo) {
             undo();
         } else if (itemId == R.id.menu_logic_showsource) {
-            showSourceCode();
+            new MaterialAlertDialogBuilder(this)
+			.setTitle(R.string.title_source_code)
+			.setItems(new CharSequence[]{
+				getString(R.string.option_view_source_code),
+				getString(R.string.option_code_to_blocks),
+				getString(R.string.option_generate_with_ai)
+			}, (dialog, which) -> {
+				if (which == 0)      showSourceCode();
+				else if (which == 1) showCodeToBlocksDialog();
+				else                  showAiCodePromptDialog();
+			})
+			.setNegativeButton(R.string.btn_cancel, null)
+			.show();
         } else if (itemId == R.id.menu_logic_search) {
             toggleCanvasSearch();
         }
@@ -3120,4 +3132,347 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
             return null;
         }
     }
+    
+    private String buildViewContext() {
+		StringBuilder sb = new StringBuilder();
+		java.util.ArrayList<pro.sketchware.beans.ViewBean> views = ProjectDataManager.getProjectDataManager(scId).getViews(projectFile.getXmlName());
+		if (views == null) return "";
+		for (pro.sketchware.beans.ViewBean view : views) {
+			if (view.id == null || view.id.isEmpty()) continue;
+			sb.append(view.id)
+			.append(": ")
+			.append(pro.sketchware.beans.ViewBean.getViewTypeName(view.type))
+			.append("\n");
+		}
+		return sb.toString();
+	}
+	
+	private String buildExistingEventCode() {
+		try {
+    		ProjectFilePaths projectFilePaths = new ProjectFilePaths(this, scId);
+            projectFilePaths.initializeMetadata(ProjectDataManager.getLibraryManager(scId), ProjectDataManager.getFileManager(scId), ProjectDataManager.getProjectDataManager(scId));
+            String code = new BlockInterpreter(projectFile.getActivityName(), projectFilePaths.buildConfig, blockPane.getBlocks(), isViewBindingEnabled, projectFile.getXmlName()).interpretBlocks();
+		    return code == null ? "" : code.trim();
+		} catch (Exception e) {
+			return "";
+		}
+	}
+	
+	/**
+* يعرض حوار إدخال حيث يكتب المستخدم وصف ما يريد توليده، ثم يبدأ التوليد.
+*/	
+    private void showAiCodePromptDialog() {
+		int dp24 = (int) (24 * getResources().getDisplayMetrics().density);
+		int dp16 = (int) (16 * getResources().getDisplayMetrics().density);
+		int dp8 = (int) (8 * getResources().getDisplayMetrics().density);
+		
+		LinearLayout root = new LinearLayout(this);
+		root.setOrientation(LinearLayout.VERTICAL);
+		root.setPadding(dp24, dp24, dp24, dp8);
+		
+		TextView title = new TextView(this);
+		title.setText(R.string.option_generate_with_ai);
+		title.setTextSize(20);
+		title.setTypeface(null, android.graphics.Typeface.BOLD);
+		title.setTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOnSurface));
+		root.addView(title);
+		
+		TextView subtitle = new TextView(this);
+		subtitle.setText(getString(R.string.ai_code_subtitle_format, eventName));
+		subtitle.setTextSize(14);
+		subtitle.setTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOnSurfaceVariant));
+		LinearLayout.LayoutParams subParams = new LinearLayout.LayoutParams(-1, -2);
+		subParams.setMargins(0, dp8, 0, dp16);
+		subtitle.setLayoutParams(subParams);
+		root.addView(subtitle);
+		
+		com.google.android.material.card.MaterialCardView card = new com.google.android.material.card.MaterialCardView(this);
+		card.setCardElevation(0);
+		card.setRadius(dp8);
+		card.setStrokeWidth((int) (1 * getResources().getDisplayMetrics().density));
+		card.setStrokeColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOutlineVariant));
+		card.setCardBackgroundColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorSurfaceVariant));
+		
+		EditText editText = new EditText(this);
+		editText.setHint(R.string.ai_code_hint);
+		editText.setBackground(null);
+		editText.setPadding(dp16, dp16, dp16, dp16);
+		editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+		| android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
+		| android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		editText.setMinLines(4);
+		editText.setMaxLines(10);
+		editText.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
+		editText.setTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOnSurface));
+		editText.setHintTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOutline));
+		
+		card.addView(editText, new ViewGroup.LayoutParams(-1, -2));
+		root.addView(card, new LinearLayout.LayoutParams(-1, -2));
+		
+		new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+		.setView(root)
+		.setNegativeButton(R.string.btn_cancel, null)
+		.setPositiveButton(R.string.btn_generate, (dialog, which) -> {
+			String userIntent = editText.getText() == null ? "" : editText.getText().toString().trim();
+			if (userIntent.isEmpty()) {
+				pro.sketchware.util.SketchwareUtil.toastError(getString(R.string.ai_toast_enter_description));
+				return;
+			}
+			generateCodeWithAi(userIntent);
+		})
+		.show();
+	}
+	
+	/**
+* يطلب من نموذج AI توليد كود Java حسب الوصف (userIntent).
+* التنفيذ في خيط خلفي؛ عند النجاح يعرض حوار يسمح للمستخدم بنسخ/حفظ/إدراج الكود.
+*/	
+	
+	public void generateCodeWithAi(String userIntent) {
+		if (userIntent == null || userIntent.trim().isEmpty()) {
+			Toast.makeText(this, getString(R.string.ai_toast_enter_description_alt), Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		String viewContext = buildViewContext();
+		String existingCode = buildExistingEventCode();
+		String activityName = projectFile.getActivityName();
+		
+		// الآن استعمل LogicGenTask
+		LogicGenTask task = new LogicGenTask(getApplicationContext(), userIntent, eventName, activityName, viewContext, existingCode);
+		
+		// بناء Material dialog مع ProgressBar (مثال: استخدم layout ai_progress_dialog.xml كما اقترحت سابقاً)
+		MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(this);
+		dialogBuilder.setTitle(R.string.ai_dialog_generating);
+		View progressView = LayoutInflater.from(this).inflate(R.layout.ai_progress_dialog, null, false);
+		dialogBuilder.setView(progressView);
+		dialogBuilder.setCancelable(true);
+		final androidx.appcompat.app.AlertDialog progressDialog = dialogBuilder.create();
+		progressDialog.show();
+		
+		// ابدأ المهمة وخذ الـ handle
+		activeAiRequest = task.start(new AiProviderService.StreamListener() {
+			@Override
+			public void onContent(String delta) { }
+			
+			@Override
+			public void onReasoning(String delta) { }
+			
+			@Override
+			public void onToolCall(String name, String arguments, String id) { }
+			
+			@Override
+			public void onFinalMessage(String fullContent, String fullReasoning) {
+				try { progressDialog.dismiss(); } catch (Exception ignored) {}
+				String code = fullContent == null ? "" : fullContent;
+				if (code.trim().isEmpty()) {
+					Toast.makeText(LogicEditorActivity.this, getString(R.string.ai_toast_no_result), Toast.LENGTH_SHORT).show();
+					return;
+				}
+				runConversion(code, () -> BlocksConverter.convert(code));
+			}
+			
+			@Override
+			public void onDebug(String message) { /* optional */ }
+			
+			@Override
+			public void onError(String message, Throwable t) {
+				try { progressDialog.dismiss(); } catch (Exception ignored) {}
+				if (t != null) {
+					Toast.makeText(LogicEditorActivity.this, getString(R.string.ai_toast_generation_failed, t.getMessage()), Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(LogicEditorActivity.this, getString(R.string.ai_toast_request_error, message), Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+		
+		// ربط إلغاء الحوار بإلغاء الطلب
+		progressDialog.setOnCancelListener(d -> {
+			if (activeAiRequest != null) activeAiRequest.cancel();
+		});
+		progressDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE); // optional if you added button
+		
+	}
+	
+	
+	
+	
+	/**
+* يعرض الشيفرة في CodeViewerActivity ثم يظهر حوار مع خيارات (Copy / Save to app / Close).
+* استعمل هذا بدلاً من AlertDialog.setMessage لكود طويل.
+*/	
+	private void openCodeInViewerWithActions(String code) {
+		// افتح viewer المدمج في المشروع لعرض الشيفرة مع تمييز/تمرير
+		try {
+			Intent intent = new Intent(this, CodeViewerActivity.class);
+			intent.putExtra("code", code);
+			intent.putExtra("sc_id", scId);
+			intent.putExtra("scheme", CodeViewerActivity.SCHEME_JAVA);
+			startActivity(intent);
+		} catch (Exception e) {
+			// إن لم يتوفر CodeViewerActivity لأي سبب، نواصل دون فشل
+			if (crashlytics != null) crashlytics.recordException(e);
+		}
+		
+		// عرض حوار إجراءاتٍ إضافية
+		new AlertDialog.Builder(this)
+		.setTitle("AI Result")
+		.setMessage("The generated code is opened in the viewer. You can copy it or save it to the app storage.")
+		.setPositiveButton("Copy", (dialog, which) -> {
+			ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+			if (cm != null) {
+				cm.setPrimaryClip(ClipData.newPlainText("generated_java", code));
+				Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(this, "Clipboard not available", Toast.LENGTH_SHORT).show();
+			}
+		})
+		.setNegativeButton("Save to app", (dialog, which) -> {
+			boolean ok = saveGeneratedCodeToFile("generated_ai_code_" + System.currentTimeMillis() + ".java", code);
+			Toast.makeText(this, ok ? "Saved to internal storage" : "Save failed", Toast.LENGTH_SHORT).show();
+		})
+		.setNeutralButton("Close", null)
+		.show();
+	}
+	
+	
+	/** حفظ ابتدائي داخل مجلد ملفات التطبيق */
+	private boolean saveGeneratedCodeToFile(String fileName, String code) {
+		if (fileName == null || fileName.trim().isEmpty() || code == null) return false;
+		try {
+			java.io.File dir = new java.io.File(getFilesDir(), "ai_generated_code");
+			if (!dir.exists()) dir.mkdirs();
+			java.io.File out = new java.io.File(dir, fileName);
+			try (java.io.FileOutputStream fos = new java.io.FileOutputStream(out)) {
+				fos.write(code.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+				fos.flush();
+			}
+			return true;
+		} catch (Exception e) {
+			try { if (crashlytics != null) crashlytics.recordException(e); } catch (Exception ignored) {}
+			return false;
+		}
+	}
+	
+	private void showCodeToBlocksDialog() {
+		int dp24 = (int) (24 * getResources().getDisplayMetrics().density);
+		int dp16 = (int) (16 * getResources().getDisplayMetrics().density);
+		int dp8 = (int) (8 * getResources().getDisplayMetrics().density);
+		
+		LinearLayout root = new LinearLayout(this);
+		root.setOrientation(LinearLayout.VERTICAL);
+		root.setPadding(dp24, dp24, dp24, dp8);
+		
+		TextView title = new TextView(this);
+		title.setText(R.string.code_to_blocks_title);
+		title.setTextSize(20);
+		title.setTypeface(null, android.graphics.Typeface.BOLD);
+		title.setTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOnSurface));
+		root.addView(title);
+		
+		TextView subtitle = new TextView(this);
+		subtitle.setText(R.string.code_to_blocks_subtitle);
+		subtitle.setTextSize(14);
+		subtitle.setTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOnSurfaceVariant));
+		LinearLayout.LayoutParams subParams = new LinearLayout.LayoutParams(-1, -2);
+		subParams.setMargins(0, dp8, 0, dp16);
+		subtitle.setLayoutParams(subParams);
+		root.addView(subtitle);
+		
+		com.google.android.material.card.MaterialCardView card = new com.google.android.material.card.MaterialCardView(this);
+		card.setCardElevation(0);
+		card.setRadius(dp8);
+		card.setStrokeWidth((int)(1 * getResources().getDisplayMetrics().density));
+		card.setStrokeColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOutlineVariant));
+		card.setCardBackgroundColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorSurfaceVariant));
+		
+		EditText editText = new EditText(this);
+		editText.setHint(R.string.code_to_blocks_hint);
+		editText.setBackground(null); // Transparent background
+		editText.setPadding(dp16, dp16, dp16, dp16);
+		editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT 
+		| android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE 
+		| android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		editText.setMinLines(8);
+		editText.setMaxLines(18);
+		editText.setGravity(android.view.Gravity.TOP | android.view.Gravity.START);
+		editText.setVerticalScrollBarEnabled(true);
+		editText.setTypeface(android.graphics.Typeface.MONOSPACE);
+		editText.setTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOnSurface));
+		editText.setHintTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOutline));
+		
+		card.addView(editText, new ViewGroup.LayoutParams(-1, -2));
+		root.addView(card, new LinearLayout.LayoutParams(-1, -2));
+		
+		new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+		.setView(root)
+		.setNegativeButton(R.string.btn_cancel, null)
+		.setPositiveButton(R.string.btn_convert, (dialog, which) -> {
+			String code = editText.getText() == null ? "" : editText.getText().toString().trim();
+			
+			if (code.isEmpty()) {
+				pro.sketchware.util.SketchwareUtil.toastError(getString(R.string.code_to_blocks_error_empty));
+				return;
+			} else {
+				runConversion(code, () -> BlocksConverter.convert(code));
+			}
+			
+			
+			
+		})
+		.show();
+	}
+	
+	private void runConversion(String code, java.util.function.Supplier<BlocksConverter.ConversionResult> converterCall) {
+		BlocksConverter.ConversionResult result;
+		try {
+			result = converterCall.get();
+		} catch (Throwable t) {
+			pro.sketchware.util.SketchwareUtil.toastError(getString(R.string.converter_error_failed, t.getMessage()));
+			return;
+		}
+		
+		if (result == null || result.error != null) {
+			String detail = result == null ? getString(R.string.converter_no_result) : result.error;
+			pro.sketchware.util.SketchwareUtil.toastError(getString(R.string.converter_error_could_not_convert, detail));
+			return;
+		}
+		
+		int total    = result.blocks.size();
+		int rec      = result.recognizedCount;
+		int fallback = result.fallbackCount;
+		
+		String blockWord = getString(total == 1 ? R.string.word_block : R.string.word_blocks);
+		String recBlockWord = getString(rec == 1 ? R.string.word_block : R.string.word_blocks);
+		String fallbackBlockWord = getString(fallback == 1 ? R.string.word_block : R.string.word_blocks);
+
+		String msg = getString(R.string.conversion_summary_msg, rec, recBlockWord, fallback, fallbackBlockWord, total, blockWord);
+		
+		new MaterialAlertDialogBuilder(this)
+		.setTitle(R.string.conversion_dialog_title)
+		.setMessage(msg)
+		.setNegativeButton(R.string.conversion_btn_go_back, null)
+		.setPositiveButton(R.string.conversion_btn_insert, (d2, w2) -> insertConvertedBlocks(result.blocks))
+		.show();
+	}
+	
+	private void insertConvertedBlocks(java.util.ArrayList<pro.sketchware.beans.BlockBean> blocks) {
+		if (blocks == null || blocks.isEmpty()) {
+			pro.sketchware.util.SketchwareUtil.toastError(getString(R.string.blocks_toast_no_blocks));
+			return;
+		}
+		int[] oLoc = new int[2];
+		blockPane.getLocationOnScreen(oLoc);
+		int insertX = oLoc[0] + pro.sketchware.util.SketchwareUtil.dpToPx(16);
+		int insertY = oLoc[1] + pro.sketchware.util.SketchwareUtil.dpToPx(80);
+		
+		java.util.ArrayList<pro.sketchware.beans.BlockBean> inserted = addBlockBeans(blocks, insertX, insertY, true);
+		BlockHistoryManager.getInstance(scId).recordAddMultiple(buildHistoryKey(), insertX - oLoc[0], insertY - oLoc[1], null, null);
+		refreshOptionsMenu();
+		
+		
+		String insertedBlockWord = getString(inserted.size() != 1 ? R.string.word_blocks : R.string.word_block);
+		pro.sketchware.util.SketchwareUtil.toast(
+		getString(R.string.blocks_toast_inserted, inserted.size(), insertedBlockWord));
+	}
 }
