@@ -136,6 +136,21 @@ import pro.sketchware.databinding.SearchWithRecyclerViewBinding;
 import pro.sketchware.activities.editor.logic.ExtraMenuBean;
 import pro.sketchware.util.FilePathUtil;
 import pro.sketchware.util.SvgUtils;
+import pro.sketchware.logic.LogicSyntaxChecker;
+// AI / Clipboard / dialogs
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+
+// AI project classes
+import pro.sketchware.network.AiProviderService;
+import pro.sketchware.network.AiRequestHandle;
+import pro.sketchware.ia.LogicGenTask;
+import android.widget.ProgressBar;
+//classes BlocksConverter
+import mod.sketchlibx.project.editor.BlocksConverter;
+
 
 @SuppressLint({"ClickableViewAccessibility", "RtlHardcoded", "SetTextI18n", "DefaultLocale"})
 public class LogicEditorActivity extends BaseAppCompatActivity implements View.OnClickListener, BlockSizeListener, View.OnTouchListener, MoreblockImporterDialog.CallBack {
@@ -194,6 +209,17 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
     private Runnable pendingCanvasSearchRunnable;
     private OnBackPressedCallback canvasSearchBackCallback;
     private boolean suppressCanvasSearchTextChange = false;
+    
+    	// Syntax check fields
+	private LinearLayout syntaxCheckContainer;
+	private ImageView syntaxCheckIcon;
+	private TextView syntaxCheckText;
+	private final Handler syntaxCheckHandler = new Handler();
+	private final Runnable syntaxCheckRunnable = this::runSyntaxCheck;
+	// تعديل runSyntaxCheck لاستخدام خيط معالجة آمن وتفادي إنشائه باستمرار
+	private final ExecutorService syntaxExecutor = Executors.newSingleThreadExecutor();
+	// يحتفظ بمقبض الطلب الجاري حتى نتمكن من إلغائه
+	private volatile AiRequestHandle activeAiRequest;
 
     public interface PaletteBuildInterceptor {
         void addDeprecatedBlock(String message, String type, String opCode);
@@ -2186,6 +2212,21 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
         extraPaletteBlock = new ExtraPaletteBlock(this, isViewBindingEnabled);
 
         svgUtils = new SvgUtils(this);
+        
+        // Initialize syntax check UI
+		syntaxCheckContainer = findViewById(R.id.syntax_check_container);
+		syntaxCheckIcon = findViewById(R.id.syntax_check_icon);
+		syntaxCheckText = findViewById(R.id.syntax_check_text);
+		syntaxCheckContainer.setOnClickListener(v -> {
+			LogicSyntaxChecker.SyntaxResult result = (LogicSyntaxChecker.SyntaxResult) v.getTag();
+			if (result != null && !result.isValid) {
+				new MaterialAlertDialogBuilder(this)
+				.setTitle("Syntax Error Details")
+				.setMessage(result.errorMessage)
+				.setPositiveButton(R.string.common_word_ok, null)
+				.show();
+			}
+		});
     }
 
     @Override
@@ -2249,6 +2290,18 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
             finish();
         }
     }
+    
+    // إضافة onDestroy لتنظيف الـ Activity بالكامل
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (syntaxExecutor != null && !syntaxExecutor.isShutdown()) {
+			syntaxExecutor.shutdownNow();
+		}
+		if (activeAiRequest != null) {
+			activeAiRequest.cancel();
+		}
+	}
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
@@ -2712,6 +2765,49 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
         intent.putExtra("scheme", CodeViewerActivity.SCHEME_JAVA);
         startActivity(intent);
     }
+    
+    private void triggerSyntaxCheck() {
+		syntaxCheckHandler.removeCallbacks(syntaxCheckRunnable);
+		syntaxCheckHandler.postDelayed(syntaxCheckRunnable, 500);
+	}
+	
+	
+	private void runSyntaxCheck() {
+		if (blockPane == null || blockPane.getBlocks().isEmpty()) {
+			syntaxCheckContainer.setVisibility(View.GONE);
+			return;
+		}
+		
+		ProjectFilePaths projectFilePaths = new ProjectFilePaths(this, scId);
+        projectFilePaths.initializeMetadata(ProjectDataManager.getLibraryManager(scId), ProjectDataManager.getFileManager(scId), ProjectDataManager.getProjectDataManager(scId));
+		
+		
+		syntaxExecutor.execute(() -> {
+			LogicSyntaxChecker.SyntaxResult result = LogicSyntaxChecker.check(
+			projectFile.getActivityName(),
+			ProjectFilePaths.buildConfig,
+			blockPane.getBlocks(),
+			isViewBindingEnabled
+			);
+			
+			runOnUiThread(() -> {
+				if (isFinishing() || isDestroyed()) return;
+				syntaxCheckContainer.setVisibility(View.VISIBLE);
+				syntaxCheckContainer.setTag(result);
+				if (result.isValid) {
+					syntaxCheckIcon.setImageResource(R.drawable.ic_check);
+					syntaxCheckIcon.setColorFilter(ContextCompat.getColor(this, R.color.scolor_green_normal));
+					syntaxCheckText.setText(R.string.logic_editor_syntax_ok);
+					syntaxCheckText.setTextColor(ContextCompat.getColor(this, R.color.scolor_green_normal));
+				} else {
+					syntaxCheckIcon.setImageResource(R.drawable.ic_remove_grey600_24dp);
+					syntaxCheckIcon.setColorFilter(ContextCompat.getColor(this, R.color.scolor_red_01));
+					syntaxCheckText.setText(R.string.logic_editor_syntax_error_details);
+					syntaxCheckText.setTextColor(ContextCompat.getColor(this, R.color.scolor_red_01));
+				}
+			});
+		});
+	}
 
     public void initDrawerAnimators() {
         drawerShowAnimator = ObjectAnimator.ofFloat(editorDrawer, View.TRANSLATION_X, 0.0f);
