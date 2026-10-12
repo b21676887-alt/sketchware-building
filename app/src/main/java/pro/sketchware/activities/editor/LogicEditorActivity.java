@@ -293,6 +293,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed()) return;
                 onComplete.run();
+                triggerSyntaxCheck();
             });
         }
     }
@@ -403,6 +404,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 
     public void refreshOptionsMenu() {
         invalidateOptionsMenu();
+        triggerSyntaxCheck();
     }
 
     public void saveBlocks() {
@@ -2283,6 +2285,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
         long pc5 = System.currentTimeMillis();
         android.util.Log.d("BlockLoad", "PC taskExec: " + (pc5 - pc4) + "ms total=" + (pc5 - pc0) + "ms");
         // loadBlockCollections() deferred to onComplete so it runs after blocks are visible
+        triggerSyntaxCheck();
     }
 
     @Override
