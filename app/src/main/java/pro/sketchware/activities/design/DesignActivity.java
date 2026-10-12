@@ -133,6 +133,7 @@ import mod.sketchlibx.search.GlobalSearchDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
+
 public class DesignActivity extends BaseAppCompatActivity implements View.OnClickListener {
     private String sc_id;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -916,9 +917,11 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                 String currentLayoutXml = null;
                 String xmlName = activeFile.getXmlName();
                 
+                // الحصول على سجل المحادثات والتصميمات السابقة
                 pro.sketchware.ia.LayoutHistoryManager historyManager = new pro.sketchware.ia.LayoutHistoryManager(getApplicationContext());
                 List<pro.sketchware.ia.LayoutHistoryManager.HistoryEntry> history = historyManager.getHistory(sc_id, xmlName);
                 
+                // إذا تم تفعيل تضمين التخطيط الحالي، نقوم بقراءته
                 if (includeCurrentLayout) {
                     updateAiLayoutLoadingDialog(getString(R.string.ai_layout_generator_reading_context));
                     try {
@@ -949,8 +952,17 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                         var rootLayoutManager = new InjectRootLayoutManager(sc_id);
                         rootLayoutManager.set(xmlName, InjectRootLayoutManager.toRoot(generatedLayout.rootAttributes));
 
-                        var bean = new HistoryViewBean();
-                        bean.actionOverride(generatedLayout.parsedLayout, ProjectDataManager.getProjectDataManager(sc_id).getViews(xmlName));
+                        var projectDataManager = ProjectDataManager.getProjectDataManager(sc_id);
+                        var historyViewBean = new HistoryViewBean();
+                        historyViewBean.actionOverride(generatedLayout.parsedLayout, projectDataManager.getViews(xmlName));
+                        
+                        // التصحيح بناءً على دوال ViewHistoryManager الصحيحة
+                        var viewHistoryManager = ViewHistoryManager.getInstance(sc_id);
+                        viewHistoryManager.trimFutureHistory(xmlName);
+                        viewHistoryManager.addHistoryEntry(xmlName, historyViewBean);
+
+                        projectDataManager.getViews(xmlName).clear();
+                        projectDataManager.getViews(xmlName).addAll(generatedLayout.parsedLayout);
                         
                         if (viewTabAdapter != null) {
                             viewTabAdapter.refreshAllViews();
@@ -958,7 +970,13 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
                         }
 
                         SketchwareUtil.toast(getString(R.string.ai_layout_generator_success, xmlName));
-                        historyManager.saveHistoryEntry(sc_id, xmlName, prompt, cleanXml);
+                        
+                        // حفظ المدخلات في السجل بعد النجاح
+                        try {
+                            historyManager.saveHistoryEntry(sc_id, xmlName, prompt, cleanXml);
+                        } catch (Exception e) {
+                            Log.e("DesignActivity", "Erro ao salvar histórico", e);
+                        }
                     } catch (Exception parseExp) {
                         showAiLayoutErrorDialog(getString(R.string.ai_layout_generator_error_apply, getAiLayoutErrorDetail(parseExp)));
                     } finally {
@@ -971,6 +989,7 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
             }
         }).start();
     }
+
 
     private void showAiLayoutErrorDialog(String message) {
         runOnUiThread(() -> {
