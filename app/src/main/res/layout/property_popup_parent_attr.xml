@@ -38,6 +38,14 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/shortcuts"
+            android:layout_width="@dimen/mtrl_min_touch_target_size"
+            android:layout_height="@dimen/mtrl_min_touch_target_size"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_mtrl_bookmark" />
+
+        <ImageView
             android:id="@+id/add"
             android:layout_width="@dimen/mtrl_min_touch_target_size"
             android:layout_height="@dimen/mtrl_min_touch_target_size"

@@ -119,6 +119,7 @@ public class PropertyInputItem extends RelativeLayout implements View.OnClickLis
             case "property_inject" -> icon = R.drawable.ic_mtrl_code;
             case "property_convert" -> icon = R.drawable.ic_mtrl_switch;
             case "property_text_size" -> icon = R.drawable.ic_mtrl_font;
+            case "property_visibility" -> icon = R.drawable.ic_mtrl_visibility;
         }
         imageView.setImageResource(icon);
     }
@@ -239,10 +240,47 @@ public class PropertyInputItem extends RelativeLayout implements View.OnClickLis
                         Helper.getText(tvName),
                         safeParseFloat(value, 1f),
                         0f, 50f, 1f, true);
+                case "property_visibility" -> showVisibilityDialog();
                 case "property_convert" -> showAutoCompleteDialog();
                 case "property_inject" -> showInjectDialog();
             }
         }
+    }
+    
+    private void showVisibilityDialog() {
+        MaterialAlertDialogBuilder dialog = new MaterialAlertDialogBuilder(getContext());
+        dialog.setTitle(Helper.getText(tvName));
+        dialog.setIcon(icon);
+
+        String[] options = {"visible", "invisible", "gone"};
+        int checkedItem = -1;
+        
+        for (int i = 0; i < options.length; i++) {
+            if (options[i].equals(value)) {
+                checkedItem = i;
+                break;
+            }
+        }
+
+        dialog.setSingleChoiceItems(options, checkedItem, (d, which) -> {
+            setValue(options[which]);
+            if (valueChangeListener != null) {
+                valueChangeListener.a(key, value);
+            }
+            d.dismiss();
+        });
+
+        // Add a Reset button to clear XML injection
+        dialog.setNeutralButton(Helper.getResString(R.string.common_word_reset), (d, which) -> {
+            setValue("");
+            if (valueChangeListener != null) {
+                valueChangeListener.a(key, "");
+            }
+            d.dismiss();
+        });
+
+        dialog.setNegativeButton(Helper.getResString(R.string.common_word_cancel), null);
+        dialog.show();
     }
 
     private void showHybridSliderDialog(String propertyName, float currentValue, float minValue, float maxValue, float stepSize, boolean isInteger) {
@@ -870,23 +908,84 @@ public class PropertyInputItem extends RelativeLayout implements View.OnClickLis
      */
     private List<String> populateAttributes() {
         List<String> attrs = new ArrayList<>();
-        attrs.add("android:elevation");
+        AttributeShortcutsManager shortcutsManager = new AttributeShortcutsManager();
+
+        // Add saved shortcuts
+        for (AttributeShortcutsManager.ShortcutItem item : shortcutsManager.getShortcuts()) {
+            attrs.add(item.name);
+        }
+
         if (bean != null) {
-            var simpleName = getSimpleName(bean);
             var classInfo = bean.getClassInfo();
+
+            // View attributes (common to all)
+            attrs.addAll(Arrays.asList(
+                    "android:background", "android:backgroundTint", "android:alpha", "android:visibility",
+                    "android:padding", "android:layout_margin", "android:elevation", "android:rotation",
+                    "android:scaleX", "android:scaleY", "android:translationX", "android:translationY"
+            ));
+
+            if (classInfo.isExactType("TextView")) {
+                attrs.addAll(Arrays.asList(
+                        "android:text", "android:textSize", "android:textColor", "android:textStyle",
+                        "android:fontFamily", "android:typeface", "android:lines", "android:maxLines",
+                        "android:singleLine", "android:gravity", "android:ellipsize", "android:hint",
+                        "android:textColorHint", "android:inputType", "android:imeOptions",
+                        "android:drawableLeft", "android:drawableTop", "android:drawableRight", "android:drawableBottom",
+                        "android:drawablePadding", "android:drawableTint"
+                ));
+            }
+
+            if (classInfo.isExactType("ImageView")) {
+                attrs.addAll(Arrays.asList(
+                        "android:src", "android:scaleType", "android:tint",
+                        "android:adjustViewBounds", "android:cropToPadding"
+                ));
+            }
+
+            if (classInfo.isExactType("LinearLayout")) {
+                attrs.addAll(Arrays.asList(
+                        "android:orientation", "android:gravity", "android:weightSum",
+                        "android:baselineAligned"
+                ));
+            }
+
+            if (classInfo.isExactType("ViewGroup")) {
+                attrs.addAll(Arrays.asList(
+                        "android:clipChildren", "android:clipToPadding", "android:animateLayoutChanges"
+                ));
+            }
+
+            if (classInfo.isExactType("ProgressBar")) {
+                attrs.addAll(Arrays.asList(
+                        "android:max", "android:progress", "android:indeterminate",
+                        "android:indeterminateTint", "android:progressTint"
+                ));
+            }
+
+            if (classInfo.isExactType("CompoundButton")) {
+                attrs.addAll(Arrays.asList(
+                        "android:checked", "android:button", "android:buttonTint"
+                ));
+            }
+
             if (classInfo.isExactType("CardView")) {
-                attrs.add("app:cardBackgroundColor");
-                attrs.add("app:cardElevation");
-                attrs.add("app:cardCornerRadius");
-                attrs.add("app:cardUseCompatPadding");
-                if (simpleName.equals("MaterialCardView")) {
-                    attrs.add("app:strokeColor");
-                    attrs.add("app:strokeWidth");
-                }
+                attrs.addAll(Arrays.asList(
+                        "app:cardBackgroundColor", "app:cardCornerRadius", "app:cardElevation",
+                        "app:cardMaxElevation", "app:cardUseCompatPadding", "app:cardPreventCornerOverlap",
+                        "app:contentPadding", "app:strokeColor", "app:strokeWidth"
+                ));
+            }
+
+            if (classInfo.isExactType("MaterialButton")) {
+                attrs.addAll(Arrays.asList(
+                        "app:icon", "app:iconTint", "app:iconGravity", "app:iconPadding",
+                        "app:strokeColor", "app:strokeWidth", "app:cornerRadius", "app:rippleColor"
+                ));
             }
         }
-        // Add more attributes here based on the view type
-        return attrs;
+
+        return attrs.stream().distinct().sorted().collect(Collectors.toList());
     }
 
     private String getSimpleName(ViewBean bean) {
@@ -950,6 +1049,88 @@ public class PropertyInputItem extends RelativeLayout implements View.OnClickLis
                     showTextInputDialog(9999, true);
                     dialog.dismiss();
                 });
+        binding.shortcuts.setVisibility(View.VISIBLE);
+        binding.shortcuts.setOnClickListener(v -> showShortcutsDialog(attributes, dialog));
+    }
+    
+    private void showShortcutsDialog(LinkedHashMap<String, String> currentAttributes, BottomSheetDialog parentDialog) {
+        AttributeShortcutsManager manager = new AttributeShortcutsManager();
+        BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+        var binding = PropertyPopupParentAttrBinding.inflate(LayoutInflater.from(getContext()));
+        dialog.setContentView(binding.getRoot());
+
+        binding.title.setText("Shortcuts");
+        binding.viewId.setVisibility(View.GONE);
+        binding.sourceCode.setVisibility(View.GONE);
+        binding.shortcuts.setVisibility(View.GONE);
+
+        var adapter = new AttributesAdapter();
+        LinkedHashMap<String, String> shortcutsMap = new LinkedHashMap<>();
+        for (AttributeShortcutsManager.ShortcutItem item : manager.getShortcuts()) {
+            shortcutsMap.put(item.name, item.value);
+        }
+
+        adapter.setAttributes(shortcutsMap);
+        adapter.submitList(new ArrayList<>(shortcutsMap.keySet()));
+
+        adapter.setOnItemClickListener(new AttributesAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(LinkedHashMap<String, String> attributes, String attr) {
+                currentAttributes.put(attr, attributes.get(attr));
+                saveAttributes(currentAttributes);
+                dialog.dismiss();
+                parentDialog.dismiss();
+            }
+
+            @Override
+            public void onItemLongClick(LinkedHashMap<String, String> attributes, String attr) {
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("Delete Shortcut")
+                        .setMessage("Delete " + attr + "?")
+                        .setPositiveButton("Delete", (d, w) -> {
+                            manager.removeShortcut(attr);
+                            attributes.remove(attr);
+                            adapter.submitList(new ArrayList<>(attributes.keySet()));
+                            adapter.notifyDataSetChanged();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        });
+
+        binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        binding.add.setOnClickListener(v -> showAddShortcutDialog(manager, adapter));
+
+        dialog.show();
+    }
+
+    private void showAddShortcutDialog(AttributeShortcutsManager manager, AttributesAdapter adapter) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+        builder.setTitle("Add Shortcut");
+
+        StyleEditorAddAttrBinding binding = StyleEditorAddAttrBinding.inflate(LayoutInflater.from(getContext()));
+        builder.setView(binding.getRoot());
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String name = binding.attrName.getText().toString().trim();
+            String value = binding.attrValue.getText().toString().trim();
+
+            if (!name.isEmpty()) {
+                manager.addShortcut(name, value);
+                LinkedHashMap<String, String> shortcutsMap = new LinkedHashMap<>();
+                for (AttributeShortcutsManager.ShortcutItem item : manager.getShortcuts()) {
+                    shortcutsMap.put(item.name, item.value);
+                }
+                adapter.setAttributes(shortcutsMap);
+                adapter.submitList(new ArrayList<>(shortcutsMap.keySet()));
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
     }
 
     private void addNewAttribute(Map<String, String> attributes) {
@@ -1020,6 +1201,10 @@ public class PropertyInputItem extends RelativeLayout implements View.OnClickLis
 
         binding.tiInput.setHint(
                 String.format(Helper.getResString(R.string.property_enter_value), attr));
+                
+        if (getContext() instanceof Activity) {
+            AttributeInputHelper.wireFixed((Activity) getContext(), sc_id, attr, binding.tiInput, input);
+        }
 
         builder.setView(binding.getRoot());
         builder.setPositiveButton(
