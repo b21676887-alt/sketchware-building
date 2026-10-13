@@ -428,7 +428,7 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
     private void loadDefaultManifestIntoTextArea(TextInputEditText manifestInput) {
         manifestInput.setText("Loading default manifest...");
         BackgroundTasks.callIoIfAlive(TaskHost.of(this), "AndroidManifestInjection", () ->
-                new ProjectFilePaths(getApplicationContext(), sc_id).getFileSrc(
+                new ProjectFilePaths(getApplicationContext(), sc_id).getDefaultManifestSrc(
                         "AndroidManifest.xml",
                         ProjectDataManager.getFileManager(sc_id),
                         ProjectDataManager.getProjectDataManager(sc_id),
@@ -452,27 +452,35 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
         android.widget.RadioButton radioCustom = findViewById(R.id.radio_custom);
         View manifestContainer = findViewById(R.id.manifest_input_container);
         TextInputEditText manifestInput = findViewById(R.id.manifest_input);
-
+    
         android.widget.Button btnSaveManifest = findViewById(R.id.btn_save_manifest);
         android.widget.Button btnLoadDefault = findViewById(R.id.btn_load_default);
         android.widget.Button btnResetManifest = findViewById(R.id.btn_reset_manifest);
-
+    
         if (manifestModeGroup == null || manifestInput == null) {
             return;
         }
-
-        final String INJECTION_MANIFEST_DIR = SketchwarePaths.getMyscPath(sc_id) + File.separator + "Injection" + File.separator + "androidmanifest" + File.separator;
+    
+        // Use explicit external storage base path like the working repo
+        final String BASE_DATA_DIR = FileUtil.getExternalStorageDir().concat("/.sketchware/data/").concat(sc_id).concat("/");
+        final String INJECTION_MANIFEST_DIR = BASE_DATA_DIR + "Injection/androidmanifest/";
         final String MANIFEST_MODE_PATH = INJECTION_MANIFEST_DIR + "manifest_mode.txt";
         final String CUSTOM_MANIFEST_PATH = INJECTION_MANIFEST_DIR + "custom_manifest.xml";
-
-        final String BASE_MANIFEST_FLAG_PATH = SketchwarePaths.getMyscPath(sc_id) + File.separator + "Manifast";
-        final String BASE_MANIFEST_XML_PATH = SketchwarePaths.getMyscPath(sc_id) + File.separator + "Manifast.xml";
-
-        File dir = new File(INJECTION_MANIFEST_DIR);
-        if (!dir.exists()) {
-            dir.mkdirs();
+    
+        final String BASE_MANIFEST_FLAG_PATH = BASE_DATA_DIR + "Manifast";
+        final String BASE_MANIFEST_XML_PATH = BASE_DATA_DIR + "Manifast.xml";
+    
+        // ensure directories exist
+        File injectionDir = new File(INJECTION_MANIFEST_DIR);
+        if (!injectionDir.exists()) {
+            injectionDir.mkdirs();
         }
-
+        File baseDir = new File(BASE_DATA_DIR);
+        if (!baseDir.exists()) {
+            baseDir.mkdirs();
+        }
+    
+        // create default files if missing
         if (!FileUtil.isExistFile(CUSTOM_MANIFEST_PATH)) {
             FileUtil.writeFile(CUSTOM_MANIFEST_PATH, "");
         }
@@ -485,7 +493,7 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
         if (!FileUtil.isExistFile(BASE_MANIFEST_XML_PATH)) {
             FileUtil.writeFile(BASE_MANIFEST_XML_PATH, "");
         }
-
+    
         String mode = safeReadFile(MANIFEST_MODE_PATH).trim();
         if ("custom".equals(mode)) {
             radioCustom.setChecked(true);
@@ -500,20 +508,20 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
             FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "false");
             FileUtil.writeFile(BASE_MANIFEST_XML_PATH, "");
         }
-
+    
         manifestModeGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radio_custom) {
                 manifestContainer.setVisibility(View.VISIBLE);
                 FileUtil.writeFile(MANIFEST_MODE_PATH, "custom");
                 FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "true");
-
+    
                 String currentContent = safeReadFile(CUSTOM_MANIFEST_PATH);
                 if (currentContent.trim().isEmpty()) {
                     loadDefaultManifestIntoTextArea(manifestInput);
                 } else {
                     manifestInput.setText(currentContent);
                 }
-
+    
                 FileUtil.writeFile(BASE_MANIFEST_XML_PATH, manifestInput.getText().toString());
                 SketchwareUtil.toast("Custom manifest selected");
             } else {
@@ -524,7 +532,7 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
                 SketchwareUtil.toast("Default manifest selected");
             }
         });
-
+    
         btnSaveManifest.setOnClickListener(v -> {
             String content = Helper.getText(manifestInput);
             FileUtil.writeFile(CUSTOM_MANIFEST_PATH, content);
@@ -533,11 +541,9 @@ public class AndroidManifestInjection extends BaseAppCompatActivity {
             FileUtil.writeFile(BASE_MANIFEST_FLAG_PATH, "true");
             SketchwareUtil.toast("Custom manifest saved");
         });
-
-        btnLoadDefault.setOnClickListener(v -> {
-            loadDefaultManifestIntoTextArea(manifestInput);
-        });
-
+    
+        btnLoadDefault.setOnClickListener(v -> loadDefaultManifestIntoTextArea(manifestInput));
+    
         btnResetManifest.setOnClickListener(v -> {
             FileUtil.writeFile(CUSTOM_MANIFEST_PATH, "");
             FileUtil.writeFile(BASE_MANIFEST_XML_PATH, "");

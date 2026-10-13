@@ -1148,7 +1148,22 @@ public class ProjectFilePaths {
      *
      * @return The file's code or an empty String if not found
      */
+    // public delegator: يحافظ على التوقيع الحالي ويستدعي النسخة التي تقبل العلم بـ true
     public String getFileSrc(String filename, ProjectFileManager projectFileManager, ProjectDataStore projectDataManager, LibraryManager projectLibraryManager) {
+        return getFileSrc(filename, projectFileManager, projectDataManager, projectLibraryManager, true);
+    }
+    
+    // جديد: دالة لإرجاع "المانيفست الافتراضي" بدون تطبيق حقن المستخدم
+    public String getDefaultManifestSrc(ProjectFileManager projectFileManager, ProjectDataStore projectDataManager, LibraryManager projectLibraryManager) {
+        return getFileSrc("AndroidManifest.xml", projectFileManager, projectDataManager, projectLibraryManager, false);
+    }
+    
+    /**
+     * النسخة الداخلية التي تنفّذ العمل فعلياً. applyCustomManifest = true => سلوك سابق (يطبق AndroidManifestInjector)
+     *                                   = false => لا يطبّق حقن المستخدم (يعيد المانيفست "الأساس" فقط)
+     */
+    private String getFileSrc(String filename, ProjectFileManager projectFileManager, ProjectDataStore projectDataManager, LibraryManager projectLibraryManager,
+                              boolean applyCustomManifest) {
         initializeMetadata(projectLibraryManager, projectFileManager, projectDataManager);
         CommandBlock.clearTempCommands();
         try {
@@ -1163,7 +1178,7 @@ public class ProjectFilePaths {
                  */
                 prepareXmlCommands(projectFileManager, projectDataManager);
             }
-
+    
             switch (filename) {
                 case "strings.xml" -> {
                     return getXMLString();
@@ -1175,15 +1190,30 @@ public class ProjectFilePaths {
                     return getXMLStyle();
                 }
             }
-
+    
             if (isManifestFile) {
+                // عند الطلب: إما نطبّق حقن المستخدم (السلوك القديم) أو نُرجع المانيفست الأساسي من دون حقن
                 ProjectBuilder builder = new ProjectBuilder(SketchApplication.getAppContext(), this);
                 builder.buildBuiltInLibraryInformation();
                 ManifestGenerator manifestGenerator = new ManifestGenerator(buildConfig, projectFileManager.getActivities(), builder.getBuiltInLibraryManager());
                 manifestGenerator.setProjectFilePaths(this);
-                return finalizeGeneratedManifest(manifestGenerator.generateManifest());
+    
+                String rawManifest = manifestGenerator.generateManifest();
+    
+                if (applyCustomManifest) {
+                    // السلوك السابق: حقن مكونات المستخدم ثم دمج الـ local library ثم تطبيق command blocks
+                    String finalManifest = finalizeGeneratedManifest(rawManifest);
+                    return finalManifest;
+                } else {
+                    // إرجاع المانيفست "الأساس" بدون حقن AndroidManifestInjector
+                    String manifest = rawManifest;
+                    if (isLocalLibraryManifestMergeEnabled() && !isAndroidStudioExport) {
+                        manifest = LocalLibraryManifestMerger.mergeLocalLibraryManifests(manifest, sc_id, packageName);
+                    }
+                    return applyStoredXmlCommandsIfNeeded("AndroidManifest.xml", manifest);
+                }
             }
-
+    
             for (ProjectFileBean projectFile : projectFiles) {
                 if (filename.equals(isJavaFile ? projectFile.getJavaName() : projectFile.getXmlName())) {
                     if (isJavaFile) {
@@ -1195,7 +1225,7 @@ public class ProjectFilePaths {
                     }
                 }
             }
-
+    
             return "";
         } finally {
             CommandBlock.clearTempCommands();
