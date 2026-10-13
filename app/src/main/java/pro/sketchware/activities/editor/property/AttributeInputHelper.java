@@ -170,8 +170,8 @@ public final class AttributeInputHelper {
 
         inputValueLayout.setEndIconOnClickListener(v -> {
             String currentValue = Helper.getText(inputValue);
-            com.besome.sketch.lib.ui.ColorPickerDialog colorPickerDialog =
-                    new com.besome.sketch.lib.ui.ColorPickerDialog(activity, currentValue, false, false, scId);
+            pro.sketchware.widgets.ColorPickerDialog colorPickerDialog =
+                    new pro.sketchware.widgets.ColorPickerDialog(activity, currentValue, false, false, scId);
             colorPickerDialog.a(new PCP(inputValue));
             colorPickerDialog.showAtLocation(v, android.view.Gravity.CENTER, 0, 0);
         });

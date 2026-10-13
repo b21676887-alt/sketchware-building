@@ -69,10 +69,13 @@ import pro.sketchware.databinding.PropertyInputItemBinding;
 import pro.sketchware.databinding.PropertyPopupHybridBinding;
 import pro.sketchware.databinding.PropertyPopupInputTextBinding;
 import pro.sketchware.databinding.PropertyPopupParentAttrBinding;
+import pro.sketchware.databinding.PropertyInputItemBinding;
+import pro.sketchware.databinding.StyleEditorAddAttrBinding;
 import pro.sketchware.lib.base.BaseTextWatcher;
 import pro.sketchware.lib.highlighter.SyntaxScheme;
 import pro.sketchware.core.validation.PropertyNameValidator;
 import pro.sketchware.util.FileUtil;
+import android.app.Activity;
 
 @SuppressLint("ViewConstructor")
 public class PropertyInputItem extends RelativeLayout implements View.OnClickListener {
