@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
 
 import org.json.JSONObject;
 
-import pro.sketchware.core.project.BuildConfig;
+import pro.sketchware.BuildConfig;
 import pro.sketchware.R;
 import pro.sketchware.util.Network;
 
