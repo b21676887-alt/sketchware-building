@@ -4578,4 +4578,5 @@ Do you want to continue?</string>
     <string name="generating_code_progress">Generating code...</string>
     <string name="ai_layout_generator">AI Layout</string>
     <string name="project_settings_hint_comple_sdk">Compile SDK version</string>
+    <string name="view_code_editor_appcompat_note">Use AppCompat Manager to modify attributes for CoordinatorLayout, Toolbar, and other appcompat layout/widget.</string>
 </resources>

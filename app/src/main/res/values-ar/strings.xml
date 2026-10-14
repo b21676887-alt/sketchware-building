@@ -3779,4 +3779,5 @@
     <string name="title_backuprestore_category">النسخ الاحتياطي و الاستعادة</string>
     <string name="title_versioncontrol_category">التحكم في الإصدارات</string>
     <string name="title_rootfeatures_category">خصائص الجذر</string>
+    <string name="view_code_editor_appcompat_note">استخدم مدير AppCompat لتعديل خصائص CoordinatorLayout و Toolbar وغيرها من تخطيطات وعناصر appcompat.</string>
 </resources>
