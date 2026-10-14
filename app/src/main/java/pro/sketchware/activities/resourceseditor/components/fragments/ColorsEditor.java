@@ -253,6 +253,21 @@ public class ColorsEditor extends Fragment {
         });
 
         dialogBinding.colorPreviewCard.setOnClickListener(v -> {
+            String inputColor = Objects.requireNonNull(dialogBinding.colorValueInput.getText()).toString().trim();
+            String colorToPass = inputColor;
+            
+            // التحقق من صحة اللون إذا كان كود Hex لتجنب الانهيار
+            if (inputColor.startsWith("#")) {
+                try {
+                    android.graphics.Color.parseColor(inputColor);
+                } catch (Exception e) {
+                    colorToPass = "#FFFFFF"; // تمرير لون افتراضي في حال كان الكود غير صالح أو غير مكتمل
+                }
+            } else if (inputColor.isEmpty()) {
+                colorToPass = "#FFFFFF";
+            }
+            
+            
             ColorPickerDialog colorPicker = new ColorPickerDialog(activity, Objects.requireNonNull(dialogBinding.colorValueInput.getText()).toString(), false, false, activity.sc_id);
             colorPicker.setColorPickerCallback(new ColorPickerDialog.OnColorPickedListener() {
                 @Override
