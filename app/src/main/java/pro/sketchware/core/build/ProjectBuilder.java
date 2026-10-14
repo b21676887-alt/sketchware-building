@@ -94,6 +94,12 @@ import proguard.Configuration;
 import proguard.ConfigurationParser;
 import proguard.ParseException;
 import proguard.ProGuard;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 
 /**
  * Orchestrates the entire build pipeline for a Sketchware user project:
@@ -961,6 +967,101 @@ public class ProjectBuilder {
         }
         return null;
     }
+    
+        /**
+     * Extracts and merges META-INF files (services, extensions, kotlin_module, etc.)
+     * from all library JARs, excluding signatures and MANIFEST.MF, and adds them to the APK.
+     */
+    private void extractAndMergeMetaInf(ApkBuilder apkBuilder) {
+        List<File> jarFiles = new ArrayList<>();
+
+        // 1. Built-in library JARs
+        for (BuiltInLibrary library : builtInLibraryManager.getLibraries()) {
+            File jar = BuiltInLibraries.getLibraryClassesJarPath(library.getName());
+            if (jar.exists()) {
+                jarFiles.add(jar);
+            }
+        }
+
+        // 2. Local library JARs
+        for (String jarPath : localLibraryManager.getJarLocalLibrary().split(":")) {
+            if (!jarPath.trim().isEmpty()) {
+                File jar = new File(jarPath);
+                if (jar.exists()) {
+                    jarFiles.add(jar);
+                }
+            }
+        }
+
+        // Map to collect and merge contents based on entry relative path inside META-INF/
+        Map<String, ByteArrayOutputStream> metaInfEntries = new HashMap<>();
+
+        for (File jarFile : jarFiles) {
+            try (ZipInputStream zis = new ZipInputStream(new FileInputStream(jarFile))) {
+                ZipEntry entry;
+                while ((entry = zis.getNextEntry()) != null) {
+                    String name = entry.getName();
+
+                    // Process only files inside META-INF/
+                    if (name.startsWith("META-INF/") && !entry.isDirectory()) {
+                        String upperName = name.toUpperCase();
+
+                        // Exclude manifest and signature files
+                        if (upperName.equals("META-INF/MANIFEST.MF")
+                                || upperName.endsWith(".SF")
+                                || upperName.endsWith(".RSA")
+                                || upperName.endsWith(".DSA")) {
+                            continue;
+                        }
+
+                        ByteArrayOutputStream baos = metaInfEntries.get(name);
+                        if (baos == null) {
+                            baos = new ByteArrayOutputStream();
+                            metaInfEntries.put(name, baos);
+                        } else {
+                            // Ensure newline when merging service/meta files
+                            baos.write("\n".getBytes(StandardCharsets.UTF_8));
+                        }
+
+                        byte[] buffer = new byte[8192];
+                        int count;
+                        while ((count = zis.read(buffer)) != -1) {
+                            baos.write(buffer, 0, count);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                LogUtil.e(TAG, "Failed to read META-INF entries from " + jarFile.getAbsolutePath(), e);
+            }
+        }
+
+        if (metaInfEntries.isEmpty()) return;
+
+        // Directory to write merged META-INF files before passing to ApkBuilder
+        File metaInfOutDir = new File(projectFilePaths.binDirectoryPath, "merged_meta_inf");
+        FileUtil.deleteFile(metaInfOutDir.getAbsolutePath());
+        metaInfOutDir.mkdirs();
+
+        for (Map.Entry<String, ByteArrayOutputStream> entry : metaInfEntries.entrySet()) {
+            String entryPath = entry.getKey();
+            File targetFile = new File(metaInfOutDir, entryPath);
+            File parentDir = targetFile.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(targetFile)) {
+                fos.write(entry.getValue().toByteArray());
+                // Add the file into the APK
+                apkBuilder.addFile(targetFile, entryPath);
+            } catch (DuplicateFileException e) {
+                LogUtil.w(TAG, "Duplicate META-INF entry ignored: " + entryPath);
+            } catch (Exception e) {
+                LogUtil.e(TAG, "Failed to add META-INF file to APK: " + entryPath, e);
+            }
+        }
+    }
+
 
     /**
      * Assembles the unsigned, unaligned APK from compiled resources, DEX files,
@@ -1011,6 +1112,9 @@ public class ProjectBuilder {
                     dexNumber++;
                 }
             }
+            
+            /* Extract and merge META-INF files (services, kotlin_module, etc.) */
+            extractAndMergeMetaInf(apkBuilder);
 
             apkBuilder.setDebugMode(false);
             apkBuilder.sealApk();
