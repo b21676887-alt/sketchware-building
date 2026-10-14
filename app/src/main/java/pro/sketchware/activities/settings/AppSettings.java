@@ -62,12 +62,18 @@ public class AppSettings extends BaseAppCompatActivity {
         super.onCreate(savedInstanceState);
         var binding = ActivityAppSettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        UI.addSystemWindowInsetToPadding(binding.appBarLayout, true, true, true, true);
+        
+        binding.topAppBar.setTitle(R.string.common_word_settings);
+        
+        // تطبيق الحواف لشريط التطبيق العلوي مع استبعاد الحشوة السفلية (false) لمنع الفراغات غير الضرورية
+        UI.addSystemWindowInsetToPadding(binding.appBarLayout, true, true, true, false);
+        
+        // تخصيص الحواف لعنصر التمرير مع تفعيل الحشوة السفلية فقط لتجنب تداخل أزرار التنقل مع المحتوى
         UI.addWindowInsetToPadding(binding.contentScroll, WindowInsetsCompat.Type.systemBars(), false, false, false, true);
-
+        
         binding.topAppBar.setNavigationOnClickListener(Helper.getBackPressedClickListener(this));
         setupPreferences(binding.content);
+
     }
 
     private void setupPreferences(ViewGroup content) {
