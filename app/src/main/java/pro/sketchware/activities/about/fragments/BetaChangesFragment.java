@@ -53,7 +53,7 @@ public class BetaChangesFragment extends Fragment {
         aboutAppData.getCommitDetailsList().observe(getViewLifecycleOwner(), commitDetailsArrayList -> {
             if (commitDetailsArrayList != null) {
                 adapter.hideLoading();
-                adapter.addItems(commitDetailsArrayList);
+                adapter.replaceItems(commitDetailsArrayList);
             }
         });
 

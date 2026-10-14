@@ -62,6 +62,7 @@ import pro.sketchware.util.DataResetter;
 import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.UI;
+import pro.sketchware.util.AppUpdateNotifier;
 
 public class MainActivity extends BasePermissionAppCompatActivity {
     private ActivityResultLauncher<Intent> programInfoLauncher;
@@ -69,6 +70,7 @@ public class MainActivity extends BasePermissionAppCompatActivity {
     private static final String PROJECTS_STORE_FRAGMENT_TAG = "projects_store_fragment";
     private static final String WEB_SERVICE_FRAGMENT_TAG = "web_service_fragment";
     private static final String CHAT_FRAGMENT_TAG = "chat_fragment";
+    private static final int REQUEST_UPDATE_NOTIFICATIONS = 24012;
     private ActionBarDrawerToggle drawerToggle;
     private SharedPrefsHelper sharedPrefs;
     private Snackbar storageAccessDenied;
@@ -333,6 +335,15 @@ public class MainActivity extends BasePermissionAppCompatActivity {
         }
 
         navigateToProjectsFragment();
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    REQUEST_UPDATE_NOTIFICATIONS);
+        }
+        AppUpdateNotifier.checkForUpdates(this);
     }
 
     private Fragment getFragmentForNavId(int navItemId) {

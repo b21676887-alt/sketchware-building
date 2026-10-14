@@ -58,7 +58,7 @@ public class AboutResponseModel {
         }
 
         public String getDescription() {
-            return description.trim();
+            return description != null ? description.trim() : "";
         }
     }
 

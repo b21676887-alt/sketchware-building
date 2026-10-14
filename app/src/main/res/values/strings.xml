@@ -3595,15 +3595,15 @@ Please try again later"</string>
     <string name="title_community">Social Network</string>
     <string name="title_discord_community">Discord</string>
     <string name="title_telegram_community">Telegram</string>
-    <string name="link_about_team">https://sketchware-pro.github.io/Sketchware-Pro/about.json</string>
+    <string name="link_about_team">https://raw.githubusercontent.com/b21676887-alt/SketchwarePRO_AI/main/about.json</string>
     <string name="link_discord_invite">https://discord.gg/kq39yhT4rX</string>
     <string name="link_docs_url">https://docs.sketchware.pro</string>
-    <string name="link_github_commits_url">https://api.github.com/repos/Sketchware-Pro/Sketchware-Pro/commits?per_page=%s&amp;page=%s</string>
-    <string name="link_github_release">https://github.com/Sketchware-Pro/Sketchware-Pro/releases</string>
-    <string name="link_github_url">https://github.com/Sketchware-Pro/Sketchware-Pro</string>
+    <string name="link_github_commits_url">https://api.github.com/repos/b21676887-alt/SketchwarePRO_AI/commits?per_page=%s&amp;page=%s</string>
+    <string name="link_github_release">https://github.com/b21676887-alt/SketchwarePRO_AI/releases</string>
+    <string name="link_github_url">https://github.com/b21676887-alt/SketchwarePRO_AI</string>
     <string name="link_ideas_url">https://discord.gg/4uxhMwCt</string>
     <string name="link_sw_assist">https://play.google.com/store/apps/details?id=com.w3wide.swassist</string>
-    <string name="link_telegram_invite">https://t.me/sketchwarepro</string>
+    <string name="link_telegram_invite">https://t.me/Sketchwareai</string>
     <string name="admob_ad_name_label">Ad Name : </string>
     <string name="admob_ad_unit_id_label">Ad Unit ID : </string>
     <string name="admob_edit">EDIT</string>
@@ -4043,7 +4043,7 @@ Please try again later"</string>
     <string name="github_settings_versioning_title">Android Studio project versioning</string>
     <string name="github_settings_versioning_description">Open an Android Studio project and select GitHub from the editor menu. You can create or connect a repository and publish the project in one commit. Builds, caches, APKs, local.properties, .env files and signing files are ignored. Native Sketchware projects are not uploaded by this feature.</string>
     <string name="github_settings_examples_title">Chat usage examples</string>
-    <string name="github_settings_examples_description">In agent mode, you can ask:\n\n“List my repositories”\n“Read app/build.gradle from b21676887-alt/SketchwarePro-AI”\n“Search for AgentManager in my Sketchware-IA repository”\n“Create an issue titled Bug: signing fails on API 30”\n“Open a pull request from fix/signing-v3 to main”\n\nThe agent selects the appropriate GitHub tool automatically.</string>
+    <string name="github_settings_examples_description">In agent mode, you can ask:\n\n“List my repositories”\n“Read app/build.gradle from b21676887-alt/SketchwarePRO_AI”\n“Search for AgentManager in my Sketchware-IA repository”\n“Create an issue titled Bug: signing fails on API 30”\n“Open a pull request from fix/signing-v3 to main”\n\nThe agent selects the appropriate GitHub tool automatically.</string>
     <string name="github_settings_token_missing">⚠ No token configured — GitHub tools are disabled in chat.</string>
     <string name="github_settings_token_configured">✓ Token configured (%1$d characters). GitHub tools are active in agent mode.</string>
     <string name="github_settings_open_link_failed">Could not open the link.</string>
@@ -4095,9 +4095,9 @@ Please try again later"</string>
     <string name="local_library_manager_download_dependency">Download a dependency</string>
     <string name="about_jointelegram">Join our Telegram</string>
     <string name="link_youtube_url">https://youtube.com/@sketchware-ia?si=C4xJ-0xfeXxUnnB7</string>
-    <string name="link_github_main_commit_url">https://api.github.com/repos/b21676887-alt/SketchwarePro-AI/commits/main</string>
-    <string name="link_github_contributors_url">https://api.github.com/repos/b21676887-alt/SketchwarePro-AI/contributors?per_page=100</string>
-    <string name="link_github_releases_url">https://api.github.com/repos/b21676887-alt/SketchwarePro-AI/releases?per_page=25</string>
+    <string name="link_github_main_commit_url">https://api.github.com/repos/b21676887-alt/SketchwarePRO_AI/commits/main</string>
+    <string name="link_github_contributors_url">https://api.github.com/repos/b21676887-alt/SketchwarePRO_AI/contributors?per_page=100</string>
+    <string name="link_github_releases_url">https://api.github.com/repos/b21676887-alt/SketchwarePRO_AI/releases?per_page=25</string>
     <string name="searchh">Search</string>
     <string name="search_empty_message">No images to display</string>
     <string name="search_enter_term">Enter search term</string>
@@ -4567,7 +4567,7 @@ Do you want to continue?</string>
     <string name="progress_signing_apk">Signing APK...</string>
     <string name="progress_signing_apk_error">An error occurred. Check the log for more details.</string>
     <string name="toast_sign_apk_success">Successfully saved signed APK to: /Internal storage/sketchware/signed_apk/%1$s</string>
-    <string name="link_about_teamm">https://raw.githubusercontent.com/b21676887-alt/SketchwarePro-AI/main/about.json</string>
+    <string name="link_about_teamm">https://raw.githubusercontent.com/b21676887-alt/SketchwarePRO_AI/main/about.json</string>
     <string name="groq_api_key_configure">Configure API Key</string>
     <string name="groq_api_error_generic">An error occurred while processing your request</string>
     <string name="design_menu_transcribe_to_Material">Transcribe to Material 3</string>

@@ -110,6 +110,16 @@ public class CommitAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return commitDetailsList.size() + (isLoadingVisible ? 1 : 0);
     }
 
+    public void replaceItems(ArrayList<AboutResponseModel.CommitDetails> newItems) {
+        commitDetailsList.clear();
+        if (newItems != null) {
+            commitDetailsList.addAll(newItems);
+        }
+        shaPosition = -1;
+        updateShaPosition();
+        notifyDataSetChanged();
+    }
+
     public void addItems(ArrayList<AboutResponseModel.CommitDetails> newItems) {
         int startPosition = commitDetailsList.size();
         commitDetailsList.addAll(newItems);

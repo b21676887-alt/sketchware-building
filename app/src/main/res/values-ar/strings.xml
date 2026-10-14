@@ -871,7 +871,7 @@
     <string name="file_picker_select_entry_to_modify">حدد إدخالاً للتعديل</string>
     <string name="github_api_date_unavailable">التاريخ غير متاح</string>
     <string name="github_api_error_message">حدث خطأ ما. يُرجى الانتظار والمحاولة مرة أخرى.</string>
-    <string name="github_settings_examples_description">في وضع الوكيل (agent mode)، يمكنك سؤال:\n\n“اعرض مستودعاتي”\n“اقرأ app/build.gradle من b21676887-alt/SketchwarePro-AI”\n“ابحث عن AgentManager في مستودع Sketchware-IA الخاص بي”\n“أنشئ مشكلة (issue) بعنوان Bug: signing fails on API 30”\n“افتح طلب سحب (pull request) من fix/signing-v3 إلى main”\n\nيختار الوكيل أداة GitHub المناسبة تلقائياً.</string>
+    <string name="github_settings_examples_description">في وضع الوكيل (agent mode)، يمكنك سؤال:\n\n“اعرض مستودعاتي”\n“اقرأ app/build.gradle من b21676887-alt/SketchwarePRO_AI”\n“ابحث عن AgentManager في مستودع Sketchware-IA الخاص بي”\n“أنشئ مشكلة (issue) بعنوان Bug: signing fails on API 30”\n“افتح طلب سحب (pull request) من fix/signing-v3 إلى main”\n\nيختار الوكيل أداة GitHub المناسبة تلقائياً.</string>
     <string name="github_settings_examples_title">أمثلة على استخدام المحادثة</string>
     <string name="github_settings_intro">قم بربط GitHub حتى يتمكن وكيل الذكاء الاصطناعي من تصفح المستودعات، قراءة الملفات، وإدارة المشكلات وطلبات السحب. يمكن لمشاريع Android Studio نشر لقطات برمجية (snapshots).</string>
     <string name="github_settings_open_link_failed">تعذر فتح الرابط.</string>
