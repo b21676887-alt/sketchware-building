@@ -55,6 +55,9 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
         var code = getIntent().getStringExtra("code");
         var scheme = getIntent().getStringExtra("scheme");
         var scId = getIntent().getStringExtra("sc_id");
+        
+        // تعيين الـ Toolbar كـ ActionBar رئيسي لكي تظهر القائمة وعناصر الـ Menu تلقائياً
+        setSupportActionBar(binding.toolbar);
 
         binding.toolbar.setNavigationOnClickListener(Helper.getBackPressedClickListener(this));
         binding.toolbar.setSubtitle(scId);
