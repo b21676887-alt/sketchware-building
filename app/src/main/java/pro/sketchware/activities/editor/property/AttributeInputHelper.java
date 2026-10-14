@@ -208,8 +208,7 @@ public final class AttributeInputHelper {
     private static void showResourcePicker(Activity activity, String scId, EditText inputValue) {
         PropertyResourceItem picker = new PropertyResourceItem(activity, true, scId, false);
     
-        // اضبط عنوان النافذة والأيقونة (كانت تُمرَّر سابقًا "Select drawable" و android.R.drawable.ic_menu_gallery)
-        // نضعها مباشرة في view العناصر لأن PropertyResourceItem تعرض العنوان من nameTextView
+        // اضبط عنوان النافذة والأيقونة
         picker.nameTextView.setText("Select drawable");
         picker.iconResId = android.R.drawable.ic_menu_gallery;
     
@@ -219,15 +218,20 @@ public final class AttributeInputHelper {
             picker.setValue(current.substring("@drawable/".length()));
         }
     
-        // ربط الـ callback لإدخال القيمة المختارة إلى الـ EditText
+        // ربط الـ callback بتوقيع الواجهة الصحيح: (String, Object)
         picker.setOnPropertyValueChangeListener(new pro.sketchware.core.callback.PropertyChangedCallback() {
             @Override
-            public void onPropertyChanged(String key, String value) {
-                inputValue.setText("@drawable/" + value);
+            public void onPropertyChanged(String key, Object value) {
+                if (value != null) {
+                    // نستخدم String.valueOf لضمان التعامل مع أي نوع Object بأمان
+                    inputValue.setText("@drawable/" + String.valueOf(value));
+                } else {
+                    inputValue.setText("");
+                }
             }
         });
     
-        // عرض الـ picker (هذه هي الواجهة المتاحة حالياً)
+        // عرض الـ picker
         picker.showImagePicker();
     }
 
