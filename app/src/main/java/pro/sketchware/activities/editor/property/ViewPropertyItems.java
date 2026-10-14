@@ -1,5 +1,9 @@
 package pro.sketchware.activities.editor.property;
 
+
+import pro.sketchware.util.Helper;
+import pro.sketchware.util.format.FormatUtil;
+import pro.sketchware.activities.editor.PropertyActivity;
 import android.content.Context;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -15,32 +19,33 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import pro.sketchware.R;
 import pro.sketchware.beans.BlockBean;
 import pro.sketchware.beans.EventBean;
 import pro.sketchware.beans.LayoutBean;
 import pro.sketchware.beans.ProjectFileBean;
 import pro.sketchware.beans.ViewBean;
-import pro.sketchware.core.build.ViewBindingBuilder;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+
+import pro.sketchware.core.project.RecentHistoryManager;
+import pro.sketchware.core.project.ClassInfo;
 import pro.sketchware.core.callback.PropertyChangedCallback;
 import pro.sketchware.core.callback.ViewBeanCallback;
-import pro.sketchware.core.codegen.EventRegistry;
-import pro.sketchware.core.project.ClassInfo;
-import pro.sketchware.core.project.ProjectDataManager;
-import pro.sketchware.core.project.ProjectSettings;
-import pro.sketchware.core.project.RecentHistoryManager;
 import pro.sketchware.core.project.ViewHistoryManager;
-import pro.sketchware.util.Helper;
+import pro.sketchware.core.project.ProjectDataManager;
 import pro.sketchware.util.UIHelper;
-import pro.sketchware.util.format.FormatUtil;
+import pro.sketchware.core.codegen.EventRegistry;
+import pro.sketchware.core.project.ProjectSettings;
+import pro.sketchware.core.build.ViewBindingBuilder;
+import pro.sketchware.beans.ViewBeans;
+import pro.sketchware.R;
 
 public class ViewPropertyItems extends LinearLayout implements PropertyChangedCallback, View.OnClickListener {
     private final boolean isEditMode = false;
@@ -80,7 +85,7 @@ public class ViewPropertyItems extends LinearLayout implements PropertyChangedCa
         label.setText(R.string.design_property_recent_message_nodata);
         addView(label);
     }
-
+    
     private String getInjectedAttr(ViewBean bean, String attrName) {
         LinkedHashMap<String, String> attributes = parseInjectString(bean.inject);
         String value = attributes.get(attrName);
@@ -98,16 +103,16 @@ public class ViewPropertyItems extends LinearLayout implements PropertyChangedCa
                 .map(entry -> entry.getKey() + "=\"" + entry.getValue() + "\"")
                 .collect(Collectors.joining("\n"));
     }
-
+    
     private LinkedHashMap<String, String> parseInjectString(String inject) {
         LinkedHashMap<String, String> attributes = new LinkedHashMap<>();
         if (inject == null || inject.trim().isEmpty()) return attributes;
-
+    
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = factory.newPullParser();
             parser.setInput(new StringReader("<tag " + inject + "></tag>"));
-
+    
             int eventType = parser.getEventType();
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_TAG) {
@@ -119,7 +124,7 @@ public class ViewPropertyItems extends LinearLayout implements PropertyChangedCa
             }
         } catch (XmlPullParserException | IOException | RuntimeException ignored) {
         }
-
+    
         return attributes;
     }
 
@@ -769,14 +774,14 @@ public class ViewPropertyItems extends LinearLayout implements PropertyChangedCa
                     case "property_text" -> bean.text.text = inputItem.getValue();
                     case "property_hint" -> bean.text.hint = inputItem.getValue();
                     case "property_text_size" -> bean.text.textSize = FormatUtil.safeParseInt(inputItem.getValue(), bean.text.textSize);
-                    case "property_elevation" ->
-                            bean.layout.elevation = FormatUtil.safeParseInt(inputItem.getValue(), bean.layout.elevation);
-                    case "property_visibility" ->
-                            bean.inject = setInjectedAttr(bean, "android:visibility", inputItem.getValue());
                     case "property_weight" ->
                             bean.layout.weight = FormatUtil.safeParseInt(inputItem.getValue(), bean.layout.weight);
                     case "property_weight_sum" ->
                             bean.layout.weightSum = FormatUtil.safeParseInt(inputItem.getValue(), bean.layout.weightSum);
+                    case "property_elevation" ->
+                            bean.layout.elevation = FormatUtil.safeParseInt(inputItem.getValue(), bean.layout.elevation);
+                    case "property_visibility" ->
+                            bean.inject = setInjectedAttr(bean, "android:visibility", inputItem.getValue());
                     case "property_rotate" ->
                             bean.image.rotate = FormatUtil.safeParseInt(inputItem.getValue(), bean.image.rotate);
                     case "property_alpha" -> bean.alpha = FormatUtil.safeParseFloat(inputItem.getValue(), bean.alpha);
@@ -927,7 +932,9 @@ public class ViewPropertyItems extends LinearLayout implements PropertyChangedCa
                 }
 
                 for (Pair<String, String> moreblocks : ProjectDataManager.getProjectDataManager(sc_id).getMoreBlocks(projectFile.getJavaName())) {
-                    String key = moreblocks.first + "_" + "moreBlock";
+                    String key = moreblocks.first +
+                            "_" +
+                            "moreBlock";
                     if (beanMap.containsKey(key)) {
                         events.add(key);
                     }
@@ -970,7 +977,9 @@ public class ViewPropertyItems extends LinearLayout implements PropertyChangedCa
                     for (ViewBean viewBean : ProjectDataManager.getProjectDataManager(sc_id).getCustomViewBeans(projectFileBean.getXmlName())) {
                         if (viewBean.customView.equals(projectFile.fileName)) {
                             String javaName = projectFileBean.getJavaName();
-                            String key = viewBean.id + "_" + "onBindCustomView";
+                            String key = viewBean.id +
+                                    "_" +
+                                    "onBindCustomView";
                             viewBeanItems.add(new Pair<>(javaName, key));
                         }
                     }
