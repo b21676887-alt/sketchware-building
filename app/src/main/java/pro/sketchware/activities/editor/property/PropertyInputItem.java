@@ -268,7 +268,7 @@ public class PropertyInputItem extends RelativeLayout implements View.OnClickLis
         dialog.setSingleChoiceItems(options, checkedItem, (d, which) -> {
             setValue(options[which]);
             if (valueChangeListener != null) {
-                valueChangeListener.a(key, value);
+                valueChangeListener.onPropertyChanged(key, value);
             }
             d.dismiss();
         });
@@ -277,7 +277,7 @@ public class PropertyInputItem extends RelativeLayout implements View.OnClickLis
         dialog.setNeutralButton(Helper.getResString(R.string.common_word_reset), (d, which) -> {
             setValue("");
             if (valueChangeListener != null) {
-                valueChangeListener.a(key, "");
+                valueChangeListener.onPropertyChanged(key, "");
             }
             d.dismiss();
         });
