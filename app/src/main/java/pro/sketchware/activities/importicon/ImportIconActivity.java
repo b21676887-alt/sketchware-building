@@ -138,17 +138,68 @@ public class ImportIconActivity extends BaseAppCompatActivity implements IconAda
         File[] svgFiles = iconsDirectory.listFiles((dir, name) -> name.endsWith(".svg"));
         return svgFiles != null && svgFiles.length > 0;
     }
-
+    
     private void extractIcons() {
-        ZipUtil.extractAssetZip(this, "icons" + File.separator + "icon_pack.zip", SketchwarePaths.getExtractedIconPackStoreLocation());
+        extractAssetZip("icons" + File.separator + "icon_pack.zip", SketchwarePaths.getExtractedIconPackStoreLocation());
     }
 
     private void extractLucideIcons() {
         FileUtil.deleteFile(SketchwarePaths.getExtractedLucideIconPackStoreLocation());
-        ZipUtil.extractAssetZip(this, "icons" + File.separator + "lucide_icons.zip", SketchwarePaths.getExtractedLucideIconPackStoreLocation());
+        extractAssetZip("icons" + File.separator + "lucide_icons.zip", SketchwarePaths.getExtractedLucideIconPackStoreLocation());
         if (!doExtractedLucideIconsExist()) {
             Log.e("icons", "Lucide icon pack extracted with no SVG files in icons/");
         }
+    }
+    
+    private void extractAssetZip(String assetPath, String targetPath) {
+        File targetDirectory = new File(targetPath);
+        int fileCount = 0;
+        int directoryCount = 0;
+        byte[] buffer = new byte[8192];
+
+        try (ZipInputStream input = new ZipInputStream(getAssets().open(assetPath))) {
+            if (!targetDirectory.exists() && !targetDirectory.mkdirs()) {
+                throw new IOException("Could not create target directory: " + targetDirectory.getAbsolutePath());
+            }
+
+            ZipEntry entry;
+            while ((entry = input.getNextEntry()) != null) {
+                String entryName = entry.getName().replace('\\', '/');
+                File output = new File(targetDirectory, entryName);
+                if (!isInsideDirectory(targetDirectory, output)) {
+                    throw new IOException("Blocked unsafe zip entry: " + entryName);
+                }
+
+                if (entry.isDirectory()) {
+                    directoryCount++;
+                    if (!output.exists() && !output.mkdirs()) {
+                        throw new IOException("Could not create zip directory: " + output.getAbsolutePath());
+                    }
+                } else {
+                    File parent = output.getParentFile();
+                    if (parent != null && !parent.exists() && !parent.mkdirs()) {
+                        throw new IOException("Could not create parent directory: " + parent.getAbsolutePath());
+                    }
+                    try (FileOutputStream outputStream = new FileOutputStream(output, false)) {
+                        int length;
+                        while ((length = input.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, length);
+                        }
+                    }
+                    fileCount++;
+                }
+                input.closeEntry();
+            }
+            Log.d("icons", "zip extract done asset=" + assetPath + " files=" + fileCount + " dirs=" + directoryCount);
+        } catch (IOException e) {
+            Log.e("icons", "Failed to extract " + assetPath + " to " + targetPath, e);
+        }
+    }
+
+    private boolean isInsideDirectory(File directory, File file) throws IOException {
+        String directoryPath = directory.getCanonicalPath();
+        String filePath = file.getCanonicalPath();
+        return filePath.equals(directoryPath) || filePath.startsWith(directoryPath + File.separator);
     }
 
     private void normalizeExtractedLucideIcons() {
