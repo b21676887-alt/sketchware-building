@@ -550,6 +550,10 @@ public class SketchwarePaths {
     public static String getExtractedIconPackStoreLocation() {
         return new File(SketchApplication.getAppContext().getFilesDir(), "iconpack").getAbsolutePath();
     }
+    
+    public static String getExtractedLucideIconPackStoreLocation() {
+        return new File(SketchApplication.getAppContext().getFilesDir(), "lucide_iconpack").getAbsolutePath();
+    }
 
     public static String getImagesPath() {
         return getAbsolutePathOf(RESOURCES_IMAGES_PATH);
