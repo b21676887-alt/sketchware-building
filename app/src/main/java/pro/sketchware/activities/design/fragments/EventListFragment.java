@@ -115,9 +115,9 @@ public class EventListFragment extends DesignProjectFragment implements View.OnC
             default -> R.drawable.ic_mtrl_code;
         };
     }
-
+    
     public static String getCategoryName(Context context, int i) {
-        return switch (i) {
+        String name = switch (i) {
             case 0 -> Helper.getResString(R.string.common_word_activity);
             case 1 -> Helper.getResString(R.string.common_word_view);
             case 2 -> Helper.getResString(R.string.common_word_component);
@@ -125,6 +125,12 @@ public class EventListFragment extends DesignProjectFragment implements View.OnC
             case 4 -> Helper.getResString(R.string.common_word_moreblock);
             default -> "";
         };
+        
+        // تقسيم العنوان إلى سطرين إذا كان يحتوي على مسافة (مثل More Block)
+        if (name.contains(" ")) {
+            name = name.replaceFirst(" ", "\n");
+        }
+        return name;
     }
 
     private int getPaletteIndex(int id) {

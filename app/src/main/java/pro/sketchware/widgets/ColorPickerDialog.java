@@ -130,18 +130,26 @@ public class ColorPickerDialog extends PopupWindow {
             currentGroupIndex = selectedGroupIndex;
             selectedColorIndex = 0;
         } else if (color.startsWith("#")) {
-            int colorInt = Color.parseColor(color);
-            for (int groupIndex = 0; groupIndex < colorGroups.size(); ++groupIndex) {
-                ColorBean[] colorBeans = colorGroups.get(groupIndex);
-
-                for (int colorIndex = 0; colorIndex < colorBeans.length; ++colorIndex) {
-                    if (colorBeans[colorIndex].colorCode == colorInt) {
-                        selectedGroupIndex = groupIndex;
-                        currentGroupIndex = groupIndex;
-                        selectedColorIndex = colorIndex;
-                        break;
+            try {
+          
+                int colorInt = Color.parseColor(color);
+                for (int groupIndex = 0; groupIndex < colorGroups.size(); ++groupIndex) {
+                    ColorBean[] colorBeans = colorGroups.get(groupIndex);
+    
+                    for (int colorIndex = 0; colorIndex < colorBeans.length; ++colorIndex) {
+                        if (colorBeans[colorIndex].colorCode == colorInt) {
+                            selectedGroupIndex = groupIndex;
+                            currentGroupIndex = groupIndex;
+                            selectedColorIndex = colorIndex;
+                            break;
+                        }
                     }
                 }
+            } catch (Exception e) {
+               selectedGroupIndex = 0;
+                currentGroupIndex = 0;
+                selectedColorIndex = -1;
+          
             }
         } else if (color.startsWith("@color/")) {
             selectedGroupIndex = 1;

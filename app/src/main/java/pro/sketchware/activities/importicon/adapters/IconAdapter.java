@@ -1,8 +1,9 @@
 package pro.sketchware.activities.importicon.adapters;
 
-
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.net.Uri;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ public class IconAdapter extends ListAdapter<Pair<String, String>, IconAdapter.V
     private static final DiffUtil.ItemCallback<Pair<String, String>> DIFF_CALLBACK = new DiffUtil.ItemCallback<>() {
         @Override
         public boolean areItemsTheSame(@NonNull Pair<String, String> oldItem, @NonNull Pair<String, String> newItem) {
-            return oldItem.first.equals(newItem.first);
+            return oldItem.first.equals(newItem.first) && oldItem.second.equals(newItem.second);
         }
 
         @Override
@@ -53,10 +54,34 @@ public class IconAdapter extends ListAdapter<Pair<String, String>, IconAdapter.V
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String filePath = getItem(position).second + File.separator + selected_icon_type + ".svg";
-        svgUtils.loadImage(holder.itemBinding.img, filePath);
+        String filePath = resolveIconFilePath(getItem(position));
+        File file = new File(filePath);
+        if (!file.exists()) {
+            Log.e("IconAdapter", "Icon file missing: " + filePath);
+            holder.itemBinding.img.setImageDrawable(null);
+            holder.itemBinding.title.setText(getItem(position).first);
+            return;
+        }
+
+        try {
+            if (filePath.endsWith(".svg")) {
+                svgUtils.loadImage(holder.itemBinding.img, filePath);
+            } else {
+                holder.itemBinding.img.setImageURI(Uri.fromFile(file));
+            }
+        } catch (Exception e) {
+            Log.e("IconAdapter", "Failed to bind icon: " + filePath, e);
+        }
         holder.itemBinding.img.setColorFilter(selected_color, PorterDuff.Mode.SRC_IN);
         holder.itemBinding.title.setText(getItem(position).first);
+    }
+
+    private String resolveIconFilePath(Pair<String, String> icon) {
+        File path = new File(icon.second);
+        if (path.isDirectory()) {
+            return new File(path, selected_icon_type + ".svg").getAbsolutePath();
+        }
+        return path.getAbsolutePath();
     }
 
     @Override
@@ -67,7 +92,7 @@ public class IconAdapter extends ListAdapter<Pair<String, String>, IconAdapter.V
     }
 
     public interface OnIconSelectedListener {
-        void onIconSelected(int position);
+        void onIconSelected(Pair<String, String> icon, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -77,13 +102,11 @@ public class IconAdapter extends ListAdapter<Pair<String, String>, IconAdapter.V
             super(binding.getRoot());
             itemBinding = binding;
             binding.getRoot().setOnClickListener(v -> {
-                int position = getLayoutPosition();
-                if (position == RecyclerView.NO_POSITION) return;
-                if (listener != null) {
-                    listener.onIconSelected(position);
+                int position = getBindingAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onIconSelected(getItem(position), position);
                 }
             });
         }
     }
 }
-

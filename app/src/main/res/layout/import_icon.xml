@@ -21,16 +21,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:dividerColor="?attr/colorSurfaceContainerHighest" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/icon_pack_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/chat_surface"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/chat_accent"
+            app:tabMode="fixed"
+            app:tabRippleColor="@color/chat_accent_soft"
+            app:tabSelectedTextColor="@color/chat_accent"
+            app:tabTextColor="@color/chat_text_secondary" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/image_list"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/icon_pack_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="50dp"
-        android:scrollbars="none"
-        android:splitMotionEvents="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/import_icon_list_item" />
 
