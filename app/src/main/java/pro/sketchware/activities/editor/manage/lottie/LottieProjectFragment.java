@@ -334,6 +334,21 @@ public class LottieProjectFragment extends BaseFragment {
         return projectLottiesDirectory + File.separator + bean.resFullName;
     }
 
+    // Added helper to fix compilation: add a single ProjectResourceBean into the list
+    private void addImage(ProjectResourceBean icon) {
+        if (icon == null) return;
+        if (lotties == null) lotties = new ArrayList<>();
+        lotties.add(icon);
+        if (adapter != null) {
+            adapter.notifyItemInserted(lotties.size() - 1);
+        }
+        updateGuideVisibility();
+        try {
+            ((ManageLottieActivity) requireActivity()).l().refreshData();
+        } catch (Exception ignored) {
+        }
+    }
+
     private class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         public Adapter(RecyclerView recyclerView) {
             if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
