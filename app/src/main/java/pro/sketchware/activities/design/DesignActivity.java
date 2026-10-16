@@ -519,7 +519,7 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
         prefP1 = new SharedPrefsHelper(getApplicationContext(), "P1");
         prefP12 = new SharedPrefsHelper(getApplicationContext(), "P12");
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setSubtitle(sc_id);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -730,12 +730,9 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.design_menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.design_option_menu_search);
-        if (searchItem != null) {
-            searchItem.setVisible(currentTabNumber == 1 || currentTabNumber == 0 || currentTabNumber == 3);
-        }
         return true;
     }
+    
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

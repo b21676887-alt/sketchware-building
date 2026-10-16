@@ -31,7 +31,7 @@ public class AsdDialog extends Dialog implements DialogInterface.OnDismissListen
     private String content;
 
     public AsdDialog(Activity activity) {
-        super(activity);
+        super(activity, R.style.AsdEditorDialogTheme);
         act = activity;
     }
 

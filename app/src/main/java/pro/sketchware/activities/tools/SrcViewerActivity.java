@@ -1,5 +1,24 @@
 package pro.sketchware.activities.tools;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.io.IOException;
+import java.util.Locale;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import io.noties.markwon.Markwon;
+import pro.sketchware.network.AiProviderService;
+
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +72,7 @@ public class SrcViewerActivity extends BaseAppCompatActivity {
         configureEditor();
 
         binding.changeFontSize.setOnClickListener(v -> editorPrefs.showFontSizeDialog(this, binding.editor, null));
+        binding.aiHelpCode.setOnClickListener(v -> explainCodeWithAI());
 
         binding.filesListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -169,5 +189,109 @@ public class SrcViewerActivity extends BaseAppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             return getCustomSpinnerView(position, convertView, false);
         }
+    }
+    
+    private void explainCodeWithAI() {
+        CharSequence cs = binding.editor.getText();
+        String codeText = cs != null ? cs.toString().trim() : "";
+        if (codeText.isEmpty()) {
+            SketchwareUtil.toastError("No code to analyze.");
+            return;
+        }
+        if (!SketchwareUtil.isConnected()) {
+            SketchwareUtil.toastError(getString(R.string.common_message_check_network));
+            return;
+        }
+
+        View loadingView = LayoutInflater.from(this).inflate(R.layout.dialog_ai_layout_loading, null);
+        TextView titleView = loadingView.findViewById(R.id.text_loading_title);
+        TextView subtitleView = loadingView.findViewById(R.id.text_loading_subtitle);
+
+        if (titleView != null) titleView.setText(R.string.ai_explain_loading_title);
+        if (subtitleView != null) subtitleView.setText(R.string.ai_explain_loading_subtitle);
+
+        var progressDialog = new MaterialAlertDialogBuilder(this)
+            .setView(loadingView)
+            .setCancelable(false)
+            .create();
+        progressDialog.show();
+
+        new Thread(() -> {
+            try {
+                String prompt = "Analyze this source code / XML snippet from Sketchware. "
+                        + "Explain its structure, functionality, and provide any useful suggestions or fixes if needed.\n\n"
+                        + codeText;
+                
+                String deviceLanguage = Locale.getDefault().getLanguage();
+                String systemInstruction = "You analyze source code and XML files for Sketchware Android projects. Respond in language code: " + deviceLanguage + ".";
+
+                String response = AiProviderService.getInstance().sendTextMessage(
+                        systemInstruction,
+                        prompt
+                );
+                runOnUiThread(() -> {
+                    try {
+                        progressDialog.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                    showScrollableDialog("AI Helper - Code Explanation", response);
+                });
+            } catch (IOException e) {
+                runOnUiThread(() -> {
+                    try {
+                        progressDialog.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                    SketchwareUtil.showAnErrorOccurredDialog(this, e.getMessage());
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    try {
+                        progressDialog.dismiss();
+                    } catch (Exception ignored) {
+                    }
+                    SketchwareUtil.showAnErrorOccurredDialog(this, getString(R.string.ai_explain_error_processing_response));
+                });
+            }
+        }).start();
+    }
+
+    private void showScrollableDialog(String title, String content) {
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.setFillViewport(true);
+
+        TextView textView = new TextView(this);
+        Markwon markwon = Markwon.create(this);
+        markwon.setMarkdown(textView, content);
+        textView.setTextIsSelectable(true);
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        textView.setPadding(pad, pad, pad, pad);
+
+        scrollView.addView(textView, new ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        var dialog = new MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setView(scrollView)
+            .setPositiveButton(R.string.common_word_close, null)
+            .setNeutralButton(R.string.common_word_copy, null)
+            .create();
+
+        dialog.setOnShowListener(d -> {
+            var btnCopy = dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL);
+            btnCopy.setOnClickListener(v -> {
+                try {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (cm != null) {
+                        cm.setPrimaryClip(ClipData.newPlainText("ai_response", content));
+                        SketchwareUtil.toast(getString(R.string.common_word_copied));
+                    }
+                } catch (Exception ignored) {
+                }
+            });
+        });
+
+        dialog.show();
     }
 }

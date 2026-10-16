@@ -2217,20 +2217,52 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 
         svgUtils = new SvgUtils(this);
         
-        // Initialize syntax check UI
-		syntaxCheckContainer = findViewById(R.id.syntax_check_container);
-		syntaxCheckIcon = findViewById(R.id.syntax_check_icon);
-		syntaxCheckText = findViewById(R.id.syntax_check_text);
-		syntaxCheckContainer.setOnClickListener(v -> {
-			LogicSyntaxChecker.SyntaxResult result = (LogicSyntaxChecker.SyntaxResult) v.getTag();
-			if (result != null && !result.isValid) {
-				new MaterialAlertDialogBuilder(this)
-				.setTitle("Syntax Error Details")
-				.setMessage(result.errorMessage)
-				.setPositiveButton(R.string.common_word_ok, null)
-				.show();
-			}
-		});
+		
+		    // Initialize syntax check UI
+        syntaxCheckContainer = findViewById(R.id.syntax_check_container);
+        syntaxCheckIcon = findViewById(R.id.syntax_check_icon);
+        syntaxCheckText = findViewById(R.id.syntax_check_text);
+        syntaxCheckContainer.setOnClickListener(v -> {
+            LogicSyntaxChecker.SyntaxResult result = (LogicSyntaxChecker.SyntaxResult) v.getTag();
+            if (result != null && !result.isValid) {
+                // إنشاء TextView قابل للتمرير ويدعم تحديد النص
+                android.widget.ScrollView scrollView = new android.widget.ScrollView(this);
+                int padding = (int) (16 * getResources().getDisplayMetrics().density);
+                scrollView.setPadding(padding, padding, padding, padding);
+    
+                TextView messageView = new TextView(this);
+                messageView.setText(result.errorMessage);
+                messageView.setTextIsSelectable(true);
+                messageView.setTextSize(14f);
+                messageView.setTextColor(pro.sketchware.util.ThemeUtils.getColor(this, com.google.android.material.R.attr.colorOnSurface));
+                
+                scrollView.addView(messageView);
+    
+                new MaterialAlertDialogBuilder(this)
+                    .setTitle("Syntax Error Details")
+                    .setView(scrollView)
+                    .setPositiveButton(R.string.common_word_ok, null)
+                    .setNeutralButton("نسخ", (dialog, which) -> {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        if (clipboard != null) {
+                            clipboard.setPrimaryClip(ClipData.newPlainText("Syntax Error", result.errorMessage));
+                            Toast.makeText(this, "تم نسخ النص بنجاح", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("ترجمة", (dialog, which) -> {
+                        try {
+                            String encodedText = java.net.URLEncoder.encode(result.errorMessage, "UTF-8");
+                            String url = "https://translate.google.com/?sl=auto&tl=ar&text=" + encodedText + "&op=translate";
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            startActivity(intent);
+                        } catch (Exception e) {
+                            Toast.makeText(this, "تعذر فتح متصفح الترجمة", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .show();
+            }
+        });
+
     }
 
     @Override

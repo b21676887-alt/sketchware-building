@@ -117,20 +117,14 @@ public class EventListFragment extends DesignProjectFragment implements View.OnC
     }
     
     public static String getCategoryName(Context context, int i) {
-        String name = switch (i) {
-            case 0 -> Helper.getResString(R.string.common_word_activity);
-            case 1 -> Helper.getResString(R.string.common_word_view);
-            case 2 -> Helper.getResString(R.string.common_word_component);
-            case 3 -> Helper.getResString(R.string.common_word_drawer);
-            case 4 -> Helper.getResString(R.string.common_word_moreblock);
+        return switch (i) {
+            case 0 -> context.getResString(R.string.common_word_activity);
+            case 1 -> context.getResString(R.string.common_word_view);
+            case 2 -> context.getResString(R.string.common_word_component);
+            case 3 -> context.getResString(R.string.common_word_drawer);
+            case 4 -> context.getResString(R.string.common_word_moreblock);
             default -> "";
         };
-        
-        // تقسيم العنوان إلى سطرين إذا كان يحتوي على مسافة (مثل More Block)
-        if (name.contains(" ")) {
-            name = name.replaceFirst(" ", "\n");
-        }
-        return name;
     }
 
     private int getPaletteIndex(int id) {
