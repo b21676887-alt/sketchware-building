@@ -46,6 +46,7 @@ import pro.sketchware.databinding.SrcViewerBinding;
 import pro.sketchware.lib.code_editor.CodeEditorPreferences;
 import pro.sketchware.util.EditorUtils;
 import pro.sketchware.util.UI;
+import pro.sketchware.util.SketchwareUtil;
 
 public class SrcViewerActivity extends BaseAppCompatActivity {
 

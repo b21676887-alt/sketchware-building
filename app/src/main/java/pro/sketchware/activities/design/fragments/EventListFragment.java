@@ -118,11 +118,11 @@ public class EventListFragment extends DesignProjectFragment implements View.OnC
     
     public static String getCategoryName(Context context, int i) {
         return switch (i) {
-            case 0 -> context.getResString(R.string.common_word_activity);
-            case 1 -> context.getResString(R.string.common_word_view);
-            case 2 -> context.getResString(R.string.common_word_component);
-            case 3 -> context.getResString(R.string.common_word_drawer);
-            case 4 -> context.getResString(R.string.common_word_moreblock);
+            case 0 -> context.getString(R.string.common_word_activity);
+            case 1 -> context.getString(R.string.common_word_view);
+            case 2 -> context.getString(R.string.common_word_component);
+            case 3 -> context.getString(R.string.common_word_drawer);
+            case 4 -> context.getString(R.string.common_word_moreblock);
             default -> "";
         };
     }

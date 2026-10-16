@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import pro.sketchware.activities.editor.manage.library.LibraryCategoryView;
@@ -54,6 +56,7 @@ import pro.sketchware.databinding.DialogSelectApkToSignBinding;
 import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.UI;
+
 
 public class AppSettings extends BaseAppCompatActivity {
     @Override
