@@ -18,9 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.besome.sketch.beans.ProjectResourceBean;
-import com.besome.sketch.lib.base.BaseAppCompatActivity;
-import com.besome.sketch.lib.ui.EasyDeleteEditText;
+import pro.sketchware.beans.ProjectResourceBean;
+import pro.sketchware.activities.base.BaseAppCompatActivity;
+import pro.sketchware.widgets.EasyDeleteEditText;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
 import com.bumptech.glide.Glide;
@@ -144,7 +144,7 @@ public class ManageLottieImportActivity extends BaseAppCompatActivity implements
         ed_input_edittext.setText(selectedCollections.get(0).resName);
         ed_input_edittext.setPrivateImeOptions("defaultInputmode=english;");
         ed_input.setHint("Enter Lottie animation name");
-        nameValidator = new XmlNameValidator(getApplicationContext(), ed_input.getTextInputLayout(), com.besome.sketch.core.project.BlockConstants.RESERVED_KEYWORDS, getReservedProjectLottieNames(), getReservedSelectedCollectionNames());
+        nameValidator = new XmlNameValidator(getApplicationContext(), ed_input.getTextInputLayout(), pro.sketchware.core.project.BlockConstants.RESERVED_KEYWORDS, getReservedProjectLottieNames(), getReservedSelectedCollectionNames());
         chk_samename = findViewById(R.id.chk_samename);
         chk_samename.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {

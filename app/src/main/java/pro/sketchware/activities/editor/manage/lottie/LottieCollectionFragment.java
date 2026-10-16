@@ -17,10 +17,10 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.besome.sketch.beans.ProjectResourceBean;
-import com.besome.sketch.lib.base.BaseFragment;
-import com.besome.sketch.editor.manage.lottie.ManageLottieActivity;
-import com.besome.sketch.editor.manage.lottie.ManageLottieImportActivity;
+import pro.sketchware.beans.ProjectResourceBean;
+import pro.sketchware.activities.base.BaseFragment;
+import pro.sketchware.activities.editor.manage.lottie.ManageLottieActivity;
+import pro.sketchware.activities.editor.manage.lottie.ManageLottieImportActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.material.card.MaterialCardView;

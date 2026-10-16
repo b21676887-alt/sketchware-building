@@ -18,9 +18,9 @@ import android.util.Log;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
-import com.besome.sketch.beans.ProjectResourceBean;
-import com.besome.sketch.lib.base.BaseDialogActivity;
-import com.besome.sketch.lib.ui.EasyDeleteEditText;
+import pro.sketchware.beans.ProjectResourceBean;
+import pro.sketchware.activities.base.BaseDialogActivity;
+import pro.sketchware.widgets.EasyDeleteEditText;
 
 import java.io.File;
 import java.io.FileOutputStream;

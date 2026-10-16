@@ -22,10 +22,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.besome.sketch.beans.ProjectResourceBean;
-import com.besome.sketch.lib.base.BaseFragment;
-import com.besome.sketch.editor.manage.lottie.AddLottieActivity;
-import com.besome.sketch.editor.manage.lottie.ManageLottieActivity;
+import pro.sketchware.beans.ProjectResourceBean;
+import pro.sketchware.activities.base.BaseFragment;
+import pro.sketchware.activities.editor.manage.lottie.ManageLottieActivity;
+import pro.sketchware.activities.editor.manage.lottie.AddLottieActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
