@@ -275,7 +275,7 @@ public class LottieProjectFragment extends BaseFragment {
         return binding.getRoot();
     }
 
-    private void setSelectionMode(boolean selection) {
+    public void setSelectionMode(boolean selection) {
         this.isSelecting = selection;
         requireActivity().invalidateOptionsMenu();
         unselectAll();

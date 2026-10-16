@@ -34,6 +34,7 @@ import pro.sketchware.R;
 import pro.sketchware.databinding.FrManageLottieListBinding;
 import pro.sketchware.databinding.ManageLottieListItemBinding;
 import pro.sketchware.util.SketchToast;
+import pro.sketchware.core.project.SketchwarePaths;
 import pro.sketchware.util.io.EncryptedFileUtil;
 import pro.sketchware.core.project.ImageCollectionManager;
 
@@ -74,7 +75,7 @@ public class LottieCollectionFragment extends BaseFragment implements View.OnCli
 
     public void refreshData() {
         collectionLotties = new ArrayList<>();
-        File assetsDir = new File(EncryptedFileUtil.getCollectionPath() + File.separator + "assets");
+        File assetsDir = new File(SketchwarePaths.getCollectionPath() + File.separator + "assets");
         if (!assetsDir.exists()) {
             adapter.notifyDataSetChanged();
             updateGuideVisibility();
@@ -127,7 +128,7 @@ public class LottieCollectionFragment extends BaseFragment implements View.OnCli
     public void importLotties() {
         ArrayList<ProjectResourceBean> selected = new ArrayList<>();
         for (ProjectResourceBean p : collectionLotties) {
-            if (p.isSelected) selected.add(new ProjectResourceBean(ProjectResourceBean.PROJECT_RES_TYPE_FILE, p.resName, EncryptedFileUtil.getCollectionPath() + File.separator + "assets" + File.separator + p.resFullName));
+            if (p.isSelected) selected.add(new ProjectResourceBean(ProjectResourceBean.PROJECT_RES_TYPE_FILE, p.resName, SketchwarePaths.getCollectionPath() + File.separator + "assets" + File.separator + p.resFullName));
         }
         if (!selected.isEmpty()) {
             Intent intent = new Intent(requireActivity(), ManageLottieImportActivity.class);
@@ -201,7 +202,7 @@ public class LottieCollectionFragment extends BaseFragment implements View.OnCli
             holder.binding.chkSelect.setVisibility(View.VISIBLE);
             holder.binding.lottieAnimationIndicator.setVisibility(View.VISIBLE);
 
-            String jsonPath = EncryptedFileUtil.getCollectionPath() + File.separator + "assets" + File.separator + lottie.resFullName;
+            String jsonPath = SketchwarePaths.getCollectionPath() + File.separator + "assets" + File.separator + lottie.resFullName;
             String json = readFileContents(jsonPath);
 
             try {
