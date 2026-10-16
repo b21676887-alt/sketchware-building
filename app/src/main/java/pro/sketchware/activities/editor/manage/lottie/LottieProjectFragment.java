@@ -51,8 +51,8 @@ import pro.sketchware.databinding.ManageLottieListItemBinding;
 import pro.sketchware.core.project.ProjectDataManager;
 import pro.sketchware.util.SketchToast;
 import pro.sketchware.util.io.EncryptedFileUtil;
-import pro.sketchware.utility.FilePathUtil;
-import pro.sketchware.utility.SvgUtils;
+import pro.sketchware.util.FilePathUtil;
+import pro.sketchware.util.SvgUtils;
 import com.airbnb.lottie.LottieDrawable;
 
 public class LottieProjectFragment extends BaseFragment {
