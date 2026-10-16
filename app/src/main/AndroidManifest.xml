@@ -140,6 +140,17 @@
             android:name="pro.sketchware.activities.editor.manage.image.ManageImageImportActivity"
             android:configChanges="orientation|screenSize" />
         <activity
+            android:name="pro.sketchware.activities.editor.manage.lottie.ManageLottieActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name="pro.sketchware.activities.editor.manage.lottie.AddLottieActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="pro.sketchware.activities.editor.manage.lottie.ManageLottieImportActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Theme.SketchwarePro"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
             android:name="com.besome.sketch.editor.manage.image.ManageImageWebSearchActivity"
             android:configChanges="orientation|screenSize" />
         <activity

@@ -67,6 +67,7 @@ import pro.sketchware.activities.editor.manage.ManageCollectionActivity;
 import pro.sketchware.activities.editor.manage.ViewSelectorActivity;
 import pro.sketchware.activities.editor.manage.font.ManageFontActivity;
 import pro.sketchware.activities.editor.manage.image.ManageImageActivity;
+import pro.sketchware.activities.editor.manage.lottie.ManageLottieActivity;
 import pro.sketchware.activities.editor.manage.library.ManageLibraryActivity;
 import pro.sketchware.activities.editor.manage.sound.ManageSoundActivity;
 import pro.sketchware.activities.editor.manage.view.ManageViewActivity;
@@ -1557,6 +1558,13 @@ public class DesignActivity extends BaseAppCompatActivity implements View.OnClic
      */
     void toImageManager() {
         launchActivity(ManageImageActivity.class, openImageManager);
+    }
+    
+    /**
+     * Opens {@link ManageLottieActivity}.
+     */
+    void toLottieManager() {
+        launchActivity(ManageLottieActivity.class, null);
     }
 
     /**
