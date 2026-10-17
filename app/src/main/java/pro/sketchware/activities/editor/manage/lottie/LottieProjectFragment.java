@@ -139,19 +139,24 @@ public class LottieProjectFragment extends BaseFragment {
         }
     }
 
-    public ArrayList<ProjectResourceBean> getLotties() {
-        return lotties;
-    }
-
+    
     private void initialize() {
         sc_id = requireActivity().getIntent().getStringExtra("sc_id");
+        // Use project assets directory
         projectLottiesDirectory = fpu.getPathAssets(sc_id);
+        // Ensure directory exists
         new EncryptedFileUtil().mkdirs(projectLottiesDirectory);
-        var list = ProjectDataManager.getResourceManager(sc_id).getLottieList();
-        if (list != null) {
-            for (ProjectResourceBean p : list) {
-                p.savedPos = 0;
-                lotties.add(p);
+
+        // Initialize list by scanning existing .json files in assets/lottie
+        File dir = new File(projectLottiesDirectory);
+        File[] files = dir.listFiles((d, name) -> name != null && name.toLowerCase().endsWith(".json"));
+        if (files != null) {
+            for (File file : files) {
+                String name = file.getName();
+                String base = name.substring(0, Math.max(0, name.lastIndexOf('.')));
+                ProjectResourceBean bean = new ProjectResourceBean(ProjectResourceBean.PROJECT_RES_TYPE_FILE, base, name);
+                bean.savedPos = 0; // inside project
+                lotties.add(bean);
             }
         }
     }
@@ -182,7 +187,7 @@ public class LottieProjectFragment extends BaseFragment {
                 }
             }
         }
-        ProjectDataManager.getResourceManager(sc_id).setLotties(lotties);
+        
     }
 
     private void updateGuideVisibility() {
@@ -381,12 +386,16 @@ public class LottieProjectFragment extends BaseFragment {
             } else {
                 holder.binding.lottie.clearColorFilter();
             }
-
-            if (image.resFullName.endsWith(".json") || image.resFullName.endsWith(".lottie")) {
+            
+            if (image.resFullName.endsWith(".json")) {
                 String path = image.savedPos == 0 ? getLottiePath(image) : image.resFullName;
                 try {
                     String json = readFileContents(path);
                     if (json == null || json.trim().isEmpty()) throw new Exception("Invalid JSON");
+                    // Validar se o JSON contém elementos básicos de Lottie
+                    if (!isValidLottieJson(json)) {
+                        throw new Exception("JSON não é um arquivo Lottie válido");
+                    }
                     holder.binding.lottie.setAnimationFromJson(json, path);
                     holder.binding.lottie.setProgress(0f);
                 } catch (Exception e) {
@@ -395,6 +404,7 @@ public class LottieProjectFragment extends BaseFragment {
                     holder.binding.lottie.setImageResource(R.drawable.ic_remove_grey600_24dp);
                 }
             }
+
         }
 
         @Override
@@ -453,6 +463,21 @@ public class LottieProjectFragment extends BaseFragment {
             int read;
             while ((read = fis.read(buffer)) != -1) bos.write(buffer, 0, read);
             return bos.toString("UTF-8");
+        }
+    }
+    
+    private boolean isValidLottieJson(String json) {
+        if (json == null || json.isEmpty()) {
+            return false;
+        }
+        try {
+            // Verifica se o JSON contém elementos básicos de uma animação Lottie
+            return json.contains("\"v\"") && 
+                   (json.contains("\"assets\"") || json.contains("\"layers\"")) &&
+                   json.contains("\"fr\"") && json.contains("\"ip\"");
+        } catch (Exception e) {
+            Log.e("LottieProjectFragment", "Erro ao validar JSON Lottie: " + e.getMessage(), e);
+            return false;
         }
     }
 }

@@ -37,6 +37,7 @@ import pro.sketchware.core.exception.CompileException;
 import pro.sketchware.core.project.ImageCollectionManager;
 import pro.sketchware.core.validation.FileNameValidator;
 import pro.sketchware.core.project.BlockConstants;
+import pro.sketchware.core.project.SketchwarePaths;
 import pro.sketchware.util.SketchToast;
 import pro.sketchware.util.io.UriPathResolver;
 import pro.sketchware.util.io.EncryptedFileUtil;
@@ -283,7 +284,8 @@ public class AddLottieCollectionActivity extends BaseDialogActivity implements V
                     bean.savedPos = 1;
                     bean.isNew = true;
                     if (activity.chk_collection.isChecked()) {
-                        ImageCollectionManager.getInstance().addResource(activity.sc_id, bean);
+                        activity.addToMyCollection(bean);
+                        
                     }
                     activity.lotties.add(bean);
                 } else {
@@ -319,6 +321,35 @@ public class AddLottieCollectionActivity extends BaseDialogActivity implements V
             String msg = error != null ? error.getMessage() : null;
             if (msg == null || msg.isEmpty()) msg = Helper.getResString(R.string.common_error_an_error_occurred);
             SketchToast.warning(activity, msg, SketchToast.TOAST_NORMAL).show();
+        }
+    }
+    
+    private void addToMyCollection(ProjectResourceBean lottie) throws SketchwareException {
+        String destDirPath = SketchwarePaths.getCollectionPath() + File.separator + "assets";
+        File destDir = new File(destDirPath);
+        if (!destDir.exists()) destDir.mkdirs();
+
+        String destName = lottie.resName.toLowerCase().endsWith(".json") ? lottie.resName : lottie.resName + ".json";
+        File src = new File(lottie.resFullName);
+        File dest = new File(destDir, destName);
+
+        if (!src.exists()) {
+            throw new SketchwareException(xB.b().a(getApplicationContext(), R.string.collection_no_exist_file));
+        }
+        if (dest.exists()) {
+            throw new SketchwareException(xB.b().a(getApplicationContext(), R.string.collection_duplicated_name) + "[" + lottie.resName + "]");
+        }
+
+        try (InputStream in = new java.io.FileInputStream(src);
+             OutputStream out = new java.io.FileOutputStream(dest)) {
+            byte[] buf = new byte[8192];
+            int len;
+            while ((len = in.read(buf)) != -1) {
+                out.write(buf, 0, len);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SketchwareException(xB.b().a(getApplicationContext(), R.string.collection_failed_to_copy));
         }
     }
 }

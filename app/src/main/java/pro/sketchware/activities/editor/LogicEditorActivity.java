@@ -2250,14 +2250,9 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
                         }
                     })
                     .setNegativeButton("ترجمة", (dialog, which) -> {
-                        try {
                             String encodedText = java.net.URLEncoder.encode(result.errorMessage, "UTF-8");
-                            String url = "https://translate.google.com/?sl=auto&tl=ar&text=" + encodedText + "&op=translate";
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            Toast.makeText(this, "تعذر فتح متصفح الترجمة", Toast.LENGTH_SHORT).show();
-                        }
+                            openGoogleTranslate(encodedText);
+                            
                     })
                     .show();
             }
@@ -3508,5 +3503,29 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
         String insertedBlockWord = getString(inserted.size() != 1 ? R.string.word_blocks : R.string.word_block);
         pro.sketchware.util.SketchwareUtil.toast(
             getString(R.string.blocks_toast_inserted, inserted.size(), insertedBlockWord));
+    }
+    
+    public void openGoogleTranslate(String text) {
+    	try {
+    		// محاولة فتح الترجمة كنافذة عائمة (Process Text)
+    		Intent i = new Intent();
+    		i.setAction(Intent.ACTION_PROCESS_TEXT);
+    		i.setType("text/plain");
+    		i.putExtra(Intent.EXTRA_PROCESS_TEXT, text);
+    		i.putExtra(Intent.EXTRA_PROCESS_TEXT_READONLY, false);
+    		i.setPackage("com.google.android.apps.translate");
+    		startActivity(i);
+    	} catch (Exception e) {
+    		try {
+    			// إذا فشل، نفتح التطبيق كإرسال عادي (Send) كما في Apktool M
+    			Intent i = new Intent(Intent.ACTION_SEND);
+    			i.setType("text/plain");
+    			i.putExtra(Intent.EXTRA_TEXT, text);
+    			i.setPackage("com.google.android.apps.translate");
+    			startActivity(i);
+    		} catch (Exception e2) {
+    			Toast.makeText(this, "تعذر فتح متصفح الترجمة", Toast.LENGTH_SHORT).show();
+    		}
+    	}
     }
 }

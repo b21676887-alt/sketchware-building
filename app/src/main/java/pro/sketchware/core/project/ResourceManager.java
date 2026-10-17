@@ -635,23 +635,4 @@ public class ResourceManager {
     } 
     return false;
   }
-  
-   // In ResourceManager class (adapt to your class structure)
-  private ArrayList<ProjectResourceBean> lottieList = new ArrayList<>();
-    
-  public ArrayList<ProjectResourceBean> getLottieList() {
-        // Return a modifiable list or a copy depending on intended semantics
-        return lottieList;
-  }
-    
-  public void setLotties(ArrayList<ProjectResourceBean> lotties) {
-        if (lotties == null) {
-            this.lottieList = new ArrayList<>();
-        } else {
-            this.lottieList = new ArrayList<>(lotties);
-        }
-        // persist if ResourceManager has persistence methods (call save() or similar)
-        // saveResourceState(); // uncomment/adapt if needed
-  }
-  
 }
