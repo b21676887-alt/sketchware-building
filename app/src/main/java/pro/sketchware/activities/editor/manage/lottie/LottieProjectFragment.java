@@ -68,6 +68,10 @@ public class LottieProjectFragment extends BaseFragment {
     private FloatingActionButton fab;
     private String projectLottiesDirectory = "";
     private Adapter adapter = null;
+    
+    public ArrayList<ProjectResourceBean> getLotties() {
+        return lotties;
+    }
 
     private final ActivityResultLauncher<Intent> openImportIconActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
@@ -480,4 +484,5 @@ public class LottieProjectFragment extends BaseFragment {
             return false;
         }
     }
+    
 }

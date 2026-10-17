@@ -335,10 +335,10 @@ public class AddLottieCollectionActivity extends BaseDialogActivity implements V
         File dest = new File(destDir, destName);
 
         if (!src.exists()) {
-            throw new SketchwareException(xB.b().a(getApplicationContext(), R.string.collection_no_exist_file));
+            throw new SketchwareException(Helper.getResString(R.string.collection_no_exist_file));
         }
         if (dest.exists()) {
-            throw new SketchwareException(xB.b().a(getApplicationContext(), R.string.collection_duplicated_name) + "[" + lottie.resName + "]");
+            throw new SketchwareException(Helper.getResString(R.string.collection_duplicated_name) + "[" + lottie.resName + "]");
         }
 
         try (InputStream in = new java.io.FileInputStream(src);
@@ -350,7 +350,8 @@ public class AddLottieCollectionActivity extends BaseDialogActivity implements V
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new SketchwareException(xB.b().a(getApplicationContext(), R.string.collection_failed_to_copy));
+            throw new SketchwareException(Helper.getResString(R.string.collection_failed_to_copy));
         }
+        
     }
 }
