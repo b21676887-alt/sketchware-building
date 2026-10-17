@@ -42,6 +42,7 @@ import pro.sketchware.util.SketchToast;
 import pro.sketchware.util.io.UriPathResolver;
 import pro.sketchware.util.io.EncryptedFileUtil;
 import pro.sketchware.util.Helper;
+import pro.sketchware.widgets.EasyDeleteEditText;
 
 public class AddLottieCollectionActivity extends BaseDialogActivity implements View.OnClickListener {
 
