@@ -2250,13 +2250,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
                         }
                     })
                     .setNegativeButton("ترجمة", (dialog, which) -> {
-                            String encodedText;
-                        try {
-                            encodedText = java.net.URLEncoder.encode(result.errorMessage, java.nio.charset.StandardCharsets.UTF_8.name());
-                        } catch (Exception e) {
-                            // إذا فشل الترميز ببساطة نستخدم النص الأصلي كنسخة احتياطية
-                            encodedText = result.errorMessage;
-                        }
+                        encodedText = result.errorMessage;
                         openGoogleTranslate(encodedText);
                             
                             

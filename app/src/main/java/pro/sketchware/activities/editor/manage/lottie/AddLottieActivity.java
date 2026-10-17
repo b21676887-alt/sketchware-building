@@ -390,7 +390,7 @@ public class AddLottieActivity extends BaseDialogActivity implements View.OnClic
                         bean.savedPos = 1;
                         bean.isNew = true;
                         if (activity.chk_collection.isChecked()) {
-                            ImageCollectionManager.getInstance().addResource(activity.sc_id, bean);
+                            activity.addToMyCollection(bean);
                         }
                         activity.lotties.add(bean);
                     } else if (!activity.lottiePicked) {
@@ -419,7 +419,7 @@ public class AddLottieActivity extends BaseDialogActivity implements View.OnClic
                     }
                     if (activity.chk_collection.isChecked()) {
                         for (ProjectResourceBean b : toAdd) {
-                            ImageCollectionManager.getInstance().addResource(activity.sc_id, b);
+                            activity.addToMyCollection(b);
                         }
                     }
                     activity.multipleLottiesPicked = false;
@@ -488,5 +488,35 @@ public class AddLottieActivity extends BaseDialogActivity implements View.OnClic
             }
             return errorMessage;
         }
+    }
+    
+    private void addToMyCollection(ProjectResourceBean lottie) throws SketchwareException {
+        String destDirPath = SketchwarePaths.getCollectionPath() + File.separator + "assets";
+        File destDir = new File(destDirPath);
+        if (!destDir.exists()) destDir.mkdirs();
+
+        String destName = lottie.resName.toLowerCase().endsWith(".json") ? lottie.resName : lottie.resName + ".json";
+        File src = new File(lottie.resFullName);
+        File dest = new File(destDir, destName);
+
+        if (!src.exists()) {
+            throw new SketchwareException(Helper.getResString(R.string.collection_no_exist_file));
+        }
+        if (dest.exists()) {
+            throw new SketchwareException(Helper.getResString(R.string.collection_duplicated_name) + "[" + lottie.resName + "]");
+        }
+
+        try (InputStream in = new java.io.FileInputStream(src);
+             OutputStream out = new java.io.FileOutputStream(dest)) {
+            byte[] buf = new byte[8192];
+            int len;
+            while ((len = in.read(buf)) != -1) {
+                out.write(buf, 0, len);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SketchwareException(Helper.getResString(R.string.collection_failed_to_copy));
+        }
+        
     }
 }
