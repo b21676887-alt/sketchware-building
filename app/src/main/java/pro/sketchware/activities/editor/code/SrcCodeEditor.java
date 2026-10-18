@@ -30,6 +30,11 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import android.content.Context;
+import java.util.List;
+import java.util.Collections;
+import android.util.Pair;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -79,7 +84,7 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
             new Pair<>("NotepadXX", SchemeNotepadXX.class)
     );
     public static int languageId;
-    private CodeEditorPreferences editorPrefs;
+    private static CodeEditorPreferences editorPrefs;
     private String beforeContent = "";
     private CodeEditorHsBinding binding;
     private boolean fromAndroidManifest;
