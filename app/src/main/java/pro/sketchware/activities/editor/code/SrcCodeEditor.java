@@ -70,6 +70,9 @@ import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
 import pro.sketchware.util.ThemeUtils;
 import pro.sketchware.util.UI;
+import pro.sketchware.util.XmlUtil;
+
+
 
 public class SrcCodeEditor extends BaseAppCompatActivity {
     public static final String FLAG_FROM_ANDROID_MANIFEST = "from_android_manifest";
