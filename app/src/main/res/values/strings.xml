@@ -4579,4 +4579,8 @@ Do you want to continue?</string>
     <string name="ai_layout_generator">AI Layout</string>
     <string name="project_settings_hint_comple_sdk">Compile SDK version</string>
     <string name="view_code_editor_appcompat_note">Use AppCompat Manager to modify attributes for CoordinatorLayout, Toolbar, and other appcompat layout/widget.</string>
+    <string name="airesult_dialog_title">AI Result</string>
+    <string name="airesult_dialog_msg">The generated code is opened in the viewer. You can copy it or save it to the app storage.</string>
+    <string name="kelivo_action_translation">Translation</string>
+    <string name="syntax_dialog_title">Syntax Error Details</string>
 </resources>

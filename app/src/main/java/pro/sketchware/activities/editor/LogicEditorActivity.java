@@ -2239,17 +2239,17 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
                 scrollView.addView(messageView);
     
                 new MaterialAlertDialogBuilder(this)
-                    .setTitle("Syntax Error Details")
+                    .setTitle(R.string.syntax_dialog_title)
                     .setView(scrollView)
                     .setPositiveButton(R.string.common_word_ok, null)
-                    .setNeutralButton("نسخ", (dialog, which) -> {
+                    .setNeutralButton(R.string.kelivo_action_copy, (dialog, which) -> {
                         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         if (clipboard != null) {
                             clipboard.setPrimaryClip(ClipData.newPlainText("Syntax Error", result.errorMessage));
                             Toast.makeText(this, "تم نسخ النص بنجاح", Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("ترجمة", (dialog, which) -> {
+                    .setNegativeButton(R.string.kelivo_action_translation, (dialog, which) -> {
                          String encodedText = result.errorMessage;
                         openGoogleTranslate(encodedText);
                             
@@ -3347,8 +3347,8 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		
 		// عرض حوار إجراءاتٍ إضافية
 		new AlertDialog.Builder(this)
-		.setTitle("AI Result")
-		.setMessage("The generated code is opened in the viewer. You can copy it or save it to the app storage.")
+		.setTitle(R.string.airesult_dialog_title)
+		.setMessage(R.string.airesult_dialog_msg)
 		.setPositiveButton("Copy", (dialog, which) -> {
 			ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 			if (cm != null) {

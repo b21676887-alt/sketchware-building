@@ -3780,4 +3780,8 @@
     <string name="title_versioncontrol_category">التحكم في الإصدارات</string>
     <string name="title_rootfeatures_category">خصائص الجذر</string>
     <string name="view_code_editor_appcompat_note">استخدم مدير AppCompat لتعديل خصائص CoordinatorLayout و Toolbar وغيرها من تخطيطات وعناصر appcompat.</string>
+    <string name="airesult_dialog_title">نتيجة الذكاء الاصطناعي</string>
+    <string name="airesult_dialog_msg">يتم فتح الكود المُنشأ في نافذة العرض. يمكنك نسخه أو حفظه في وحدة تخزين التطبيق.</string>
+    <string name="kelivo_action_translation">ترجمة</string>
+    <string name="syntax_dialog_title">تفاصيل خطأ بناء الجملة</string>
 </resources>
