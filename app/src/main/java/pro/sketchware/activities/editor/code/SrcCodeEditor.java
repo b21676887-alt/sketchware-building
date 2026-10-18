@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -84,7 +85,7 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
             new Pair<>("NotepadXX", SchemeNotepadXX.class)
     );
     public static int languageId;
-    private static CodeEditorPreferences editorPrefs;
+    private static SharedPreferences editorPrefs;
     private String beforeContent = "";
     private CodeEditorHsBinding binding;
     private boolean fromAndroidManifest;
@@ -412,6 +413,7 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
         {
             String title = getIntent().getStringExtra("title");
             binding.toolbar.setTitle(title);
+            SharedPreferences local_pref = getSharedPreferences("hsce", Activity.MODE_PRIVATE);
             Menu toolbarMenu = binding.toolbar.getMenu();
             toolbarMenu.clear();
             toolbarMenu.add(Menu.NONE, MENU_UNDO, Menu.NONE, Helper.getResString(R.string.code_editor_menu_undo)).setIcon(AppCompatResources.getDrawable(this, R.drawable.ic_mtrl_undo)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -421,15 +423,15 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
                 toolbarMenu.add(Menu.NONE, MENU_LAYOUT_PREVIEW, Menu.NONE, Helper.getResString(R.string.code_editor_menu_layout_preview));
             }
             toolbarMenu.add(Menu.NONE, MENU_FIND_REPLACE, Menu.NONE, Helper.getResString(R.string.code_editor_menu_find_replace));
-            toolbarMenu.add(Menu.NONE, MENU_WORD_WRAP, Menu.NONE, Helper.getResString(R.string.code_editor_menu_word_wrap)).setCheckable(true).setChecked(editorPrefs.getWordWrap());
+            toolbarMenu.add(Menu.NONE, MENU_WORD_WRAP, Menu.NONE, Helper.getResString(R.string.code_editor_menu_word_wrap)).setCheckable(true).setChecked(local_pref.getWordWrap());
             toolbarMenu.add(Menu.NONE, MENU_PRETTY_PRINT, Menu.NONE, Helper.getResString(R.string.code_editor_menu_pretty_print));
             toolbarMenu.add(Menu.NONE, MENU_FONT_SIZE, Menu.NONE, Helper.getResString(R.string.code_editor_menu_font_size));
-            toolbarMenu.add(Menu.NONE, MENU_LINE_NUMBERS, Menu.NONE, Helper.getResString(R.string.code_editor_menu_line_numbers)).setCheckable(true).setChecked(editorPrefs.getLineNumbers());
-            toolbarMenu.add(Menu.NONE, MENU_STICKY_SCROLL, Menu.NONE, Helper.getResString(R.string.code_editor_menu_sticky_scroll)).setCheckable(true).setChecked(editorPrefs.getStickyScroll());
+            toolbarMenu.add(Menu.NONE, MENU_LINE_NUMBERS, Menu.NONE, Helper.getResString(R.string.code_editor_menu_line_numbers)).setCheckable(true).setChecked(local_pref.getLineNumbers());
+            toolbarMenu.add(Menu.NONE, MENU_STICKY_SCROLL, Menu.NONE, Helper.getResString(R.string.code_editor_menu_sticky_scroll)).setCheckable(true).setChecked(local_pref.getStickyScroll());
             toolbarMenu.add(Menu.NONE, MENU_SELECT_LANGUAGE, Menu.NONE, Helper.getResString(R.string.code_editor_select_language));
             toolbarMenu.add(Menu.NONE, MENU_SELECT_THEME, Menu.NONE, Helper.getResString(R.string.code_editor_select_theme));
-            toolbarMenu.add(Menu.NONE, MENU_AUTO_COMPLETE, Menu.NONE, Helper.getResString(R.string.code_editor_menu_auto_complete)).setCheckable(true).setChecked(editorPrefs.getAutoComplete());
-            toolbarMenu.add(Menu.NONE, MENU_AUTO_COMPLETE_SYMBOL_PAIR, Menu.NONE, Helper.getResString(R.string.code_editor_menu_auto_complete_symbol_pair)).setCheckable(true).setChecked(editorPrefs.getSymbolPair());
+            toolbarMenu.add(Menu.NONE, MENU_AUTO_COMPLETE, Menu.NONE, Helper.getResString(R.string.code_editor_menu_auto_complete)).setCheckable(true).setChecked(local_pref.getAutoComplete());
+            toolbarMenu.add(Menu.NONE, MENU_AUTO_COMPLETE_SYMBOL_PAIR, Menu.NONE, Helper.getResString(R.string.code_editor_menu_auto_complete_symbol_pair)).setCheckable(true).setChecked(local_pref.getSymbolPair());
 
             binding.toolbar.setOnMenuItemClickListener(item -> {
 
