@@ -60,7 +60,7 @@
             android:layout_marginVertical="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+1id/initializer"
+                android:id="@+id/initializer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/custom_var_hint_initializer"
