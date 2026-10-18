@@ -50,6 +50,9 @@ import io.github.rosemoe.sora.widget.CodeEditor;
 import io.github.rosemoe.sora.widget.component.EditorAutoCompletion;
 import io.github.rosemoe.sora.widget.schemes.EditorColorScheme;
 import io.github.rosemoe.sora.widget.schemes.SchemeDarcula;
+import io.github.rosemoe.sora.widget.schemes.SchemeEclipse;
+import io.github.rosemoe.sora.widget.schemes.SchemeGitHub;
+import io.github.rosemoe.sora.widget.schemes.SchemeNotepadXX;
 import io.github.rosemoe.sora.widget.schemes.SchemeVS2019;
 import pro.sketchware.util.Helper;
 import pro.sketchware.lib.code_editor.CodeEditorColorSchemes;
@@ -67,6 +70,14 @@ import pro.sketchware.util.XmlUtil;
 
 public class SrcCodeEditor extends BaseAppCompatActivity {
     public static final String FLAG_FROM_ANDROID_MANIFEST = "from_android_manifest";
+    public static final List<Pair<String, Class<? extends EditorColorScheme>>> KNOWN_COLOR_SCHEMES = List.of(
+            new Pair<>("Default", EditorColorScheme.class),
+            new Pair<>("GitHub", SchemeGitHub.class),
+            new Pair<>("Eclipse", SchemeEclipse.class),
+            new Pair<>("Darcula", SchemeDarcula.class),
+            new Pair<>("VS2019", SchemeVS2019.class),
+            new Pair<>("NotepadXX", SchemeNotepadXX.class)
+    );
     public static int languageId;
     private CodeEditorPreferences editorPrefs;
     private String beforeContent = "";
@@ -74,9 +85,40 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
     private boolean fromAndroidManifest;
     private String scId;
     private String activityName;
+    
+    public static void loadCESettings(Context c, CodeEditor ed, String prefix) {
+        loadCESettings(c, ed, prefix, false);
+    }
 
+    public static void loadCESettings(Context c, CodeEditor ed, String prefix, boolean loadTheme) {
+        editorPrefs = c.getSharedPreferences("hsce", Activity.MODE_PRIVATE);
+
+        int text_size = editorPrefs.getInt(prefix + "_ts", 12);
+        int theme = editorPrefs.getInt(prefix + "_theme", 3);
+        boolean word_wrap = editorPrefs.getBoolean(prefix + "_ww", false);
+        boolean auto_c = editorPrefs.getBoolean(prefix + "_ac", true);
+        boolean auto_complete_symbol_pairs = editorPrefs.getBoolean(prefix + "_acsp", true);
+
+        if (loadTheme) selectTheme(ed, theme);
+        ed.setTextSize(text_size);
+        ed.setWordwrap(word_wrap);
+        ed.getProps().symbolPairAutoCompletion = auto_complete_symbol_pairs;
+        ed.getComponent(EditorAutoCompletion.class).setEnabled(auto_c);
+    }
+    
     public static void selectTheme(CodeEditor ed, int which) {
-        CodeEditorPreferences.applyTheme(ed, which);
+        if (!(ed.getColorScheme() instanceof TextMateColorScheme)) {
+            EditorColorScheme scheme = switch (which) {
+                case 1 -> new SchemeGitHub();
+                case 2 -> new SchemeEclipse();
+                case 3 -> new SchemeDarcula();
+                case 4 -> new SchemeVS2019();
+                case 5 -> new SchemeNotepadXX();
+                default -> new EditorColorScheme();
+            };
+
+            ed.setColorScheme(scheme);
+        }
     }
 
     public static void selectLanguage(CodeEditor ed, int which) {
@@ -199,11 +241,22 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
         }
     }
 
+    
     public static void showSwitchThemeDialog(Activity activity, CodeEditor codeEditor, DialogInterface.OnClickListener listener) {
-        int currentTheme = CodeEditorPreferences.detectThemeIndex(codeEditor);
+        EditorColorScheme currentScheme = codeEditor.getColorScheme();
+        var knownColorSchemesProperlyOrdered = new ArrayList<>(KNOWN_COLOR_SCHEMES);
+        Collections.reverse(knownColorSchemesProperlyOrdered);
+        int selectedThemeIndex = knownColorSchemesProperlyOrdered.stream()
+                .filter(pair -> pair.second.equals(currentScheme.getClass()))
+                .map(KNOWN_COLOR_SCHEMES::indexOf)
+                .findFirst()
+                .orElse(-1);
+        String[] themeItems = KNOWN_COLOR_SCHEMES.stream()
+                .map(pair -> pair.first)
+                .toArray(String[]::new);
         new MaterialAlertDialogBuilder(activity)
                 .setTitle(R.string.code_editor_select_theme)
-                .setSingleChoiceItems(CodeEditorPreferences.THEME_NAMES, currentTheme, listener)
+                .setSingleChoiceItems(themeItems, selectedThemeIndex, listener)
                 .setNegativeButton(R.string.common_word_cancel, null)
                 .show();
     }
@@ -296,25 +349,9 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
                 binding.editor.setColorScheme(CodeEditorColorSchemes.loadTextMateColorScheme(CodeEditorColorSchemes.THEME_GITHUB));
             }
             languageId = 2;
-        } else {
-            if (ThemeUtils.isDarkThemeEnabled(getApplicationContext())) {
-                binding.editor.setColorScheme(CodeEditorColorSchemes.loadTextMateColorScheme(CodeEditorColorSchemes.THEME_DRACULA));
-            }
         }
 
-        editorPrefs = new CodeEditorPreferences(this, "src");
-        editorPrefs.applyToEditor(binding.editor, true);
-
-        // Ensure dark mode always uses a dark color scheme as fallback
-        if (ThemeUtils.isDarkThemeEnabled(getApplicationContext())) {
-            EditorColorScheme currentScheme = binding.editor.getColorScheme();
-            if (!(currentScheme instanceof TextMateColorScheme)
-                    && !(currentScheme instanceof SchemeDarcula)
-                    && !(currentScheme instanceof SchemeVS2019)) {
-                binding.editor.setColorScheme(new SchemeDarcula());
-            }
-        }
-
+        loadCESettings(this, binding.editor, "act", true);
         loadToolbar();
 
         UI.addSystemWindowInsetToPadding(binding.appBarLayout, true, true, true, false);
@@ -454,7 +491,11 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
                         break;
 
                     case MENU_SELECT_THEME:
-                        editorPrefs.showThemeDialog(SrcCodeEditor.this, binding.editor);
+                        showSwitchThemeDialog(this, binding.editor, (dialog, which) -> {
+                            selectTheme(binding.editor, which);
+                            editorPrefs.edit().putInt("act_theme", which).apply();
+                            dialog.dismiss();
+                        });
                         break;
 
                     case MENU_WORD_WRAP:
