@@ -19,6 +19,7 @@ import pro.sketchware.util.io.ZipUtil;
 
 import static pro.sketchware.core.build.BuildDefaults.VAR_DEFAULT_MIN_SDK_VERSION;
 import static pro.sketchware.core.build.BuildDefaults.VAR_DEFAULT_TARGET_SDK_VERSION;
+import static pro.sketchware.core.build.BuildDefaults.VAR_DEFAULT_COMPILE_SDK_VERSION;
 import static pro.sketchware.core.codegen.ExtraBlockFile.getExtraBlockData;
 
 import static pro.sketchware.util.ProjectFile.getDefaultColor;
@@ -365,9 +366,9 @@ public class ProjectFilePaths {
      */
     public void generateGradleFiles() {
         fileUtil.writeText(appDirectoryPath + File.separator + "build.gradle",
-                ComponentCodeGenerator.getBuildGradleString(VAR_DEFAULT_TARGET_SDK_VERSION, VAR_DEFAULT_MIN_SDK_VERSION, projectSettings.getValue(ProjectSettings.SETTING_TARGET_SDK_VERSION, String.valueOf(VAR_DEFAULT_TARGET_SDK_VERSION)), buildConfig, projectSettings.getValue(ProjectSettings.SETTING_ENABLE_VIEWBINDING, ProjectSettings.SETTING_GENERIC_VALUE_FALSE).equals(ProjectSettings.SETTING_GENERIC_VALUE_TRUE)));
+                ComponentCodeGenerator.getBuildGradleString(projectSettings.getCompileSdkVersion(VAR_DEFAULT_COMPILE_SDK_VERSION), projectSettings.getMinSdkVersion(), projectSettings.getValue(ProjectSettings.SETTING_TARGET_SDK_VERSION, String.valueOf(VAR_DEFAULT_TARGET_SDK_VERSION)), buildConfig, projectSettings.getValue(ProjectSettings.SETTING_ENABLE_VIEWBINDING, ProjectSettings.SETTING_GENERIC_VALUE_FALSE).equals(ProjectSettings.SETTING_GENERIC_VALUE_TRUE)));
         fileUtil.writeText(projectMyscPath + File.separator + "settings.gradle", ComponentCodeGenerator.getSettingsGradle());
-        fileUtil.writeText(projectMyscPath + File.separator + "build.gradle", ComponentCodeGenerator.getTopLevelBuildGradle("8.12.0", "4.4.3"));
+        fileUtil.writeText(projectMyscPath + File.separator + "build.gradle", ComponentCodeGenerator.getTopLevelBuildGradle("9.4.1", "4.5.0"));
 
         fileUtil.writeText(projectMyscPath + File.separator + "gradle.properties", """
                 android.enableR8.fullMode=false

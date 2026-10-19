@@ -2,6 +2,7 @@ package pro.sketchware.activities.main.fragments.projects;
 
 import static pro.sketchware.core.build.BuildDefaults.VAR_DEFAULT_MIN_SDK_VERSION;
 import static pro.sketchware.core.build.BuildDefaults.VAR_DEFAULT_TARGET_SDK_VERSION;
+import static pro.sketchware.core.build.BuildDefaults.VAR_DEFAULT_COMPILE_SDK_VERSION;
 
 import android.app.Activity;
 import android.view.View;
@@ -36,6 +37,7 @@ public class ProjectSettingsDialog {
             }
         });
 
+        binding.etCompileSdkVersion.setText(settings.getValue(ProjectSettings.SETTING_COMPILE_SDK_VERSION, String.valueOf(VAR_DEFAULT_TARGET_SDK_VERSION)));
         binding.etMinimumSdkVersion.setText(settings.getValue(ProjectSettings.SETTING_MINIMUM_SDK_VERSION, String.valueOf(VAR_DEFAULT_MIN_SDK_VERSION)));
         binding.etTargetSdkVersion.setText(settings.getValue(ProjectSettings.SETTING_TARGET_SDK_VERSION, String.valueOf(VAR_DEFAULT_TARGET_SDK_VERSION)));
         binding.etApplicationClassName.setText(settings.getValue(ProjectSettings.SETTING_APPLICATION_CLASS, ".SketchApplication"));
@@ -51,6 +53,7 @@ public class ProjectSettingsDialog {
         binding.removeOldMethods.setOnClickListener(v -> binding.cbRemoveOldMethods.performClick());
         binding.useNewMaterialComponentsAppTheme.setOnClickListener(v -> binding.cbUseNewMaterialComponentsAppTheme.performClick());
 
+        binding.etCompileSdkVersion.setTag(ProjectSettings.SETTING_COMPILE_SDK_VERSION);
         binding.etMinimumSdkVersion.setTag(ProjectSettings.SETTING_MINIMUM_SDK_VERSION);
         binding.etTargetSdkVersion.setTag(ProjectSettings.SETTING_TARGET_SDK_VERSION);
         binding.etApplicationClassName.setTag(ProjectSettings.SETTING_APPLICATION_CLASS);
@@ -61,6 +64,7 @@ public class ProjectSettingsDialog {
         dialog.setContentView(binding.getRoot());
 
         View[] preferences = {
+                binding.etCompileSdkVersion,
                 binding.etMinimumSdkVersion,
                 binding.etTargetSdkVersion,
                 binding.etApplicationClassName,

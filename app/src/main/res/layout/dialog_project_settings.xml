@@ -20,6 +20,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_compile_sdk_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:hint="@string/project_settings_hint_comple_sdk">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_compile_sdk_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_minimum_sdk_version"

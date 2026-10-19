@@ -21,6 +21,11 @@ import pro.sketchware.util.FileUtil;
 
 public class ProjectSettings {
 
+        /**
+     * Setting for the final app's {@code compileSdk}
+     */
+    public static final String SETTING_COMPILE_SDK_VERSION = "compile_sdk";
+
     /**
      * Setting for the final app's {@code minSdkVersion}
      *
@@ -84,6 +89,11 @@ public class ProjectSettings {
         } else {
             settings = new HashMap<>();
         }
+    }
+    
+
+    public int getCompileSdkVersion(int defaultValue) {
+        return getIntValue(SETTING_COMPILE_SDK_VERSION, defaultValue, "compile SDK version");
     }
 
     /**
