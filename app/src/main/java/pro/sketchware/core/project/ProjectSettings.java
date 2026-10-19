@@ -98,10 +98,10 @@ public class ProjectSettings {
     }
     
     private int getIntValue(String key, int defaultValue, String label) {
-        if (hashmap.containsKey(key)) {
+        if (settings.containsKey(key)) {
             try {
                 //noinspection ConstantConditions because we catch that already
-                return Integer.parseInt(hashmap.get(key));
+                return Integer.parseInt(settings.get(key));
             } catch (NumberFormatException | NullPointerException e) {
                 LogUtil.e(TAG, "Failed to parse the project's " + label + "! Defaulting to " + defaultValue, e);
                 return defaultValue;
