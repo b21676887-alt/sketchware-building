@@ -1,5 +1,5 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources xmlns:ns0="http://schemas.android.com/tools" ns0:ignore="ExtraTranslation">
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ExtraTranslation">
     <string name="about_beta_changes_title">التغييرات التجريبية (Beta)</string>
     <string name="about_changelog_title">سجل التغييرات</string>
     <string name="about_joindiscord">انضم إلى مجتمع Discord</string>
@@ -443,7 +443,7 @@
     <string name="component_description_fb_phone_auth">يُستخدم Firebase Phone مع Firebase Auth لتسجيل الدخول إلى تطبيقك باستخدام رقم الهاتف</string>
     <string name="component_description_file">يُستخدم File لحفظ البيانات محلياً</string>
     <string name="component_description_file_picker">يُستخدم FilePicker لاختيار الملفات الخام والوسائط مثل الصور والأصوات والنصوص.</string>
-    <string name="component_description_file_picker_guide_mime_type_example">يُستخدم نوع MIME لتحديد نوع البيانات.\nمثال: "*/*", "image/*", "audio/*", "text/*"</string>
+    <string name="component_description_file_picker_guide_mime_type_example">يُستخدم نوع MIME لتحديد نوع البيانات.\nمثال: &quot;*/*&quot;, &quot;image/*&quot;, &quot;audio/*&quot;, &quot;text/*&quot;</string>
     <string name="component_description_firebase_auth">يتيح Firebase Auth مصادقة المستخدمين عبر الإنترنت</string>
     <string name="component_description_firebase_storage">تم بناء Firebase Storage لمطوري التطبيقات الذين يحتاجون لترخيص وتخزين المحتوى المنشأ بواسطة المستخدمين.</string>
     <string name="component_description_fragment_adapter">يُستخدم FragmentStatePagerAdapter مع TabLayout و ViewPager لإدارة كل صفحة.</string>
@@ -574,7 +574,7 @@
     <string name="design_library_admob_setting_step3_title">تعيين معرّفات الوحدات الإعلانية</string>
     <string name="design_library_admob_setting_step4_desc">إذا قمت باختبار AdMob دون إضافة معرّف جهازك، فقد يتم حظر حسابك في AdMob. يرجى إضافة معرّف جهازك.</string>
     <string name="design_library_admob_setting_step4_title">تكوين أجهزة الاختبار</string>
-    <string name="design_library_admob_setting_step5_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر فوق "حفظ".</string>
+    <string name="design_library_admob_setting_step5_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر فوق &quot;حفظ&quot;.</string>
     <string name="design_library_admob_setting_step5_title">مراجعة المعلومات</string>
     <string name="design_library_admob_title_ad_name">اسم الإعلان</string>
     <string name="design_library_admob_title_ad_unit_id">معرّف الوحدة الإعلانية</string>
@@ -603,7 +603,7 @@
     <string name="design_library_firebase_description_settings">يجب أن تتطابق معرّف المشروع (Project ID)، ومعرّف التطبيق (App ID)، ومفتاح API مع القيم الموجودة داخل لوحة تحكم Firebase.</string>
     <string name="design_library_firebase_description_storage">يجب أن يتطابق رابط حاوية التخزين (Storage Bucket URL) مع القيمة الموجودة في Firebase Storage لكي يعمل بشكل صحيح.</string>
     <string name="design_library_firebase_dialog_description_confirm_uncheck_firebase">إذا قمت بإلغاء تحديد خيار Firebase DB، سيتم حذف مكونات Firebase الحالية. هل أنت متأكد من الاستمرار؟</string>
-    <string name="design_library_firebase_guide_path_example">المسار بدءاً من الجذر.\nمثال: "users/username"</string>
+    <string name="design_library_firebase_guide_path_example">المسار بدءاً من الجذر.\nمثال: &quot;users/username&quot;</string>
     <string name="design_library_firebase_guide_setup_first">من أجل استخدام هذا المكون، يجب عليك إعداد مفتاح API في إعدادات Firebase أولاً.</string>
     <string name="design_library_firebase_hint_enter_data_location">أدخل موقع البيانات</string>
     <string name="design_library_firebase_hint_enter_firebase_api_key">أدخل مفتاح API الخاص بـ Firebase</string>
@@ -617,7 +617,7 @@
     <string name="design_library_firebase_setting_step1_title">إعدادات المشروع</string>
     <string name="design_library_firebase_setting_step2_desc">أدخل رابط Firebase Storage</string>
     <string name="design_library_firebase_setting_step2_title">إعدادات رابط التخزين</string>
-    <string name="design_library_firebase_setting_step3_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر فوق "حفظ"..</string>
+    <string name="design_library_firebase_setting_step3_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر فوق &quot;حفظ&quot;..</string>
     <string name="design_library_firebase_setting_step3_title">مراجعة الإعدادات</string>
     <string name="design_library_firebase_title_api_key">مفتاح API</string>
     <string name="design_library_firebase_title_app_id">معرّف التطبيق (App ID)</string>
@@ -752,7 +752,7 @@
     <string name="dialog_repo_add_title">إضافة مستودع (Repository)</string>
     <string name="dialog_repo_builtin">مدمج</string>
     <string name="dialog_repo_custom">مخصص</string>
-    <string name="dialog_repo_delete_confirm">حذف المستودع "%s"؟</string>
+    <string name="dialog_repo_delete_confirm">حذف المستودع &quot;%s&quot;؟</string>
     <string name="dialog_repo_edit_title">تعديل المستودع</string>
     <string name="dialog_repo_empty">لا توجد مستودعات مخصصة. انقر فوق + لإضافة واحد.</string>
     <string name="dialog_repo_error_name_required">الاسم مطلوب</string>
@@ -957,7 +957,7 @@
     <string name="ia_balance_result">الرصيد: %1$s</string>
     <string name="ia_balance_result_path">مسار نتيجة الرصيد</string>
     <string name="ia_builtin_tools_official_only">متاح فقط للمزودين الرسميين في وضع Response API.</string>
-    <string name="ia_builtin_tools_requires_response_api">قم بتفعيل "Response API (/responses)" في التكوين لاستخدام هذه الأدوات.</string>
+    <string name="ia_builtin_tools_requires_response_api">قم بتفعيل &quot;Response API (/responses)&quot; في التكوين لاستخدام هذه الأدوات.</string>
     <string name="ia_code_interpreter_desc">يتيح للنموذج كتابة وتشغيل الأكواد البرمجية لحل المشكلات.</string>
     <string name="ia_code_interpreter_title">مفسر الأكواد (Code Interpreter)</string>
     <string name="ia_custom_body_title">محتوى مخصص (Custom Body)</string>
@@ -1054,7 +1054,7 @@
     <string name="invalid_value_rule_2">استخدم فقط الأحرف (a-z) والأرقام والرمز الخاص (.)</string>
     <string name="invalid_value_rule_3">استخدم فقط الأحرف (a-z) والأرقام والرمز الخاص (_)</string>
     <string name="invalid_value_rule_4">استخدم فقط الأحرف الصغيرة (a-z) والأرقام والرمز الخاص (_)</string>
-    <string name="invalid_value_rule_5">الأحرف الخاصة (&amp;, &lt;, &gt;, ", \') غير مسموح بها</string>
+    <string name="invalid_value_rule_5">الأحرف الخاصة (&amp;, &lt;, &gt;, &quot;, \') غير مسموح بها</string>
     <string name="invalid_value_rule_6">المسافات غير مسموح بها</string>
     <string name="item_view_role_description">علامة تبويب</string>
     <string name="kelivo_action_copy">نسخ</string>
@@ -1125,7 +1125,7 @@
     <string name="language_settings_export_strings">تصدير النصوص (Strings)</string>
     <string name="language_settings_exported">تم تصدير النصوص إلى:\n%s</string>
     <string name="language_settings_follow_system">حسب لغة النظام</string>
-    <string name="language_settings_help">كيفية العمل:\n\n1. انقر فوق "تصدير النصوص" لإنشاء ملف XML يحتوي على جميع نصوص التطبيق.\n2. قم بترجمة النصوص داخل الملف المصدّر.\n3. انقر فوق "استيراد النصوص" لتحميل ملفك المترجم.\n\nستحل النصوص المستوردة محل لغة العرض الافتراضية. يمكنك مسح التخصيص في أي وقت لاستعادة الإعدادات الافتراضية.</string>
+    <string name="language_settings_help">كيفية العمل:\n\n1. انقر فوق &quot;تصدير النصوص&quot; لإنشاء ملف XML يحتوي على جميع نصوص التطبيق.\n2. قم بترجمة النصوص داخل الملف المصدّر.\n3. انقر فوق &quot;استيراد النصوص&quot; لتحميل ملفك المترجم.\n\nستحل النصوص المستوردة محل لغة العرض الافتراضية. يمكنك مسح التخصيص في أي وقت لاستعادة الإعدادات الافتراضية.</string>
     <string name="language_settings_import_confirm_msg">استيراد %d نصاً؟ سيؤدي ذلك إلى استبدال لغة العرض الحالية.</string>
     <string name="language_settings_import_confirm_title">استيراد النصوص</string>
     <string name="language_settings_import_desc">استيراد ملف XML مترجم لاستبدال اللغة الحالية</string>
@@ -1147,7 +1147,7 @@
     <string name="library_default_description">استخدام إصدارات مكتبة مخصصة</string>
     <string name="library_excluded_count">تم استبعاد %1$d/%2$d من المكتبات المدمجة</string>
     <string name="library_msg_reset_confirm">إعادة ضبط المكتبات المدمجة المستبعدة؟ لا يمكن التراجع عن هذا الإجراء.</string>
-    <string name="library_remove_warning_msg">هذه المكتبة "%s" مستخدمة بالفعل في مشروعك، وإزالتها قد تتسبب في عطل في المشروع. هل تريد الاستمرار في إزالتها؟</string>
+    <string name="library_remove_warning_msg">هذه المكتبة &quot;%s&quot; مستخدمة بالفعل في مشروعك، وإزالتها قد تتسبب في عطل في المشروع. هل تريد الاستمرار في إزالتها؟</string>
     <string name="library_title_exclude">استبعاد المكتبات المدمجة</string>
     <string name="library_title_select">تحديد المكتبات المدمجة</string>
     <string name="local_library_manager">إدارة المكتبات المحلية (Local Library Manager)</string>
@@ -1368,7 +1368,7 @@
     <string name="material_slider_value">القيمة</string>
     <string name="material_timepicker_am">صباحًا</string>
     <string name="material_timepicker_clock_mode_description">يُرجى التبديل إلى وضع الساعة لإدخال الوقت.</string>
-    <string name="material_timepicker_clock_mode_tooltip">التبديل إلى وضع "الساعة"</string>
+    <string name="material_timepicker_clock_mode_tooltip">التبديل إلى وضع &quot;الساعة&quot;</string>
     <string name="material_timepicker_hour">الساعة</string>
     <string name="material_timepicker_hour_error">الساعة: بين 1 و12</string>
     <string name="material_timepicker_hour_error_24h">الساعة: بين 0 و23</string>
@@ -1377,7 +1377,7 @@
     <string name="material_timepicker_pm">مساءً</string>
     <string name="material_timepicker_select_time">اختيار الوقت</string>
     <string name="material_timepicker_text_input_mode_description">يُرجى التبديل إلى وضع إدخال النص لإدخال الوقت.</string>
-    <string name="material_timepicker_text_input_mode_tooltip">التبديل إلى وضع "إدخال النص"</string>
+    <string name="material_timepicker_text_input_mode_tooltip">التبديل إلى وضع &quot;إدخال النص&quot;</string>
     <string name="menu_clean_orphan_libs">تنظيف المكتبات المعزولة (Orphaned)</string>
     <string name="menu_manage_repositories">إدارة مستودعات Maven</string>
     <string name="message_compatible_chrome_brower">الصفحة التالية متوافقة مع متصفح Google Chrome. هل ترغب في تثبيت Chrome؟</string>
@@ -1385,7 +1385,7 @@
     <string name="message_device_not_supported">هذا الجهاز غير مدعوم. خدمات Google Play غير مثبتة.</string>
     <string name="message_free_trial">هل ترغب في مشاهدة إعلان لفتح المحتوى لاستخدام واحد فقط؟</string>
     <string name="message_license_expired">انتهت صلاحية الترخيص.\n%s</string>
-    <string name="message_strings_xml_loaded">تم تحميل ملف "strings.xml" الخاص بك بنجاح!</string>
+    <string name="message_strings_xml_loaded">تم تحميل ملف &quot;strings.xml&quot; الخاص بك بنجاح!</string>
     <string name="mtrl_badge_numberless_content_description">إشعار جديد</string>
     <string name="mtrl_button_collapsed_content_description">مصغَّرة</string>
     <string name="mtrl_button_expanded_content_description">موسَّعة</string>
@@ -1439,9 +1439,9 @@
     <string name="mtrl_picker_text_input_month_abbr">ش</string>
     <string name="mtrl_picker_text_input_year_abbr">س</string>
     <string name="mtrl_picker_today_description">اليوم %1$s</string>
-    <string name="mtrl_picker_toggle_to_calendar_input_mode">التبديل إلى وضع "الإدخال في التقويم"</string>
-    <string name="mtrl_picker_toggle_to_day_selection">التبديل إلى عرض "تقويم Google"</string>
-    <string name="mtrl_picker_toggle_to_text_input_mode">التبديل إلى وضع "إدخال النص"</string>
+    <string name="mtrl_picker_toggle_to_calendar_input_mode">التبديل إلى وضع &quot;الإدخال في التقويم&quot;</string>
+    <string name="mtrl_picker_toggle_to_day_selection">التبديل إلى عرض &quot;تقويم Google&quot;</string>
+    <string name="mtrl_picker_toggle_to_text_input_mode">التبديل إلى وضع &quot;إدخال النص&quot;</string>
     <string name="mtrl_picker_toggle_to_year_selection">التبديل إلى العرض حسب السنة</string>
     <string name="mtrl_switch_thumb_group_name">circle_group</string>
     <string name="mtrl_switch_thumb_path_checked">M4,16 A12,12 0 0,1 16,4 H16 A12,12 0 0,1 16,28 H16 A12,12 0 0,1 4,16</string>
@@ -1525,7 +1525,7 @@
     <string name="offline_dialog_image_description">رمز</string>
     <string name="offline_dialog_text">‏نشكرك على اهتمامك.\nسنشارك المزيد من المعلومات بعد إعادة الاتصال بالإنترنت.</string>
     <string name="offline_notification_title">تمت إعادة الاتصال بالإنترنت وبإمكانك الآن الاستئناف من حيث توقفت</string>
-    <string name="offline_notification_title_with_advertiser">تمت إعادة الاتصال بالإنترنت وبإمكانك الآن مواصلة التعرّف على "%s"</string>
+    <string name="offline_notification_title_with_advertiser">تمت إعادة الاتصال بالإنترنت وبإمكانك الآن مواصلة التعرّف على &quot;%s&quot;</string>
     <string name="offline_opt_in_confirm">حسنًا</string>
     <string name="offline_opt_in_decline">لا، شكرًا</string>
     <string name="offline_opt_in_message">سنرسل إليك إشعارًا يحتوي على رابط إلى الموقع الإلكتروني للمعلِن.</string>
@@ -1547,7 +1547,7 @@
     <string name="picker_color_title_delete_custom_attr">حذف السمة المخصصة</string>
     <string name="picker_color_title_delete_custom_color">حذف اللون المخصص</string>
     <string name="picker_color_xml_is_empty">ملف colors.xml فارغ</string>
-    <string name="preference_copied">تم نسخ "%1$s" إلى الحافظة.</string>
+    <string name="preference_copied">تم نسخ &quot;%1$s&quot; إلى الحافظة.</string>
     <string name="preset_setting_edit_warning">إذا قمت بتطبيق إعداد مسبق (Preset)، سيتم حذف بيانات العرض الحالية. هل تريد الاستمرار؟</string>
     <string name="preset_setting_title">إعدادات القوالب المسبقة</string>
     <string name="program_information_actionbar_title">معلومات البرنامج</string>
@@ -1684,16 +1684,16 @@
     <string name="publish_message_dialog_change_version_code">تغير كود الإصدار لهذا التطبيق. هل تريد توقيع ملف APK مرة أخرى؟</string>
     <string name="publish_message_dialog_compile_apk_failed">فشلت عملية تجميع ملف APK. يرجى التحقق من هذا المشروع</string>
     <string name="publish_message_dialog_conflict_version_code">لا يمكن استخدام كود الإصدار هذا. إذا كنت ترغب في تحديث كود الإصدار، يرجى النقر على زر موافق.</string>
-    <string name="publish_message_dialog_default_package_name">يرجى استخدام اسم حزمة مختلف. لا يمكن نشر المشاريع التي تبدأ باسم الحزمة "%s"</string>
+    <string name="publish_message_dialog_default_package_name">يرجى استخدام اسم حزمة مختلف. لا يمكن نشر المشاريع التي تبدأ باسم الحزمة &quot;%s&quot;</string>
     <string name="publish_message_dialog_invalid_json">ملف json غير صالح. يرجى التحقق مزدوجاً من الملف</string>
     <string name="resource_manager_no_list_body">ليس لديك أي %s هنا بعد، حاول إنشاء واحد.</string>
     <string name="resource_manager_no_list_title">لا يوجد %s هنا</string>
-    <string name="resources_editor_unsaved_changes_message">لديك تغييرات غير محفوظة في "%s"\nهل تريد حفظ تغييراتك قبل الخروج؟</string>
-    <string name="resources_editor_unsaved_changes_message_variant_change">لديك تغييرات غير محفوظة في "%s"\nهل تريد حفظ تغييراتك قبل تغيير المتغير (variant)؟</string>
+    <string name="resources_editor_unsaved_changes_message">لديك تغييرات غير محفوظة في &quot;%s&quot;\nهل تريد حفظ تغييراتك قبل الخروج؟</string>
+    <string name="resources_editor_unsaved_changes_message_variant_change">لديك تغييرات غير محفوظة في &quot;%s&quot;\nهل تريد حفظ تغييراتك قبل تغيير المتغير (variant)؟</string>
     <string name="resources_manager_xml_important_note_message_colors">تغيير الألوان الأساسية سيؤثر على المظهر البصري للتطبيق، بما في ذلك الأزرار والتحديدات</string>
     <string name="resources_manager_xml_important_note_message_strings">تغيير قيمة `app_name` سيؤثر مباشرة على اسم تطبيق هذا المشروع</string>
     <string name="resources_manager_xml_important_note_title">ملاحظة هامة :</string>
-    <string name="resources_manager_xml_load_failed_message">فشل تحميل البيانات في "%s" \nيرجى فتح محرر الكود لإصلاح المشكلة يدوياً</string>
+    <string name="resources_manager_xml_load_failed_message">فشل تحميل البيانات في &quot;%s&quot; \nيرجى فتح محرر الكود لإصلاح المشكلة يدوياً</string>
     <string name="resources_manager_xml_load_failed_title">فشل تحميل البيانات</string>
     <string name="restore">استعادة</string>
     <string name="restoring">جارٍ الاستعادة…</string>
@@ -1740,7 +1740,7 @@
     <string name="share_block_information_title_block_name">اسم البلوك</string>
     <string name="share_block_message_uploading_block_data">جارٍ رفع بيانات البلوك</string>
     <string name="share_block_message_uploading_more_block_data">جارٍ رفع بيانات More Block</string>
-    <string name="share_block_review_information_step_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر على "مشاركة"..</string>
+    <string name="share_block_review_information_step_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر على &quot;مشاركة&quot;..</string>
     <string name="share_block_review_information_step_name">مراجعة المعلومات</string>
     <string name="share_block_select_favorite_block_message_favorite_block">يرجى تحديد البلوك الذي ترغب في مشاركته</string>
     <string name="share_block_select_favorite_block_step_desc">حدد البلوك الذي ترغب في مشاركته</string>
@@ -1776,7 +1776,7 @@
     <string name="share_view_information_step_name">معلومات العرض</string>
     <string name="share_view_information_title_view_name">اسم العرض</string>
     <string name="share_view_message_uploading_view_data">جارٍ رفع بيانات العرض</string>
-    <string name="share_view_review_information_step_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر على "مشاركة"..</string>
+    <string name="share_view_review_information_step_desc">يرجى مراجعة المعلومات أدناه. إذا كانت جميعها صحيحة، انقر على &quot;مشاركة&quot;..</string>
     <string name="share_view_review_information_step_name">مراجعة المعلومات</string>
     <string name="share_view_select_favorite_view_message_favorite_view">يرجى تحديد العرض الذي ترغب في مشاركته</string>
     <string name="share_view_select_favorite_view_step_desc">حدد العرض الذي ترغب في مشاركته</string>
@@ -2304,6 +2304,8 @@
     <string name="menu_iachat">المحادثة</string>
     <string name="menu_undo">تراجع</string>
     <string name="menu_select_all">تحديد الكل</string>
+
+    <!-- نسخ افتراضية للقيم التي ظهرت في التحذيرات (اضبط النصوص حسب الحاجة) -->
     <string name="about_badge_contributor">المساهم</string>
     <string name="xml_command_confirmation_title">تأكيد</string>
     <string name="xml_command_enable_new_message">تمكين رسالة جديدة</string>
@@ -2627,6 +2629,8 @@
     <string name="selector_title_actions">الإجراءات</string>
     <string name="selector_title_attention">تنبيه</string>
     <string name="selector_title_new_item">عنصر محدد جديد</string>
+
+    
     <string name="action_delete">حذف</string>
     <string name="action_edit">تعديل</string>
     <string name="action_export">تصدير</string>
@@ -2834,10 +2838,16 @@
     <string name="toast_save_completed">اكتمل الحفظ</string>
     <string name="toast_select_file_type">حدد نوع الملف</string>
     <string name="toast_service_not_in_manifest">لم يتم تعريف الخدمة (Service) في AndroidManifest.</string>
+
+    
     <string name="parse_error_message_format">فشل في تحليل %1$s من الملف %2$s. هل تريد الإصلاح عبر إعادة تسمية الملف القديم إلى %3$s؟ إذا لم تقم بذلك، لن يتم استخدام %1$s.</string>
     <string name="parse_error_title_format">تعذر جلب %s</string>
+
+    
     <string name="attr_title_create">إنشاء سمة جديدة</string>
     <string name="attr_title_edit">تعديل السمة</string>
+
+    
     <string name="component_description_sqlite">قاعدة بيانات SQLite للتخزين المحلي والاستعلام عن البيانات المهيكلة</string>
     <string name="component_description_async_task">تتيح AsyncTask المعالجة في الخلفية مع تحديث واجهة المستخدم على الخيط الرئيسي</string>
     <string name="component_error_invalid_additional_var">إدخال متغير إضافي غير صالح في المكوّن المخصص رقم #%d</string>
@@ -2899,6 +2909,8 @@
     <string name="design_toast_package_installed">تم تثبيت الحزمة بنجاح!</string>
     <string name="view_title_create_new">إنشاء جديد</string>
     <string name="view_title_edit">تعديل %s</string>
+
+    
     <string name="event_desc_add_custom_imports">إضافة استيرادات مخصصة</string>
     <string name="event_desc_do_in_background">تحتوي هذه الدالة على الكود الذي يقتضي تنفيذه في الخلفية.</string>
     <string name="event_desc_post_execute">يتم استدعاء هذه الدالة بعد اكتمال المعالجة في دالة doInBackground.</string>
@@ -3115,6 +3127,8 @@
     <string name="menu_select_theme">اختر السمة</string>
     <string name="menu_select_transcript_mode">اختر وضع النص المكتوب</string>
     <string name="menu_select_variable_format">اختر متغير %s</string>
+
+    
     <string name="manifest_activities">الأنشطة (Activities)</string>
     <string name="manifest_add_attribute">إضافة سمة جديدة</string>
     <string name="manifest_add_permission">إضافة إذن جديد</string>
@@ -3141,6 +3155,8 @@
     <string name="manifest_option_permissions">الأذونات (Permissions)</string>
     <string name="manifest_option_permissions_desc">إضافة أذونات مخصصة للتطبيق</string>
     <string name="manifest_title">مدير AndroidManifest</string>
+
+    
     <string name="main_major_changes_desc">حدثت تغييرات رئيسية منذ الإصدار v6.3.0 fix1، ومن المهم جداً معرفتها جميعاً إذا كنت تريد استمرار عمل مشاريعك.\n\nيمكنك عرض جميع التغييرات في أي وقت من شاشة \"عن Sketchware Pro\".</string>
     <string name="main_major_changes_title">تغييرات رئيسية في الإصدار v7.0.0</string>
     <string name="main_new_project">مشروع جديد</string>
@@ -3255,6 +3271,8 @@
     <string name="local_library_manager_manifest_merge_enabled">الدمج التلقائي لملفات بيان (manifest) المكتبات المحلية مُمكّن</string>
     <string name="menu_auto_merge_local_library_manifests">دمج بيان (manifest) المكتبات المحلية تلقائياً</string>
     <string name="select_lib_hint_search">البحث عن مكتبات</string>
+
+    
     <string name="build_error_failed_create_directory">فشل في إنشاء المجلد / المجلدات!</string>
     <string name="build_error_missing_directory_msg">هناك مجلد مهم للبناء مفقود. يمكن لـ Sketchware Pro محاولة إنشاء %s إذا كنت ترغب في ذلك.</string>
     <string name="build_error_missing_directory_title">تم اكتشاف مجلد مفقود</string>
@@ -3312,6 +3330,8 @@
     <string name="notification_channel_firebase">إشعارات Sketchware Pro</string>
     <string name="notification_starting_build">بدء البناء…</string>
     <string name="snackbar_show_compile_log">عرض سجل التجميع</string>
+
+    
     <string name="apk_sign_select_file">يرجى تحديد ملف APK لتوقيعه</string>
     <string name="apk_sign_success">تم حفظ ملف APK الموقع بنجاح في: /Internal storage/sketchware/signed_apk/%s</string>
     <string name="app_settings_action_delete">حذف</string>
@@ -3380,6 +3400,8 @@
     <string name="theme_system_default_desc">اتباع إعدادات مظهر النظام</string>
     <string name="theme_title_create">إنشاء مظهر جديد</string>
     <string name="theme_title_edit">تعديل المظهر</string>
+
+    
     <string name="array_attr_hint_name">أدخل اسم العنصر</string>
     <string name="array_attr_hint_value">أدخل قيمة العنصر</string>
     <string name="array_hint_header">قيمة رأس المصفوفة (اختياري)</string>
@@ -3511,6 +3533,8 @@
     <string name="appcompat_not_available_msg">أنت لست في تخطيط النشاط حالياً.</string>
     <string name="appcompat_not_available_title">غير متاح.</string>
     <string name="appcompat_reset_confirm_msg">هل أنت تأكد من أنك تريد إعادة ضبط سمات appcompat لـ %s؟</string>
+
+    
     <string name="about_badge_core_team">الفريق الأساسي</string>
     <string name="about_changelog_error">لقد أخطأنا في شيء ما، نأسف للإزعاج!\n(التفاصيل: نوع بيانات غير صالح لـ \"title\")</string>
     <string name="about_contributors_title">المساهمون</string>
@@ -3544,6 +3568,8 @@
     <string name="admob_edit_label">تعديل</string>
     <string name="admob_no_ad_units">لا توجد وحدات إعلانية لعرضها</string>
     <string name="admob_rewarded_ad">إعلان بمكافأة</string>
+
+    
     <string name="filter_icons_baseline">أساسي (Baseline)</string>
     <string name="filter_icons_outlined">مخطط (Outlined)</string>
     <string name="filter_icons_round">دائري (Round)</string>
@@ -3607,13 +3633,19 @@
     <string name="version_hint_code">رمز الإصدار (Version code)</string>
     <string name="version_hint_name">اسم الإصدار (Version name)</string>
     <string name="version_hint_name_extra">ملحق اسم الإصدار (Version name extra)</string>
+
+    
     <string name="keystore_export_path_format">مسار التصدير: %s</string>
     <string name="keystore_helper_algorithm">مثال: SHA256withRSA</string>
     <string name="keystore_hint_algorithm">خوارزمية التوقيع</string>
     <string name="keystore_hint_alias">الاسم المستعار لمستودع المفاتيح (Alias)</string>
     <string name="keystore_hint_password">كلمة مرور الاسم المستعار</string>
     <string name="keystore_hint_signing_mode">وضع التوقيع</string>
+
+    
     <string name="moreblock_dialog_title_select">اختر بلوك معرف (More Block)</string>
+
+    
     <string name="font_add_to_collection">إضافة إلى مجموعتي</string>
     <string name="font_clear">مسح</string>
     <string name="font_hint_name">اسم الخط</string>
@@ -3622,6 +3654,8 @@
     <string name="font_preview_sample">هكذا سيبدو الخط الخاص بك.</string>
     <string name="font_preview_title">معاينة الخط</string>
     <string name="font_select">تحديد</string>
+
+    
     <string name="material3_dark">داكن</string>
     <string name="material3_daynight">نهاري/ليلي</string>
     <string name="material3_description">تصميم Material حديث مع مظاهر ديناميكية متكيفة</string>
@@ -3629,26 +3663,50 @@
     <string name="material3_enable">تمكين Material3</string>
     <string name="material3_light">فاتح</string>
     <string name="material3_theme_pref">تفضيل مظهر Material3:</string>
+
+    
+
+    
+
+    
     <string name="button_download">تنزيل</string>
     <string name="button_apply">تطبيق</string>
+
+    
     <string name="dialog_title_actions">الإجراءات</string>
     <string name="dialog_title_attention">تنبيه</string>
     <string name="dialog_title_rename">إعادة التسمية</string>
     <string name="dialog_title_create_new">إنشاء جديد</string>
+
+    
     <string name="events_new_title">حدث جديد</string>
+
+    
     <string name="selector_new_title">محدد (Selector) جديد</string>
     <string name="selector_edit_title">تعديل المحدد (Selector)</string>
     <string name="selector_new_item_title">عنصر محدد (Selector) جديد</string>
+
+    
     <string name="file_picker_select_json_selector">حدد ملف المحدد بصيغة .json</string>
+
+    
+
+    
     <string name="nativelib_manager_title">مدير المكتبات البرمجية الاصيلة (Native Libraries)</string>
     <string name="nativelib_import_title">استيراد مكتبات الاصيلة (Native)</string>
     <string name="folder_create_title">إنشاء مجلد جديد</string>
     <string name="folder_create_msg">أدخل اسم المجلد الجديد</string>
+
+    
     <string name="java_manager_title">مدير ملفات Java/Kotlin</string>
     <string name="java_create_msg">سيتم إضافة امتداد الملف تلقائياً بناءً على نوع الملف الذي تحدده</string>
+
+    
     <string name="editor_select_theme_title">اختر المظهر</string>
     <string name="editor_select_language_title">اختر اللغة</string>
-    <string name="proguard_select_libraries_title">اختر المكتبات المحلية</string>
+
+    
+    <string name="proguard_select_libraries_title">اختر المكتبات المحلية</string>        
     <string name="editor_preview_statusbar">شريط الحالة (StatusBar)</string>
     <string name="editor_preview_toolbar">شريط الأدوات (Toolbar)</string>
     <string name="editor_preview_drawer">القائمة الجانبية (Drawer)</string>
@@ -3658,9 +3716,9 @@
     <string name="editor_preview_tab3">التبويب 3</string>
     <string name="editor_preview_webview">عَرَض الويب (WebView)</string>
     <string name="editor_preview_spinner">القائمة المنسدلة (Spinner)</string>
-    <string name="editor_preview_mapview">عرض الخريطة (MapView)</string>
-    <string name="view_title_edit_format">تعديل %s</string>
-    <string name="widgets_select_json_title">اختر ملفات عناصر الواجهة بصيغة .json</string>
+    <string name="editor_preview_mapview">عرض الخريطة (MapView)</string>    
+    <string name="view_title_edit_format">تعديل %s</string>        
+    <string name="widgets_select_json_title">اختر ملفات عناصر الواجهة بصيغة .json</string>    
     <string name="array_select_type_title">اختر نوع المصفوفة</string>
     <string name="item_title_create">إنشاء عنصر جديد</string>
     <string name="item_title_edit">تعديل العنصر</string>
@@ -3672,33 +3730,46 @@
     <string name="global_search_searchproject">مشروع البحث</string>
     <string name="global_search_noresultsfound">لم يتم العثور على نتائج</string>
     <string name="global_search_searching_project">جارٍ البحث في المشروع...</string>
+    <!-- Source Code Dialog Options -->
     <string name="title_source_code">الشيفرة المصدرية</string>
     <string name="option_view_source_code">عرض الشيفرة المصدرية</string>
     <string name="option_code_to_blocks">تحويل الشيفرة إلى بلوكات</string>
     <string name="option_generate_with_ai">توليد باستخدام الذكاء الاصطناعي</string>
+
+    <!-- AI Generation Dialog & Process -->
     <string name="ai_code_subtitle_format">صف ما يجب أن يفعله الحدث \"%1$s\". سيقوم الذكاء الاصطناعي بكتابة المنطق وتحويله إلى بلوكات.</string>
     <string name="ai_code_hint">مثال: إظهار رسالة توست تقول مرحباً عند التشغيل</string>
+
     <string name="ai_toast_enter_description">يرجى إدخال وصف لما يجب أن يفعله هذا الحدث أولاً.</string>
     <string name="ai_toast_enter_description_alt">أدخل وصفاً لتوليد الكود.</string>
     <string name="ai_toast_no_result">لم يتم الحصول على نتيجة من المزوّد.</string>
     <string name="ai_toast_generation_failed">فشل توليد الكود: %1$s</string>
     <string name="ai_toast_request_error">خطأ في الطلب: %1$s</string>
     <string name="ai_dialog_generating">جاري توليد الكود</string>
+
+    <!-- Conversion & Blocks Process -->
     <string name="converter_error_failed">فشل المحول: %1$s</string>
     <string name="converter_error_could_not_convert">تعذر تحويل الكود: %1$s</string>
     <string name="converter_no_result">لا توجد نتيجة</string>
+
     <string name="word_block">بلوك</string>
     <string name="word_blocks">بلوكات</string>
+
     <string name="conversion_summary_msg">إليك ما تم العثور عليه:\n\n✅  %1$d %2$s أصلي\n⚠️  %3$d %4$s \"إضافة المصدر مباشرة\"\n\nهل أنت جاهز لإضافة %5$d %6$s إلى مشروعك؟</string>
     <string name="conversion_dialog_title">جاهز للإدراج؟</string>
     <string name="conversion_btn_go_back">انتظر، العودة للخلف</string>
     <string name="conversion_btn_insert">نعم، قم بإدراجها</string>
+
     <string name="blocks_toast_no_blocks">لا توجد بلوكات للإدراج.</string>
     <string name="blocks_toast_inserted">تم إدراج %1$d %2$s.</string>
+
+    <!-- Code To Blocks Dialog -->
     <string name="code_to_blocks_title">تحويل الكود إلى بلوكات</string>
     <string name="code_to_blocks_subtitle">الصق كود Java أدناه. الصيغ المدعومة (الحلقات، التغييرات، APIs) ستتحول إلى بلوكات. الكود غير التعرف عليه سيتم تغليفه بأمان.</string>
     <string name="code_to_blocks_hint">public void myLogic() {\n    // الكود هنا\n}</string>
     <string name="code_to_blocks_error_empty">عذراً! لقد نسيت لصق الكود.</string>
+
+    <!-- Common UI Actions -->
     <string name="btn_cancel">إلغاء</string>
     <string name="btn_generate">توليد</string>
     <string name="btn_convert">تحويل</string>
@@ -3716,4 +3787,5 @@
     <string name="manifest_required">هذا الحقل مطلوب</string>
     <string name="manifest_activity_exists">هذا النشاط موجود بالفعل في القائمة</string>
     <string name="manifest_attributes_read_error">تعذر قراءة السمات الموجودة. تم إبقاء الملف دون تغيير.</string>
+    <string name="manifest_source_generation_failed">فشل في عرض الكود.</string>
 </resources>
