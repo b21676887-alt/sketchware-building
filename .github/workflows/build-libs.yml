@@ -33,12 +33,17 @@ jobs:
           python-version: '3.x'
 
       - name: Setup Android SDK
+        id: setup-android
         uses: android-actions/setup-android@v3
 
       - name: Install Required Android SDK Packages
+        shell: bash
+        env:
+          ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
         run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
           yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
+          sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Run Build Built-in Libraries Script
         env:
