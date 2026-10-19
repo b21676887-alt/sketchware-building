@@ -7,10 +7,16 @@ on:
       - 'app/src/main/java/pro/sketchware/util/library/BuiltInLibraries.java'
   workflow_dispatch:
 
+env:
+  JAVA_VERSION: '17'
+  ANDROID_API_LEVEL: '34'
+  ANDROID_BUILD_TOOLS: '34.0.0'
+
 jobs:
   build-libs:
     name: Build & Verify Libraries
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     permissions:
       contents: write
 
@@ -21,11 +27,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: ${{ env.JAVA_VERSION }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -36,34 +42,60 @@ jobs:
         id: setup-android
         uses: android-actions/setup-android@v3
 
-      - name: Install Required Android SDK Packages
-        shell: bash
+      - name: Configure Android environment
         env:
           ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
+          ANDROID_SDK_ROOT: ${{ steps.setup-android.outputs.android-home }}
+        shell: bash
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/build-tools/${ANDROID_BUILD_TOOLS}" >> $GITHUB_PATH
+
+      - name: Install Required Android SDK Packages
+        env:
+          ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
+          ANDROID_SDK_ROOT: ${{ steps.setup-android.outputs.android-home }}
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          echo "Installing Android SDK packages..."
           yes | sdkmanager --licenses || true
-          sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+          sdkmanager --install \
+            "platform-tools" \
+            "platforms;android-${ANDROID_API_LEVEL}" \
+            "build-tools;${ANDROID_BUILD_TOOLS}"
 
       - name: Run Build Built-in Libraries Script
         env:
           ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
+          ANDROID_SDK_ROOT: ${{ steps.setup-android.outputs.android-home }}
+        shell: bash
         run: |
           python tools/builtin-libs/build_builtin_libs.py
 
       - name: Verify Resources Compatibility
         env:
           ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
+          ANDROID_SDK_ROOT: ${{ steps.setup-android.outputs.android-home }}
+        shell: bash
         run: |
           python tools/builtin-libs/verify_resources.py
 
       - name: Verify Classes and Dependencies
+        shell: bash
         run: |
           python tools/builtin-libs/verify_classes.py
 
       - name: Verify Generated Code and Smoke Tests
         env:
           ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
+          ANDROID_SDK_ROOT: ${{ steps.setup-android.outputs.android-home }}
+        shell: bash
         run: |
           python tools/builtin-libs/verify_generated_code.py
 
