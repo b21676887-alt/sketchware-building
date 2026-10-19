@@ -4583,4 +4583,10 @@ Do you want to continue?</string>
     <string name="airesult_dialog_msg">The generated code is opened in the viewer. You can copy it or save it to the app storage.</string>
     <string name="kelivo_action_translation">Translation</string>
     <string name="syntax_dialog_title">Syntax Error Details</string>
+    <string name="manifest_required">This field is required</string>
+    <string name="manifest_activity_exists">This activity is already listed</string>
+    <string name="manifest_attributes_read_error">Could not read the existing attributes. The file has been kept unchanged.</string>
+    <string name="array_select_type_title">Select Array Type</string>
+    <string name="item_title_create">Create new item</string>
+    <string name="item_title_edit">Edit item</string>
 </resources>

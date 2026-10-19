@@ -3784,4 +3784,10 @@
     <string name="airesult_dialog_msg">يتم فتح الكود المُنشأ في نافذة العرض. يمكنك نسخه أو حفظه في وحدة تخزين التطبيق.</string>
     <string name="kelivo_action_translation">ترجمة</string>
     <string name="syntax_dialog_title">تفاصيل خطأ بناء الجملة</string>
+    <string name="manifest_required">هذا الحقل مطلوب</string>
+    <string name="manifest_activity_exists">هذا النشاط موجود بالفعل في القائمة</string>
+    <string name="manifest_attributes_read_error">تعذر قراءة السمات الموجودة. تم إبقاء الملف دون تغيير.</string>
+    <string name="array_select_type_title">اختر نوع المصفوفة</string>
+    <string name="item_title_create">إنشاء عنصر جديد</string>
+    <string name="item_title_edit">تعديل العنصر</string>
 </resources>
