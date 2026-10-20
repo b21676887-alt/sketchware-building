@@ -366,8 +366,8 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
             MENU_FIND_REPLACE = 5, MENU_WORD_WRAP = 6, MENU_PRETTY_PRINT = 7,
             MENU_SELECT_LANGUAGE = 8, MENU_SELECT_THEME = 9, MENU_AUTO_COMPLETE = 10,
             MENU_AUTO_COMPLETE_SYMBOL_PAIR = 11, MENU_FONT_SIZE = 12, MENU_LINE_NUMBERS = 13,
-            MENU_STICKY_SCROLL = 14;
-            MENU_AI_HELPER = 15;
+            MENU_STICKY_SCROLL = 14, MENU_AI_HELPER = 15;
+            
 
     private void loadToolbar() {
         {
