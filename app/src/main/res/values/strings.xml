@@ -2550,5 +2550,6 @@ ACTION_VIEW
     <string name="manifest_activity_exists">This activity is already listed</string>
     <string name="manifest_attributes_read_error">Could not read the existing attributes. The file has been kept unchanged.</string>
     <string name="manifest_source_generation_failed">Code generation failed.</string>
-    <string name="app_name_ameen">Sketchware Pro</string>
+    <string name="error_invalid_lib_name">Invalid name of enabled Local library #%d</string>
+    <string name="error_invalid_dex_path">Invalid DEX file path of enabled Local library #%d</string>
 </resources>

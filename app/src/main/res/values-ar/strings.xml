@@ -2507,4 +2507,6 @@
     <string name="manifest_activity_exists">هذا النشاط موجود بالفعل في القائمة</string>
     <string name="manifest_attributes_read_error">تعذر قراءة السمات الموجودة. تم إبقاء الملف دون تغيير.</string>
     <string name="manifest_source_generation_failed">فشل في عرض الكود.</string>
+    <string name="error_invalid_dex_path">مسار ملف DEX للمكتبة المحلية المفعّلة رقم #%d غير صالح</string>
+    <string name="error_invalid_lib_name">اسم المكتبة المحلية المفعّلة رقم #%d غير صالح</string>
 </resources>
