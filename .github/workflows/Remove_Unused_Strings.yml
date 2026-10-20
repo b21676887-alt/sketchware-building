@@ -1,0 +1,140 @@
+name: Remove Unused Strings Keys
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean-unused-strings:
+    name: Clean Unused String Keys
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Find and Remove Unused Strings via Python Script
+        run: |
+          python - <<'PY'
+          import os, glob, re
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          # 1. جمع كل ملفات strings.xml (الأساسية والمحلية)
+          string_files = glob.glob('**/res/values/strings.xml', recursive=True) + glob.glob('**/res/values-*/strings.xml', recursive=True)
+          if not string_files:
+              print("No strings.xml files found.")
+              exit(0)
+
+          # 2. جمع كل ملفات الكود والـ XML في المشروع للبحث عن الاستخدامات
+          code_files = []
+          extensions = ('.java', '.kt', '.xml', '.gradle')
+          for root, dirs, files in os.walk('.'):
+              # استبعاد مجلدات البناء و .git لتسريع البحث
+              if '.git' in dirs:
+                  dirs.remove('.git')
+              if 'build' in dirs:
+                  dirs.remove('build')
+              for file in files:
+                  if file.endswith(extensions):
+                      code_files.append(os.path.join(root, file))
+
+          print(f"Scanning {len(code_files)} source/layout files for string usages...")
+
+          # قراءة محتوى جميع ملفات الكود مرة واحدة كنص ضخم لتسريع الفحص
+          all_code_content = ""
+          for cf in code_files:
+              try:
+                  with open(cf, 'r', encoding='utf-8', errors='ignore') as f:
+                      all_code_content += f.read() + "\n"
+              except Exception as e:
+                  # تجنب فشل التحليل لملفات قد تكون مقفلة أو غير قابلة للقراءة
+                  print(f"Warning: could not read {cf}: {e}")
+                  continue
+
+          total_removed = 0
+          changed_files = []
+
+          for sf in string_files:
+              try:
+                  tree = ET.parse(sf)
+                  root = tree.getroot()
+              except Exception as e:
+                  print(f"Error parsing {sf}: {e}")
+                  continue
+
+              removed_in_file = 0
+              for elem in list(root):
+                  if elem.tag == 'string':
+                      name = elem.get('name')
+                      if name:
+                          # التحقق مما إذا كان المفتاح مستخدماً بصيغة R.string.name أو @string/name أو "name"
+                          patterns = [
+                              f"R.string.{name}",
+                              f"@string/{name}",
+                              f'"{name}"',
+                              f"'{name}'"
+                          ]
+                          
+                          # هل المفتاح غير موجود في أي مكان في الكود؟
+                          is_used = any(p in all_code_content for p in patterns)
+                          
+                          # استثناءات إضافية (مثل المفاتيح التي تبدأ بـ prefix معين ولا تريد حذفها)
+                          if not is_used:
+                              root.remove(elem)
+                              removed_in_file += 1
+                              print(f"Removing unused string: '{name}' from {sf}")
+
+              if removed_in_file > 0:
+                  try:
+                      ET.indent(tree, space="    ")
+                  except Exception:
+                      pass
+                  tree.write(sf, encoding='utf-8', xml_declaration=True)
+                  changed_files.append(sf)
+                  total_removed += removed_in_file
+
+          print(f"\nTotal unused strings removed: {total_removed}")
+          if changed_files:
+              print("CHANGED_FILES:" + ",".join(changed_files))
+          PY
+
+      - name: Commit and Push Cleaned Files
+        shell: bash
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+          BRANCH="${GITHUB_REF_NAME:-${GITHUB_REF#refs/heads/}}"
+
+          git fetch origin "${BRANCH}"
+          git rebase "origin/${BRANCH}" || git pull --rebase origin "${BRANCH}" || true
+
+          CHANGED=$(git status --porcelain | awk '/strings\.xml$/ {print $2}' | uniq || true)
+
+          if [ -n "$CHANGED" ]; then
+            echo "Committing changed files:"
+            echo "$CHANGED"
+            for f in $CHANGED; do
+              git add "$f"
+            done
+            git commit -m "chore: remove unused string keys [skip ci]" || echo "No commit needed"
+            git push origin HEAD:"${BRANCH}"
+          else
+            echo "No unused strings changes to commit."
+          fi
