@@ -13,6 +13,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import java.io.IOException;
+import java.util.Locale;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import pro.sketchware.activities.base.BaseAppCompatActivity;
