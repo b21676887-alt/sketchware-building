@@ -85,7 +85,9 @@ jobs:
                       name = elem.get('name')
                       if name:
                         # استثناءات اختيارية: حماية المفاتيح التي تبدأ بـ app_name أو launcher_
-                        if name.startswith('app_name') or name.startswith('launcher_'):
+                        if (name.startswith('app_name') or name.startswith('launcher_') or 
+                            name.endswith('_body_2') or name.endswith('_body_1') or 
+                            name.endswith('_tail') or name.endswith('_head') or name.startswith('root_spec_')):
                             continue
 
                         # الأنماط المحدثة للبحث الشامل (التقليدي، XML، والدوال المساعدة/الديناميكية)
