@@ -89,7 +89,7 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
         menu.add(Menu.NONE, MENU_WORD_WRAP, Menu.NONE, Helper.getResString(R.string.code_editor_menu_word_wrap))
                 .setCheckable(true).setChecked(editorPrefs.getWordWrap());
         menu.add(Menu.NONE, MENU_FONT_SIZE, Menu.NONE, Helper.getResString(R.string.code_editor_menu_font_size));
-        menu.add(Menu.NONE, MENU_AI_HELPER, Menu.NONE, "AI Helper");
+        menu.add(Menu.NONE, MENU_AI_HELPER, Menu.NONE, Helper.getResString(R.string.ai_help_button));
         return true;
     }
 
@@ -132,8 +132,8 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
         TextView titleView = loadingView.findViewById(R.id.text_loading_title);
         TextView subtitleView = loadingView.findViewById(R.id.text_loading_subtitle);
 
-        if (titleView != null) titleView.setText(R.string.ai_explain_loading_title);
-        if (subtitleView != null) subtitleView.setText(R.string.ai_explain_loading_subtitle);
+        if (titleView != null) titleView.setText(R.string.ai_help_loading_title);
+        if (subtitleView != null) subtitleView.setText(R.string.ai_help_loading_subtitle);
 
         var progressDialog = new MaterialAlertDialogBuilder(this)
             .setView(loadingView)
