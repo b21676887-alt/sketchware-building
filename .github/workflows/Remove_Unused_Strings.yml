@@ -35,35 +35,37 @@ jobs:
           import xml.etree.ElementTree as ET
           from pathlib import Path
 
-          # 1. جمع كل ملفات strings.xml (الأساسية والمحلية)
+          # 1. جمع كل ملفات strings.xml بدقة أكبر لتشمل أي هيكل مجلدات
           string_files = glob.glob('**/res/values/strings.xml', recursive=True) + glob.glob('**/res/values-*/strings.xml', recursive=True)
           if not string_files:
               print("No strings.xml files found.")
               exit(0)
 
-          # 2. جمع كل ملفات الكود والـ XML في المشروع للبحث عن الاستخدامات
+                    # 2. جمع كل ملفات الكود والـ XML في المشروع (مع استبعاد ملفات strings.xml)
           code_files = []
           extensions = ('.java', '.kt', '.xml', '.gradle')
           for root, dirs, files in os.walk('.'):
-              # استبعاد مجلدات البناء و .git لتسريع البحث
               if '.git' in dirs:
                   dirs.remove('.git')
               if 'build' in dirs:
                   dirs.remove('build')
               for file in files:
                   if file.endswith(extensions):
+                      # استبعاد ملفات strings.xml لكي لا يتم اعتبار المفتاح مستخدماً من نفسه
+                      if file == 'strings.xml':
+                          continue
                       code_files.append(os.path.join(root, file))
+
 
           print(f"Scanning {len(code_files)} source/layout files for string usages...")
 
-          # قراءة محتوى جميع ملفات الكود مرة واحدة كنص ضخم لتسريع الفحص
+          # قراءة محتوى جميع ملفات الكود وتخزينه
           all_code_content = ""
           for cf in code_files:
               try:
                   with open(cf, 'r', encoding='utf-8', errors='ignore') as f:
                       all_code_content += f.read() + "\n"
               except Exception as e:
-                  # تجنب فشل التحليل لملفات قد تكون مقفلة أو غير قابلة للقراءة
                   print(f"Warning: could not read {cf}: {e}")
                   continue
 
@@ -83,22 +85,24 @@ jobs:
                   if elem.tag == 'string':
                       name = elem.get('name')
                       if name:
-                          # التحقق مما إذا كان المفتاح مستخدماً بصيغة R.string.name أو @string/name أو "name"
-                          patterns = [
-                              f"R.string.{name}",
-                              f"@string/{name}",
-                              f'"{name}"',
-                              f"'{name}'"
-                          ]
+                        # استثناءات اختيارية: إذا كنت تريد حماية مفاتيح تبدأ ببادئة معين (مثل app_name) من الحذف التلقائي
+                        if name.startswith('app_name') or name.startswith('launcher_'):
+                            continue
+
+                        # استخدام التعبيرات المنتظمة (RegEx) للبحث الدقيق عن استخدام المفتاح
+                        # يبحث عن R.string.name أو @string/name أو المعرفات داخل ملفات التخطيط والكود
+                        patterns = [
+                            r'\bR\.string\.' + name + r\b',
+                            r'@string/' + name + r'(?=["\s/]|$)',
+                            r'["\']' + name + r'["\']'
+                        ]
+                        
+                        is_used = any(re.search(pat, all_code_content) for pat in patterns)
                           
-                          # هل المفتاح غير موجود في أي مكان في الكود؟
-                          is_used = any(p in all_code_content for p in patterns)
-                          
-                          # استثناءات إضافية (مثل المفاتيح التي تبدأ بـ prefix معين ولا تريد حذفها)
-                          if not is_used:
-                              root.remove(elem)
-                              removed_in_file += 1
-                              print(f"Removing unused string: '{name}' from {sf}")
+                        if not is_used:
+                            root.remove(elem)
+                            removed_in_file += 1
+                            print(f"Removing unused string: '{name}' from {sf}")
 
               if removed_in_file > 0:
                   try:
