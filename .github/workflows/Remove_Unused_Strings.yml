@@ -88,11 +88,11 @@ jobs:
                         if name.startswith('app_name') or name.startswith('launcher_'):
                             continue
 
-                        # التصحيح هنا: إضافة علامات التنصيص الصحيحة للـ RegEx
+                        # الأنماط المحدثة للبحث الشامل (التقليدي، XML، والدوال المساعدة/الديناميكية)
                         patterns = [
-                            r'\bR\.string\.' + name + r'\b',
-                            r'@string/' + name + r'(?=["\s/]|$)',
-                            r'["\']' + name + r'["\']'
+                            r'\bR\.string\.' + name + r'\b',          # الاستدعاء التقليدي R.string.name
+                            r'@string/' + name + r'(?=["\s/]|$)',     # الاستدعاء داخل ملفات XML والواجهات
+                            r'\b' + name + r'\b'                      # البحث عن اسم المفتاح ككلمة مستقلة في أي مكان بالكود (يشمل الدوال المساعدة والطرق الديناميكية)
                         ]
                         
                         is_used = any(re.search(pat, all_code_content) for pat in patterns)
