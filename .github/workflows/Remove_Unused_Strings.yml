@@ -41,7 +41,7 @@ jobs:
               print("No strings.xml files found.")
               exit(0)
 
-                    # 2. جمع كل ملفات الكود والـ XML في المشروع (مع استبعاد ملفات strings.xml)
+          # 2. جمع كل ملفات الكود والـ XML في المشروع (مع استبعاد ملفات strings.xml)
           code_files = []
           extensions = ('.java', '.kt', '.xml', '.gradle')
           for root, dirs, files in os.walk('.'):
@@ -55,7 +55,6 @@ jobs:
                       if file == 'strings.xml':
                           continue
                       code_files.append(os.path.join(root, file))
-
 
           print(f"Scanning {len(code_files)} source/layout files for string usages...")
 
@@ -85,14 +84,13 @@ jobs:
                   if elem.tag == 'string':
                       name = elem.get('name')
                       if name:
-                        # استثناءات اختيارية: إذا كنت تريد حماية مفاتيح تبدأ ببادئة معين (مثل app_name) من الحذف التلقائي
+                        # استثناءات اختيارية: حماية المفاتيح التي تبدأ بـ app_name أو launcher_
                         if name.startswith('app_name') or name.startswith('launcher_'):
                             continue
 
-                        # استخدام التعبيرات المنتظمة (RegEx) للبحث الدقيق عن استخدام المفتاح
-                        # يبحث عن R.string.name أو @string/name أو المعرفات داخل ملفات التخطيط والكود
+                        # التصحيح هنا: إضافة علامات التنصيص الصحيحة للـ RegEx
                         patterns = [
-                            r'\bR\.string\.' + name + r\b',
+                            r'\bR\.string\.' + name + r'\b',
                             r'@string/' + name + r'(?=["\s/]|$)',
                             r'["\']' + name + r'["\']'
                         ]
