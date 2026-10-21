@@ -98,7 +98,7 @@ dependencies {
     implementation libs.conscrypt.android
     
 
-    implementation libs.asm
+    
     implementation libs.stringfog.core
     implementation libs.stringfog.interface
     implementation libs.stringfog.xor
