@@ -1,10 +1,9 @@
 [versions]
-activity = "1.12.2"
-appcompat = "1.7.1"
+activity = "1.13.0"
+appcompat = "1.8.0"
 junit = "4.13.2"
-lifecycle = "2.6.2"
 desugar_jdk_libs_nio = "2.1.5"
-firebaseBom = "34.8.0"
+firebaseBom = "34.19.0"
 sora-editor = "0.24.4"
 bundletool = "1.18.3"
 cardview = "1.0.0"
@@ -15,40 +14,45 @@ markwon = "4.6.2"
 coreSplashscreen = "1.2.0"
 libsu = "5.0.4"
 dependencyresolver = "05ec26af0b"
+#noinspection NewerVersionAvailable
 ecj = "3.26.0"
 exifinterface = "1.4.2"
 filepicker = "869c18f9e4"
 flexbox = "3.0.0"
-glide = "5.0.5"
-gson = "2.13.2"
+glide = "5.0.9"
+gson = "2.14.0"
 insetter = "0.6.1"
-javaparserSymbolSolver = "3.28.0"
-kotlincForSketchware = "2.1.21_rc3"
+javaparserSymbolSolver = "3.28.2"
+kotlincForSketchware = "2.3.21"
 kotlinCompiler = "2.1.21"
 lottie = "6.7.1"
 material = "1.14.0"
-nbJavacAndroid = "17.0.0.3"
-okhttp = "5.3.2"
-okio = "3.16.4"
+okhttp = "5.5.0"
+okio = "3.18.2"
 preference = "1.2.1"
+#noinspection NewerVersionAvailable
 proguardCore = "9.0.2"
-protobufJava = "4.33.4"
-r8 = "8.13.19"
+protobufJava = "4.36.2"
+r8 = "9.4.26"
 recyclerview = "1.4.0"
 scpkixJdk15on = "1.47.0.3"
+#noinspection GradleDependency
 sdklib = "25.3.0"
 staxApi = "1.0-2"
 swiperefreshlayout = "1.2.0"
 viewpager = "1.1.0"
-woodstoxCore = "7.1.1"
+woodstoxCore = "7.2.2"
 zipalignJava = "1.2.2"
+asm = "9.10.1"
+stringfog = "5.2.0"
+stringfogXor = "5.0.0"
+apksig = "9.4.1"
+conscrypt = "2.7.0"
+androidsvg = "1.4"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity", version.ref = "activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycle" }
-androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
-junit = { module = "junit:junit", version.ref = "junit" }
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
 androidx-preference = { module = "androidx.preference:preference", version.ref = "preference" }
@@ -67,11 +71,12 @@ flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbo
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 
-sora-editor = { module = "io.github.rosemoe:editor-bom", version.ref = "sora-editor" }
-editor = { module = "io.github.rosemoe:editor" }
-language-java = { module = "io.github.rosemoe:language-java" }
-language-textmate = { module = "io.github.rosemoe:language-textmate" }
+junit = { module = "junit:junit", version.ref = "junit" }
 
+sora-editor = { module = "io.github.Rosemoe.sora-editor:bom", version.ref = "sora-editor" }
+editor = { module = "io.github.Rosemoe.sora-editor:editor" }
+language-java = { module = "io.github.Rosemoe.sora-editor:language-java" }
+language-textmate = { module = "io.github.Rosemoe.sora-editor:language-textmate" }
 
 bundletool = { module = "com.android.tools.build:bundletool", version.ref = "bundletool" }
 
@@ -93,9 +98,7 @@ ecj = { module = "org.eclipse.jdt:ecj", version.ref = "ecj" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlinCompiler" }
-kotlinc-for1-sketchware = { module = "com.github.waelchateur:kotlinc-for-sketchware", version.ref = "kotlincForSketchware" }
-
-nb-javac-android = { module = "io.github.itsaky:nb-javac-android", version.ref = "nbJavacAndroid" }
+kotlinc-for1-sketchware = { module = "com.github.PranavPurwar:kotlinc-android", version.ref = "kotlincForSketchware" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
@@ -115,8 +118,16 @@ woodstox-core = { module = "com.fasterxml.woodstox:woodstox-core", version.ref =
 
 zipalign-java = { module = "com.github.Iyxan23:zipalign-java", version.ref = "zipalignJava" }
 
+asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
+stringfog-core = { module = "com.github.megatronking.stringfog:core", version.ref = "stringfog" }
+stringfog-interface = { module = "com.github.megatronking.stringfog:interface", version.ref = "stringfogXor" }
+stringfog-xor = { module = "com.github.megatronking.stringfog:xor", version.ref = "stringfogXor" }
+apksig = { module = "com.android.tools.build:apksig", version.ref = "apksig" }
+conscrypt-android = { module = "org.conscrypt:conscrypt-android", version.ref = "conscrypt" }
+androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
+
 [bundles]
-ui = ["androidx-activity", "androidx-appcompat", "androidx-lifecycle-livedata", "androidx-lifecycle-viewmodel", "androidx-splashscreen", "androidx-recyclerview",
+ui = ["androidx-activity", "androidx-appcompat", "androidx-splashscreen", "androidx-recyclerview",
     "androidx-cardview", "androidx-viewpager", "androidx-swiperefreshlayout", "material", "lottie",
     "flexbox", "androidx-exifinterface", "androidx-preference"]
 image = ["glide", "circleimageview"]
@@ -124,6 +135,6 @@ coil = ["coil", "coil-kt-coil-svg"]
 networking = ["okhttp", "okio"]
 bundletool = ["bundletool", "protobuf-java"]
 shrinker = ["r8", "proguard-core"]
-kotlin_compiler = ["kotlinc-for1-sketchware", "nb-javac-android", "woodstox-core"]
+kotlin_compiler = ["kotlinc-for1-sketchware", "woodstox-core"]
 editor_and_lang = ["editor", "language-java", "language-textmate"]
 firebase = ["firebase-analytics", "firebase-crashlytics", "firebase-messaging"]

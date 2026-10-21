@@ -1,12 +1,11 @@
 plugins {
     id "com.android.application"
-    id "org.jetbrains.kotlin.android"
     id "com.google.gms.google-services"
     id "com.google.firebase.crashlytics"
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     // Resolve the git hash defensively: the build must not fail when git is not
     // installed or the project was downloaded as a ZIP (no .git directory).
@@ -87,10 +86,28 @@ android {
         exclude group: "org.jetbrains.kotlin", module: "kotlin-scripting-jvm"
         exclude group: "org.jetbrains.kotlin", module: "kotlin-script-runtime"
     }
+    
+    configurations.configureEach { configuration ->
+        if (!configuration.name.toLowerCase().contains("lint")) {
+            configuration.exclude group: "xmlpull", module: "xmlpull"
+            configuration.exclude group: "net.sf.kxml", module: "kxml2"
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+    
+    implementation libs.apksig
+    implementation libs.conscrypt.android
+    implementation libs.androidsvg
+
+    implementation libs.asm
+    implementation libs.stringfog.core
+    implementation libs.stringfog.interface
+    implementation libs.stringfog.xor
+
+    implementation libs.dependencyresolver
 
     testImplementation libs.junit
 
@@ -140,7 +157,7 @@ dependencies {
         exclude group: "com.google.guava", module: "guava"
     }
 
-    implementation platform("com.google.firebase:firebase-bom:34.16.0")
+    implementation platform("com.google.firebase:firebase-bom:34.19.0")
     implementation "com.google.firebase:firebase-crashlytics"
     implementation "com.google.firebase:firebase-analytics"
     implementation "com.google.firebase:firebase-messaging"
