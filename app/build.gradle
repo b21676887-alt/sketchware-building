@@ -95,15 +95,6 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     
     
-    
-    
-
-    
-    implementation libs.stringfog.core
-    implementation libs.stringfog.interface
-    implementation libs.stringfog.xor
-
-    implementation libs.dependencyresolver
 
     testImplementation libs.junit
 
