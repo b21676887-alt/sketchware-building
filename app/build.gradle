@@ -94,9 +94,9 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     
-    implementation libs.apksig
+    
     implementation libs.conscrypt.android
-    implementation libs.androidsvg
+    
 
     implementation libs.asm
     implementation libs.stringfog.core
