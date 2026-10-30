@@ -79,6 +79,7 @@ public class ProjectListManager {
             fileUtil.deleteDirectoryByPath(SketchwarePaths.getIconsPath() + File.separator + projectId);
             fileUtil.deleteDirectoryByPath(SketchwarePaths.getDataPath(projectId));
             fileUtil.deleteDirectoryByPath(SketchwarePaths.getBackupPath(projectId));
+            fileUtil.deleteDirectoryByPath(SketchwarePaths.getAihelpPath(projectId));
             new SharedPrefsHelper(context, "D01_" + projectId).clearAll();
             new SharedPrefsHelper(context, "D02_" + projectId).clearAll();
             new SharedPrefsHelper(context, "D03_" + projectId).clearAll();

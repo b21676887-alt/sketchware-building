@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -17,15 +18,21 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.noties.markwon.Markwon;
 import pro.sketchware.activities.base.BaseAppCompatActivity;
 import pro.sketchware.core.codegen.ComponentCodeGenerator;
+import pro.sketchware.core.project.SketchwarePaths;
 import pro.sketchware.lib.code_editor.CodeEditorPreferences;
 import pro.sketchware.network.AiProviderService;
 import pro.sketchware.util.EditorUtils;
+import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.Helper;
 import pro.sketchware.R;
 import pro.sketchware.databinding.ActivityCodeViewerBinding;
@@ -39,6 +46,7 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
 
     private ActivityCodeViewerBinding binding;
     private CodeEditorPreferences editorPrefs;
+    private String scId;
 
     private static final int MENU_WORD_WRAP = 0;
     private static final int MENU_FONT_SIZE = 1;
@@ -54,7 +62,7 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
 
         var code = getIntent().getStringExtra("code");
         var scheme = getIntent().getStringExtra("scheme");
-        var scId = getIntent().getStringExtra("sc_id");
+        scId = getIntent().getStringExtra("sc_id");
         
         // تعيين الـ Toolbar كـ ActionBar رئيسي لكي تظهر القائمة وعناصر الـ Menu تلقائياً
         setSupportActionBar(binding.toolbar);
@@ -107,13 +115,59 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
                 return true;
             }
             case MENU_AI_HELPER -> {
-                explainCodeWithAI();
+                checkExistingAiHelpsAndHandle();
                 return true;
             }
             default -> {
                 return super.onOptionsItemSelected(item);
             }
         }
+    }
+
+    private void checkExistingAiHelpsAndHandle() {
+        if (scId == null || scId.isEmpty()) {
+            explainCodeWithAI();
+            return;
+        }
+
+        String aiHelpDirPath = SketchwarePaths.getAihelpPath(scId);
+        File dir = new File(aiHelpDirPath);
+        
+        // التحقق مما إذا كان المجلد موجوداً ويحتوي على ملفات مساعدة سابقة بصيغة md
+        if (dir.exists() && dir.isDirectory()) {
+            File[] files = dir.listFiles((d, name) -> name.endsWith(".md"));
+            if (files != null && files.length > 0) {
+                // إظهار مربع حوار الاختيار بين طلب المساعدة أو عرض المساعدات السابقة
+                new MaterialAlertDialogBuilder(this)
+                    .setTitle("AI Helper")
+                    .setMessage("هذا المشروع يمتلك ردود ومساعدات سابقة بالذكاء الاصطناعي. ماذا تريد أن تفعل؟")
+                    .setPositiveButton("طلب المساعدة", (dialog, which) -> explainCodeWithAI())
+                    .setNeutralButton("عرض المساعدات السابقة", (dialog, which) -> showPreviousHelpsList(files))
+                    .setNegativeButton(R.string.common_word_cancel, null)
+                    .show();
+                return;
+            }
+        }
+        
+        // إذا لم تكن هناك ردود سابقة، تنفيذ الدالة مباشرة
+        explainCodeWithAI();
+    }
+
+    private void showPreviousHelpsList(File[] files) {
+        int n = files.length;
+        CharSequence[] fileNames = new CharSequence[n];
+        for (int i = 0; i < n; i++) {
+            fileNames[i] = files[i].getName();
+        }
+
+        new MaterialAlertDialogBuilder(this)
+            .setTitle("المساعدات السابقة")
+            .setItems(fileNames, (dialog, which) -> {
+                String content = FileUtil.readFile(files[which].getAbsolutePath());
+                showScrollableDialog("AI Helper - " + files[which].getName(), content);
+            })
+            .setNegativeButton(R.string.common_word_cancel, null)
+            .show();
     }
 
     private void explainCodeWithAI() {
@@ -135,34 +189,97 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
         if (titleView != null) titleView.setText(R.string.ai_help_loading_title);
         if (subtitleView != null) subtitleView.setText(R.string.ai_help_loading_subtitle);
 
+        AtomicBoolean isCancelled = new AtomicBoolean(false);
+
         var progressDialog = new MaterialAlertDialogBuilder(this)
             .setView(loadingView)
             .setCancelable(false)
+            .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                isCancelled.set(true);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            })
             .create();
+        
         progressDialog.show();
+
+        // إبقاء الشاشة يقظة أثناء المعالجة
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         new Thread(() -> {
             try {
-                String prompt = "Analyze this source code / XML snippet from Sketchware. "
-                        + "Explain its structure, functionality, and provide any useful suggestions or fixes if needed.\n\n"
-                        + codeText;
-                
                 String deviceLanguage = Locale.getDefault().getLanguage();
                 String systemInstruction = "You analyze source code and XML files for Sketchware Android projects. Respond in language code: " + deviceLanguage + ".";
 
-                String response = AiProviderService.getInstance().sendTextMessage(
-                        systemInstruction,
-                        prompt
-                );
+                String[] lines = codeText.split("\r?\n");
+                int totalLines = lines.length;
+                int chunkSize = 500;
+                int totalChunks = (int) Math.ceil((double) totalLines / chunkSize);
+
+                String finalResponse = "";
+
+                if (totalLines <= chunkSize) {
+                    // إذا كان الكود أقل من أو يساوي 500 سطر، يتم إرساله مباشرة
+                    String prompt = "Analyze this source code / XML snippet from Sketchware. "
+                            + "Explain its structure, functionality, and provide any useful suggestions or fixes if needed.\n\n"
+                            + codeText;
+
+                    if (isCancelled.get()) return;
+                    finalResponse = AiProviderService.getInstance().sendTextMessage(systemInstruction, prompt);
+                } else {
+                    // إذا كان الكود أكثر من 500 سطر، يُقسم إلى أجزاء
+                    AiProviderService aiService = AiProviderService.getInstance();
+
+                    for (int i = 0; i < totalChunks; i++) {
+                        if (isCancelled.get()) return;
+
+                        int start = i * chunkSize;
+                        int end = Math.min(start + chunkSize, totalLines);
+                        StringBuilder sb = new StringBuilder();
+                        for (int j = start; j < end; j++) {
+                            sb.append(lines[j]).append("\n");
+                        }
+
+                        int partNum = i + 1;
+                        String prompt;
+                        if (partNum < totalChunks) {
+                            prompt = "This is part " + partNum + " of " + totalChunks + " of a large source code / XML snippet from Sketchware. "
+                                    + "Store this part and DO NOT analyze it yet, and DO NOT provide any explanation or suggestions until you receive all parts. Just acknowledge receipt.\n\n"
+                                    + sb.toString().trim();
+                        } else {
+                            prompt = "This is the final part (part " + partNum + " of " + totalChunks + ") of the source code / XML snippet from Sketchware. "
+                                    + "Now that you have received all parts of the code, analyze its structure, functionality, and provide any useful suggestions or fixes if needed.\n\n"
+                                    + sb.toString().trim();
+                        }
+
+                        finalResponse = aiService.sendTextMessage(systemInstruction, prompt);
+                    }
+                }
+
+                if (isCancelled.get()) return;
+
+                // حفظ الرد تلقائياً بصيغة md باستخدام مسار getAihelpPath مع اسم الملف الحالي (أو افتراضي)، الوقت، والتاريخ
+                if (scId != null && !scId.isEmpty()) {
+                    String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(new Date());
+                    String fileName = "CodeViewer_" + timeStamp + ".md";
+                    
+                    String dirPath = SketchwarePaths.getAihelpPath(scId);
+                    FileUtil.writeFile(dirPath + File.separator + fileName, finalResponse);
+                }
+
+                final String responseResult = finalResponse;
                 runOnUiThread(() -> {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     try {
                         progressDialog.dismiss();
                     } catch (Exception ignored) {
                     }
-                    showScrollableDialog("AI Helper - Code Explanation", response);
+                    showScrollableDialog("AI Helper - Code Explanation", responseResult);
                 });
+
             } catch (IOException e) {
+                if (isCancelled.get()) return;
                 runOnUiThread(() -> {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     try {
                         progressDialog.dismiss();
                     } catch (Exception ignored) {
@@ -170,7 +287,9 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
                     SketchwareUtil.showAnErrorOccurredDialog(this, e.getMessage());
                 });
             } catch (Exception e) {
+                if (isCancelled.get()) return;
                 runOnUiThread(() -> {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     try {
                         progressDialog.dismiss();
                     } catch (Exception ignored) {

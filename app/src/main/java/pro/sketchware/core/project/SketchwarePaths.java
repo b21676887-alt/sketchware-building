@@ -58,6 +58,7 @@ public class SketchwarePaths {
     public static final String LOGCAT_PATH = ".sketchware" + File.separator + "logcat";
     public static final String BLOCK_EXPORT_PATH = RESOURCES_PATH + File.separator + "block" + File.separator + "export";
     public static final String BACKUPS_PATH = ".sketchware" + File.separator + "backups";
+    public static final String AIHELP_PATH = ".sketchware" + File.separator + "aihelp";
 
     public static String getAbsolutePathOf(String relativePath) {
         return resolveExternalStoragePath(relativePath);
@@ -187,6 +188,10 @@ public class SketchwarePaths {
 
     public static String getBackupPath(String sc_id) {
         return getAbsolutePathOf(BACKUP_PATH + File.separator + sc_id);
+    }
+    
+    public static String getAihelpPath(String sc_id) {
+        return getAbsolutePathOf(AIHELP_PATH + File.separator + sc_id);
     }
 
     public static String getBackupsPath() {

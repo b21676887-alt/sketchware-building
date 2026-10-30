@@ -143,7 +143,7 @@ public class BlockCodeRegistry {
         });
         register("getArg", (bean, params, ctx) -> "_" + bean.spec);
         register("getVar", (bean, params, ctx) -> bean.spec);
-        register("getResStr", (bean, params, ctx) -> "Helper.getResString(R.string." + bean.spec + ")");
+        register("getResStr", (bean, params, ctx) -> "getString(R.string." + bean.spec + ")");
         register("setVarBoolean", (bean, params, ctx) -> String.format("%s = %s;", params.get(0), params.get(1)));
         register("setVarInt", (bean, params, ctx) -> String.format("%s = %s;", params.get(0), params.get(1)));
         register("setVarString", (bean, params, ctx) -> String.format("%s = %s;", params.get(0), params.get(1)));
