@@ -114,14 +114,6 @@ dependencies {
 
     implementation libs.bundles.shrinker
     implementation libs.zipalign.java
-    implementation libs.apksig
-    implementation libs.conscrypt.android
-    implementation libs.androidsvg
-
-    implementation libs.asm
-    implementation libs.stringfog.core
-    implementation libs.stringfog.interface
-    implementation libs.stringfog.xor
 
     implementation libs.gson
     implementation libs.scpkix.jdk15on
