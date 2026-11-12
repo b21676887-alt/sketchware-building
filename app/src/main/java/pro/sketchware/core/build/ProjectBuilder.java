@@ -1063,10 +1063,10 @@ public class ProjectBuilder {
     }
     
     private boolean isManifestMergeEnabled() {
-        return projectSettings != null
-                && ProjectSettings.SETTING_GENERIC_VALUE_TRUE.equals(projectSettings.getValue(
-                ProjectSettings.SETTING_ENABLE_MANIFEST_MERGE,
-                ProjectSettings.SETTING_GENERIC_VALUE_FALSE));
+    return settings != null
+            && ProjectSettings.SETTING_GENERIC_VALUE_TRUE.equals(settings.getValue(
+            ProjectSettings.SETTING_ENABLE_MANIFEST_MERGE,
+            ProjectSettings.SETTING_GENERIC_VALUE_FALSE));
     }
 
 
