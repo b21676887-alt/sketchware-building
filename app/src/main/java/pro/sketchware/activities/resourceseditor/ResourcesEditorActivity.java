@@ -203,6 +203,7 @@ public class ResourcesEditorActivity extends BaseAppCompatActivity {
         intent.putExtra("content", contentPath);
         if (getIntent().hasExtra("sc_id")) {
                 intent.putExtra("sc_id", getIntent().getStringExtra("sc_id"));
+        }
         startActivity(intent);
     }
 
@@ -217,6 +218,7 @@ public class ResourcesEditorActivity extends BaseAppCompatActivity {
                 .create()
                 .show();
     }
+    
 
     private void setupBackPressedHandler() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
