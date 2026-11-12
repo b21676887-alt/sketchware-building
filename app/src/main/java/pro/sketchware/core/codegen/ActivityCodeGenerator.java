@@ -33,6 +33,7 @@ import pro.sketchware.core.build.ViewBindingBuilder;
 import pro.sketchware.core.codegen.BlockCodeRegistry;
 import pro.sketchware.core.codegen.BlockInterpreter;
 import pro.sketchware.core.codegen.CodeContext;
+import pro.sketchware.core.build.BuildDefaults;
 
 public class ActivityCodeGenerator {
 
@@ -405,6 +406,9 @@ public class ActivityCodeGenerator {
             } else {
                 sb.append("setContentView(R.layout.").append(projectFileBean.fileName).append(");").append(EOL);
             }
+            if (targetsEdgeToEdge()) {
+                sb.append(getSystemBarInsetsCode());
+            }
             sb.append("initialize(_savedInstanceState);");
         }
         sb.append(EOL);
@@ -759,6 +763,41 @@ public class ActivityCodeGenerator {
                 "return getResources().getDisplayMetrics().heightPixels;" + EOL +
                 "}" + EOL;
     }
+    
+        /**
+     * Android 15+ always draws apps that target API 35+ edge-to-edge, behind the system bars.
+     */
+    private boolean targetsEdgeToEdge() {
+        try {
+            return Integer.parseInt(settings.getValue(ProjectSettings.SETTING_TARGET_SDK_VERSION,
+                    String.valueOf(BuildDefaults.VAR_DEFAULT_TARGET_SDK_VERSION))) >= 35;
+        } catch (NumberFormatException e) {
+            return BuildDefaults.VAR_DEFAULT_TARGET_SDK_VERSION >= 35;
+        }
+    }
+
+    /**
+     * Pads the Activity's content by the system bars (and the keyboard, for adjustResize windows)
+     * so edge-to-edge layouts look like they did before. Only uses framework APIs and an anonymous
+     * class, so it compiles without AppCompat and with any Java language level.
+     */
+    private static String getSystemBarInsetsCode() {
+        return "if (android.os.Build.VERSION.SDK_INT >= 35) {" + EOL +
+                "findViewById(android.R.id.content).setOnApplyWindowInsetsListener(new android.view.View.OnApplyWindowInsetsListener() {" + EOL +
+                "@Override" + EOL +
+                "public android.view.WindowInsets onApplyWindowInsets(android.view.View _view, android.view.WindowInsets _insets) {" + EOL +
+                "int _types = android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout();" + EOL +
+                "if ((getWindow().getAttributes().softInputMode & android.view.WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST) == android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE) {" + EOL +
+                "_types |= android.view.WindowInsets.Type.ime();" + EOL +
+                "}" + EOL +
+                "android.graphics.Insets _bars = _insets.getInsets(_types);" + EOL +
+                "_view.setPadding(_bars.left, _bars.top, _bars.right, _bars.bottom);" + EOL +
+                "return _insets;" + EOL +
+                "}" + EOL +
+                "});" + EOL +
+                "}" + EOL;
+    }
+
 
     private void addImport(String classToImport) {
         if (!imports.contains(classToImport)) {

@@ -4590,4 +4590,6 @@ Do you want to continue?</string>
     <string name="ai_help_button">AI Helper</string>
     <string name="ai_help_loading_subtitle">The code is being analyzed to provide a clear explanation....</string>
     <string name="ai_help_loading_title">AI Assistance</string>
+    <string name="project_settings_extractandmergemetaInf">Merge META-INF Files</string>
+    <string name="project_settings_extractandmergemetaInf_desc">Extracts and merges META-INF files (services, extensions, kotlin_module, etc.) from all library JARs, excluding signatures and MANIFEST.MF, and adds them to the APK.</string>
 </resources>

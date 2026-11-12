@@ -3791,4 +3791,6 @@
     <string name="ai_help_button">مساعدة الذكاء الاصطناعي</string>
     <string name="ai_help_loading_subtitle">جاري تحليل الكود لتوفير شرح واضح...</string>
     <string name="ai_help_loading_title">مساعدة الذكاء الاصطناعي</string>
+    <string name="project_settings_extractandmergemetaInf">دمج ملفات META-INF</string>
+    <string name="project_settings_extractandmergemetaInf_desc">استخراج ودمج ملفات meta-inf (الخدمات والإضافات و kotlin_module وما إلى ذلك) من جميع جرات المكتبة ، باستثناء التوقيعات و manifest.mf ، وإضافتها إلى APK.</string>
 </resources>

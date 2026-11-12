@@ -287,7 +287,7 @@ public class SrcViewerActivity extends BaseAppCompatActivity {
 
                 String[] lines = codeText.split("\n");
                 int totalLines = lines.length;
-                int chunkSize = 500;
+                int chunkSize = 800;
                 int totalChunks = (int) Math.ceil((double) totalLines / chunkSize);
 
                 String finalResponse = "";

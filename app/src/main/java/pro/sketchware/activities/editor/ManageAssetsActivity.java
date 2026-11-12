@@ -360,6 +360,9 @@ public class ManageAssetsActivity extends BaseAppCompatActivity {
                 launchIntent.setClass(getApplicationContext(), SrcCodeEditor.class);
                 launchIntent.putExtra("title", getFileName(position));
                 launchIntent.putExtra("content", getItem(position));
+                if (getIntent().hasExtra("sc_id")) {
+                launchIntent.putExtra("sc_id", getIntent().getStringExtra("sc_id"));
+                }
 
                 startActivity(launchIntent);
             } else {

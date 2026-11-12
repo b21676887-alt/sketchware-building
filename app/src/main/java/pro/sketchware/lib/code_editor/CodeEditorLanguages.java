@@ -10,8 +10,31 @@ import pro.sketchware.util.LogUtil;
 import pro.sketchware.SketchApplication;
 
 public class CodeEditorLanguages {
-    public static final String SCOPE_NAME_KOTLIN = "source.kotlin";
-    public static final String SCOPE_NAME_XML = "text.xml";
+        // Keep these in sync with the scopeName fields in languages.json.
+
+    /** Java — handled by Sora's built-in JavaLanguage, not TextMate. */
+    public static final String SCOPE_NAME_JAVA       = "source.java";
+    /** Kotlin and Gradle Kotlin DSL (.gradle.kts). */
+    public static final String SCOPE_NAME_KOTLIN     = "source.kotlin";
+    /** Android / generic XML. */
+    public static final String SCOPE_NAME_XML        = "text.xml";
+    /** JSON data files. */
+    public static final String SCOPE_NAME_JSON       = "source.json";
+    /** Groovy — used for .gradle files. */
+    public static final String SCOPE_NAME_GROOVY     = "source.groovy";
+    /** C source files. */
+    public static final String SCOPE_NAME_C          = "source.c";
+    /** C++ source and header files (.cpp, .cc, .cxx, .h, .hpp, .hxx). */
+    public static final String SCOPE_NAME_CPP        = "source.cpp";
+    /** Unix shell scripts. */
+    public static final String SCOPE_NAME_SHELL      = "source.shell";
+    /** CMake list files and .cmake scripts. */
+    public static final String SCOPE_NAME_CMAKE      = "source.cmake";
+    /** Markdown documents. */
+    public static final String SCOPE_NAME_MARKDOWN   = "text.html.markdown";
+    /** Java .properties / generic INI files. */
+    public static final String SCOPE_NAME_PROPERTIES = "source.ini";
+    
     private static final String TAG = "CodeEditorLanguages";
 
     static {

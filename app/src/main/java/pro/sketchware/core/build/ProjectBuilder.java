@@ -1061,6 +1061,13 @@ public class ProjectBuilder {
             }
         }
     }
+    
+    private boolean isManifestMergeEnabled() {
+        return projectSettings != null
+                && ProjectSettings.SETTING_GENERIC_VALUE_TRUE.equals(projectSettings.getValue(
+                ProjectSettings.SETTING_ENABLE_MANIFEST_MERGE,
+                ProjectSettings.SETTING_GENERIC_VALUE_FALSE));
+    }
 
 
     /**
@@ -1114,7 +1121,9 @@ public class ProjectBuilder {
             }
             
             /* Extract and merge META-INF files (services, kotlin_module, etc.) */
-            extractAndMergeMetaInf(apkBuilder);
+            if (isManifestMergeEnabled()) {
+               extractAndMergeMetaInf(apkBuilder);
+            }
 
             apkBuilder.setDebugMode(false);
             apkBuilder.sealApk();

@@ -212,7 +212,7 @@ public class CodeViewerActivity extends BaseAppCompatActivity {
 
                 String[] lines = codeText.split("\r?\n");
                 int totalLines = lines.length;
-                int chunkSize = 500;
+                int chunkSize = 800;
                 int totalChunks = (int) Math.ceil((double) totalLines / chunkSize);
 
                 String finalResponse = "";

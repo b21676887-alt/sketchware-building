@@ -114,6 +114,51 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
                 ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_XML));
                 languageId = 2;
                 break;
+                
+            case 3:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_JSON));
+                languageId = 3;
+                break;
+
+            case 4:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_GROOVY));
+                languageId = 4;
+                break;
+    
+            case 5:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_KOTLIN));
+                languageId = 5;
+                break;
+
+            case 6:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_C));
+                languageId = 6;
+                break;
+        
+            case 7:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_CPP));
+                languageId = 7;
+                break;
+
+            case 8:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_SHELL));
+                languageId = 8;
+                break;
+    
+            case 9:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_CMAKE));
+                languageId = 9;
+                break;
+
+            case 10:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_MARKDOWN));
+                languageId = 10;
+                break;
+                
+            case 11:
+                ed.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_PROPERTIES));
+                languageId = 11;
+                break;
         }
 
     }
@@ -228,9 +273,18 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
 
     public static void showSwitchLanguageDialog(Activity activity, CodeEditor codeEditor, DialogInterface.OnClickListener listener) {
         CharSequence[] languagesList = {
-                "Java",
-                "Kotlin",
-                "XML"
+                "Java",                 // 0
+                "Kotlin",              // 1
+                "XML",                 // 2
+                "JSON",                // 3
+                "Gradle (Groovy)",     // 4
+                "Gradle Kotlin DSL",   // 5
+                "C",                   // 6
+                "C++",                 // 7
+                "Shell Script",        // 8
+                "CMake",               // 9
+                "Markdown",            // 10
+                "Properties",          // 11
         };
 
         new MaterialAlertDialogBuilder(activity)
@@ -299,14 +353,16 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
             beforeContent = FileUtil.readFile(getIntent().getStringExtra("content"));
         binding.editor.setText(beforeContent);
 
-        if (title != null && title.endsWith(".java")) {
+        final String lower = title.toLowerCase();
+        
+        if (lower != null && lower.endsWith(".java")) {
             binding.editor.setEditorLanguage(new JavaLanguage());
             languageId = 0;
-        } else if (title != null && title.endsWith(".kt")) {
+        } else if (lower != null && lower.endsWith(".kt") || lower.endsWith(".kts")) {
             binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_KOTLIN));
             binding.editor.setColorScheme(CodeEditorColorSchemes.loadTextMateColorScheme(CodeEditorColorSchemes.THEME_DRACULA));
             languageId = 1;
-        } else if (title != null && title.endsWith(".xml")) {
+        } else if (lower != null && lower.endsWith(".xml")) {
             binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_XML));
             if (ThemeUtils.isDarkThemeEnabled(getApplicationContext())) {
                 binding.editor.setColorScheme(CodeEditorColorSchemes.loadTextMateColorScheme(CodeEditorColorSchemes.THEME_DRACULA));
@@ -314,6 +370,39 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
                 binding.editor.setColorScheme(CodeEditorColorSchemes.loadTextMateColorScheme(CodeEditorColorSchemes.THEME_GITHUB));
             }
             languageId = 2;
+        } else if (lower != null && lower.endsWith(".json")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_JSON));
+            languageId = 3;
+        } else if (lower != null && lower.endsWith(".gradle")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_GROOVY));
+            languageId = 4;
+        } else if (lower != null && lower.endsWith(".c")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_C));
+            languageId = 6;
+        } else if (lower != null && lower.endsWith(".cpp") || lower.endsWith(".cc") || lower.endsWith(".cxx")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_CPP));
+            languageId = 7;
+        } else if (lower != null && lower.endsWith(".h")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_CPP));
+            languageId = 7;
+        } else if (lower != null && lower.endsWith(".hxx") || lower.endsWith(".hpp")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_CPP));
+            languageId = 7;
+        } else if (lower != null && lower.endsWith(".sh")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_SHELL));
+            languageId = 8;
+        } else if (lower != null && lower.endsWith(".md")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_MARKDOWN));
+            languageId = 10;
+        } else if (lower != null && lower.endsWith(".properties")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_PROPERTIES));
+            languageId = 11;
+        } else if (lower != null && lower.endsWith(".gradle.kts")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_KOTLIN));
+            languageId = 5;
+        } else if (lower != null && lower.endsWith(".cmake")) {
+            binding.editor.setEditorLanguage(CodeEditorLanguages.loadTextMateLanguage(CodeEditorLanguages.SCOPE_NAME_CMAKE));
+            languageId = 9;
         } else {
             if (ThemeUtils.isDarkThemeEnabled(getApplicationContext())) {
                 binding.editor.setColorScheme(CodeEditorColorSchemes.loadTextMateColorScheme(CodeEditorColorSchemes.THEME_DRACULA));
@@ -641,7 +730,7 @@ public class SrcCodeEditor extends BaseAppCompatActivity {
 
                 String[] lines = codeText.split("\n");
                 int totalLines = lines.length;
-                int chunkSize = 500;
+                int chunkSize = 800;
                 int totalChunks = (int) Math.ceil((double) totalLines / chunkSize);
 
                 String finalResponse = "";

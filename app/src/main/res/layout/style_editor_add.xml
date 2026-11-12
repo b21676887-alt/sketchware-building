@@ -15,7 +15,6 @@
             android:id="@+id/style_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
             android:imeOptions="actionNext"
             android:inputType="text"
             android:singleLine="true"

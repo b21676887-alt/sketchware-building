@@ -201,6 +201,8 @@ public class ResourcesEditorActivity extends BaseAppCompatActivity {
         intent.setClass(getApplicationContext(), SrcCodeEditor.class);
         intent.putExtra("title", title);
         intent.putExtra("content", contentPath);
+        if (getIntent().hasExtra("sc_id")) {
+                intent.putExtra("sc_id", getIntent().getStringExtra("sc_id"));
         startActivity(intent);
     }
 

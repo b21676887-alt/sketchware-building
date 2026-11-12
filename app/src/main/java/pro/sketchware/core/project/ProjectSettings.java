@@ -67,6 +67,7 @@ public class ProjectSettings {
      */
     public static final String SETTING_NEW_XML_COMMAND = "xml_command";
     public static final String SETTING_ENABLE_LOCAL_LIBRARY_MANIFEST_MERGE = "enable_local_library_manifest_merge";
+    public static final String SETTING_ENABLE_MANIFEST_MERGE = "enable_manifest_merge";
     public static final String SETTING_GENERIC_VALUE_TRUE = "true";
     public static final String SETTING_GENERIC_VALUE_FALSE = "false";
     private static final String TAG = "ProjectSettings";
