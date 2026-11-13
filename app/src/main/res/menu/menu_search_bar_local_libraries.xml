@@ -22,5 +22,11 @@
         android:checkable="true"
         android:title="@string/menu_auto_merge_local_library_manifests"
         app:showAsAction="never" />
+    
+    <item
+        android:id="@+id/action_import_indices_librarys"
+        android:checkable="true"
+        android:title="@string/menu_import_indices_librarys"
+        app:showAsAction="never" />
 
 </menu>

@@ -123,9 +123,14 @@ public class ManageLocalLibraryActivity extends BaseAppCompatActivity {
         // Step 2: orphan cleanup menu on SearchBar (available in both project and global view)
         binding.searchBar.inflateMenu(R.menu.menu_search_bar_local_libraries);
         MenuItem manifestMergeMenuItem = binding.searchBar.getMenu().findItem(R.id.action_toggle_local_library_manifest_merge);
+        MenuItem importIndicesMenuItem = binding.searchBar.getMenu().findItem(R.id.action_import_indices_librarys);
         if (manifestMergeMenuItem != null) {
             manifestMergeMenuItem.setVisible(!notAssociatedWithProject);
             manifestMergeMenuItem.setChecked(isLocalLibraryManifestMergeEnabled());
+        }
+        if (importIndicesMenuItem != null) {
+            importIndicesMenuItem.setVisible(!notAssociatedWithProject);
+            importIndicesMenuItem.setChecked(isImportIndicesEnabled());
         }
         binding.searchBar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_manage_repositories) {
@@ -140,7 +145,11 @@ public class ManageLocalLibraryActivity extends BaseAppCompatActivity {
             } else if (item.getItemId() == R.id.action_toggle_local_library_manifest_merge) {
                 toggleLocalLibraryManifestMerge(item);
                 return true;
+            } else if (item.getItemId() == R.id.action_import_indices_librarys) {
+                toggleImportIndices(item);
+                return true;
             }
+            
             return false;
         });
 
@@ -290,6 +299,13 @@ public class ManageLocalLibraryActivity extends BaseAppCompatActivity {
                 ProjectSettings.SETTING_ENABLE_LOCAL_LIBRARY_MANIFEST_MERGE,
                 ProjectSettings.SETTING_GENERIC_VALUE_FALSE));
     }
+    
+    private boolean isImportIndicesEnabled() {
+        return projectSettings != null
+                && ProjectSettings.SETTING_GENERIC_VALUE_TRUE.equals(projectSettings.getValue(
+                ProjectSettings.SETTING_ENABLE_IMPORT_INDICES_LIBRARY,
+                ProjectSettings.SETTING_GENERIC_VALUE_FALSE));
+    }
 
     private void toggleLocalLibraryManifestMerge(MenuItem item) {
         if (projectSettings == null) {
@@ -304,6 +320,21 @@ public class ManageLocalLibraryActivity extends BaseAppCompatActivity {
         SketchwareUtil.toast(Helper.getResString(enabled
                 ? R.string.local_library_manager_manifest_merge_enabled
                 : R.string.local_library_manager_manifest_merge_disabled));
+    }
+    
+    private void toggleImportIndices(MenuItem item) {
+        if (projectSettings == null) {
+            return;
+        }
+
+        boolean enabled = !item.isChecked();
+        item.setChecked(enabled);
+        projectSettings.setValue(
+                ProjectSettings.SETTING_ENABLE_IMPORT_INDICES_LIBRARY,
+                enabled ? ProjectSettings.SETTING_GENERIC_VALUE_TRUE : ProjectSettings.SETTING_GENERIC_VALUE_FALSE);
+        SketchwareUtil.toast(Helper.getResString(enabled
+                ? R.string.menu_import_indices_librarys_enabled
+                : R.string.menu_import_indices_librarys_disabled));
     }
 
     // This method is running from the background thread.

@@ -17,6 +17,7 @@ import pro.sketchware.util.Helper;
 import pro.sketchware.util.LogUtil;
 import pro.sketchware.R;
 import pro.sketchware.core.project.SketchwarePaths;
+import pro.sketchware.core.project.ProjectSettings;
 import pro.sketchware.util.FilePathUtil;
 import pro.sketchware.util.FileUtil;
 import pro.sketchware.util.SketchwareUtil;
@@ -25,6 +26,7 @@ public class ManageLocalLibrary {
 
     private final String projectId;
     public ArrayList<HashMap<String, Object>> list;
+    private ProjectSettings projectSettings;
 
     public ManageLocalLibrary(String sc_id) {
         projectId = sc_id;
@@ -158,31 +160,46 @@ public class ManageLocalLibrary {
 
         return genPaths;
     }
+        
+    private boolean isImportIndicesEnabled() {
+        return projectSettings != null && projectSettings.getValue(ProjectSettings.SETTING_ENABLE_IMPORT_INDICES_LIBRARY, ProjectSettings.SETTING_GENERIC_VALUE_FALSE).equals(ProjectSettings.SETTING_GENERIC_VALUE_TRUE);
+    }
 
     public ArrayList<String> getImportLocalLibrary() {
         LinkedHashSet<String> imports = new LinkedHashSet<>();
+        
+        if (isImportIndicesEnabled()) {
 
-        for (int i = 0, listSize = list.size(); i < listSize; i++) {
-            HashMap<String, Object> localLibrary = list.get(i);
-            ArrayList<String> importPackages = getImportPackages(localLibrary, i);
-
-            if (importPackages.isEmpty()) {
-                Object packageName = localLibrary.get("packageName");
-                if (packageName instanceof String && !((String) packageName).isEmpty()) {
-                    imports.add(((String) packageName).concat(".*"));
+            for (int i = 0, listSize = list.size(); i < listSize; i++) {
+                HashMap<String, Object> localLibrary = list.get(i);
+                ArrayList<String> importPackages = getImportPackages(localLibrary, i);
+    
+                if (importPackages.isEmpty()) {
+                    Object packageName = localLibrary.get("packageName");
+                    if (packageName instanceof String && !((String) packageName).isEmpty()) {
+                        imports.add(((String) packageName).concat(".*"));
+                    }
+                    continue;
                 }
-                continue;
+    
+                for (String packageName : importPackages) {
+                    if (!packageName.isEmpty()) {
+                        imports.add(packageName.concat(".*"));
+                    }
+                }
             }
-
-            for (String packageName : importPackages) {
+        } else {
+             for (String packageName : getPackageNames()) {
                 if (!packageName.isEmpty()) {
                     imports.add(packageName.concat(".*"));
                 }
-            }
+             }
         }
 
         return new ArrayList<>(imports);
     }
+    
+    
 
     public ArrayList<File> getLocalLibraryJars() {
         ArrayList<File> jars = new ArrayList<>();

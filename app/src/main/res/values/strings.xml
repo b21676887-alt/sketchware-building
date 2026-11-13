@@ -4592,4 +4592,7 @@ Do you want to continue?</string>
     <string name="ai_help_loading_title">AI Assistance</string>
     <string name="project_settings_extractandmergemetaInf">Merge META-INF Files</string>
     <string name="project_settings_extractandmergemetaInf_desc">Extracts and merges META-INF files (services, extensions, kotlin_module, etc.) from all library JARs, excluding signatures and MANIFEST.MF, and adds them to the APK.</string>
+    <string name="menu_import_indices_librarys">Importing library indexes to the project is automatic</string>
+    <string name="menu_import_indices_librarys_enabled">Automatically import indexes is possible</string>
+    <string name="menu_import_indices_librarys_disabled">Automatically import indexes are disabled</string>
 </resources>

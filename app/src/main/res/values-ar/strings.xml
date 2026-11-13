@@ -3271,6 +3271,9 @@
     <string name="local_library_manager_manifest_merge_enabled">الدمج التلقائي لملفات بيان (manifest) المكتبات المحلية مُمكّن</string>
     <string name="menu_auto_merge_local_library_manifests">دمج بيان (manifest) المكتبات المحلية تلقائياً</string>
     <string name="select_lib_hint_search">البحث عن مكتبات</string>
+    <string name="menu_import_indices_librarys">استيراد فهارس المكتبات الى المشروع تلقائيا</string>
+    <string name="menu_import_indices_librarys_enabled">استيراد الفهارس تلقائيا ممكن</string>
+    <string name="menu_import_indices_librarys_disabled">استيراد الفهارس تلقائيا معطل</string>
 
     
     <string name="build_error_failed_create_directory">فشل في إنشاء المجلد / المجلدات!</string>
