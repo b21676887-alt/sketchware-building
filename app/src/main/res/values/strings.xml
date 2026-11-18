@@ -4595,4 +4595,11 @@ Do you want to continue?</string>
     <string name="menu_import_indices_librarys">Importing library indexes to the project is automatic</string>
     <string name="menu_import_indices_librarys_enabled">Automatically import indexes is possible</string>
     <string name="menu_import_indices_librarys_disabled">Automatically import indexes are disabled</string>
+    <string name="build_settings_environment_paths">Environment Paths</string>
+    <string name="build_settings_compiler_engine">Compiler Engine</string>
+    <string name="build_settings_build_flags">Build Flags</string>
+    <string name="build_settings_enable_logcat_debugging">Enable Logcat Debugging</string>
+    <string name="toast_enable_java1_7_reminder">Warning: Java 1.7 does not support modern AndroidX libraries</string>
+    <string name="toast_dxcannot_used_with_java">Dx cannot be used with Java</string>
+    <string name="toast_dx_dose_notsupport_java">D8 compiler auto-selected. Dx does not support Java</string>
 </resources>

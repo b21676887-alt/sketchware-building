@@ -15,6 +15,7 @@ import static pro.sketchware.core.build.BuildSettings.SETTING_JAVA_VERSION_13;
 import static pro.sketchware.core.build.BuildSettings.SETTING_JAVA_VERSION_14;
 import static pro.sketchware.core.build.BuildSettings.SETTING_JAVA_VERSION_15;
 import static pro.sketchware.core.build.BuildSettings.SETTING_JAVA_VERSION_16;
+import static pro.sketchware.core.build.BuildSettings.SETTING_JAVA_VERSION_17;
 import static pro.sketchware.core.build.BuildSettings.SETTING_NO_HTTP_LEGACY;
 import static pro.sketchware.core.build.BuildSettings.SETTING_NO_WARNINGS;
 
@@ -62,14 +63,29 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
     }
 
     public static String[] getAvailableJavaVersions() {
-        return new String[]{SETTING_JAVA_VERSION_1_7, SETTING_JAVA_VERSION_1_8, SETTING_JAVA_VERSION_1_9, SETTING_JAVA_VERSION_10, SETTING_JAVA_VERSION_11, SETTING_JAVA_VERSION_12, SETTING_JAVA_VERSION_13, SETTING_JAVA_VERSION_14, SETTING_JAVA_VERSION_15, SETTING_JAVA_VERSION_16,};
+        return new String[]{SETTING_JAVA_VERSION_1_7, SETTING_JAVA_VERSION_1_8, SETTING_JAVA_VERSION_1_9, SETTING_JAVA_VERSION_10, SETTING_JAVA_VERSION_11, SETTING_JAVA_VERSION_12, SETTING_JAVA_VERSION_13, SETTING_JAVA_VERSION_14, SETTING_JAVA_VERSION_15, SETTING_JAVA_VERSION_16,SETTING_JAVA_VERSION_17,};
     }
 
+    
     public static void handleJavaVersionChange(String choice) {
-        if (!choice.equals(SETTING_JAVA_VERSION_1_7)) {
-            SketchwareUtil.toast(Helper.getResString(R.string.toast_enable_d8_reminder));
-        }
+    	if (choice.equals(SETTING_JAVA_VERSION_1_7)) {
+    		SketchwareUtil.toast(Helper.getResString(R.string.toast_enable_java1_7_reminder));
+    	}
+    	else if (choice.equals(SETTING_JAVA_VERSION_1_8)) {
+    		SketchwareUtil.toast(Helper.getResString(R.string.toast_enable_d8_reminder));
+    	}
+    	else if (choice.equals(SETTING_JAVA_VERSION_1_9) || choice.equals(SETTING_JAVA_VERSION_10) || choice.equals(SETTING_JAVA_VERSION_11) || choice.equals(SETTING_JAVA_VERSION_12) || choice.equals(SETTING_JAVA_VERSION_13) || choice.equals(SETTING_JAVA_VERSION_14) || choice.equals(SETTING_JAVA_VERSION_15) || choice.equals(SETTING_JAVA_VERSION_16) || choice.equals(SETTING_JAVA_VERSION_17)) {
+    		for (int i = 0; i < binding.rgDexer.getChildCount(); i++) {
+    			RadioButton rb = (RadioButton) binding.rgDexer.getChildAt(i);
+    			if (rb.getText().toString().equals("D8")) {
+    				rb.setChecked(true);
+    				break;
+    			}
+    		}
+    		SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dx_dose_notsupport_java), choice()));
+    	}
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,6 +166,7 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
         views[VIEW_NO_WARNINGS] = binding.cbNoWarnings;
     }
 
+    
     private void setRadioGroupOptions(RadioGroup radioGroup, String[] options, String key, String defaultValue) {
         radioGroup.removeAllViews();
         String value = projectSettings.getValue(key, defaultValue);
@@ -157,7 +174,13 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
             RadioButton radioButton = new RadioButton(radioGroup.getContext());
             radioButton.setText(option);
             radioButton.setId(View.generateViewId());
-            radioButton.setLayoutParams(new RadioGroup.LayoutParams(0, -2, 1f));
+            radioButton.setPadding(SketchwareUtil.dpToPx(8), SketchwareUtil.dpToPx(8), SketchwareUtil.dpToPx(8), SketchwareUtil.dpToPx(8));
+            RadioGroup.LayoutParams params =
+        new RadioGroup.LayoutParams(
+                RadioGroup.LayoutParams.WRAP_CONTENT,
+                RadioGroup.LayoutParams.WRAP_CONTENT);
+
+radioButton.setLayoutParams(params);
             if (value.equals(option)) {
                 radioButton.setChecked(true);
             }
@@ -165,6 +188,16 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
                 if (!isChecked) return;
                 if (key.equals(SETTING_JAVA_VERSION)) {
                     handleJavaVersionChange(option);
+                } else if (key.equals(SETTING_DEXER)) {
+                    String activeJava = projectSettings.getValue(SETTING_JAVA_VERSION, "1.8");
+                    if (option.equals("Dx") && (activeJava.equals(SETTING_JAVA_VERSION_1.9) || activeJava.equals(SETTING_JAVA_VERSION_10) || activeJava.equals(SETTING_JAVA_VERSION_11) || activeJava.equals(SETTING_JAVA_VERSION_12) || activeJava.equals(SETTING_JAVA_VERSION_13) || activeJava.equals(SETTING_JAVA_VERSION_14) || activeJava.equals(SETTING_JAVA_VERSION_15) || activeJava.equals(SETTING_JAVA_VERSION_16) || activeJava.equals(SETTING_JAVA_VERSION_17))) {
+                        SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dxcannot_used_with_java), activeJava()));
+                        radioButton.setChecked(false);
+                        for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                            RadioButton rb = (RadioButton) radioGroup.getChildAt(i);
+                            if (rb.getText().toString().equals("D8")) rb.setChecked(true);
+                        }
+                    }
                 }
             });
             radioGroup.addView(radioButton);

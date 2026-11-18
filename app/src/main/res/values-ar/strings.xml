@@ -3796,4 +3796,11 @@
     <string name="ai_help_loading_title">مساعدة الذكاء الاصطناعي</string>
     <string name="project_settings_extractandmergemetaInf">دمج ملفات META-INF</string>
     <string name="project_settings_extractandmergemetaInf_desc">استخراج ودمج ملفات meta-inf (الخدمات والإضافات و kotlin_module وما إلى ذلك) من جميع جرات المكتبة ، باستثناء التوقيعات و manifest.mf ، وإضافتها إلى APK.</string>
+    <string name="build_settings_environment_paths">مسارات البيئة</string>
+    <string name="build_settings_compiler_engine">محرك المترجم</string>
+    <string name="build_settings_build_flags">معلمات البناء</string>
+    <string name="build_settings_enable_logcat_debugging">تمكين سجلات logcat</string>
+    <string name="toast_enable_java1_7_reminder">تحذير: لا تدعم Java 1.7 مكتبات AndroidX الحديثة</string>
+    <string name="toast_dxcannot_used_with_java">لا يمكن استخدام DX مع Java</string>
+    <string name="toast_dx_dose_notsupport_java">D8 مترجم تلقائي. لا يدعم DX جافا</string>
 </resources>

@@ -100,6 +100,13 @@ public class ActivityCodeGenerator {
                 buildExtraBlocksMap(getExtraBlockData()),
                 new Material3LibraryManager(eCVar.projectId));
     }
+    
+    private boolean isImportIndicesEnabled() {
+    return settings != null
+            && ProjectSettings.SETTING_GENERIC_VALUE_TRUE.equals(settings.getValue(
+            ProjectSettings.SETTING_ENABLE_IMPORT_INDICES_LIBRARY,
+            ProjectSettings.SETTING_GENERIC_VALUE_FALSE));
+    }
 
     public ActivityCodeGenerator(BuildConfig jqVar, ProjectFileBean projectFileBean, ProjectDataStore eCVar,
                                  ManageLocalLibrary sharedMll, ProjectSettings sharedSettings,
@@ -225,8 +232,12 @@ public class ActivityCodeGenerator {
 
         addRequestCodeConstants();
         addImportsForBlocks();
-        addLocalLibraryImports();
-
+        if (isImportIndicesEnabled()) {
+             addLocalLibraryImportsAll();
+        } else {
+            addLocalLibraryImports();
+        }
+        
         StringBuilder sb = new StringBuilder(8192);
         sb.append("package ").append(packageName).append(";").append(EOL)
                 .append(EOL);
@@ -1247,4 +1258,11 @@ public class ActivityCodeGenerator {
             addImport(value);
         }
     }
+    
+    private void addLocalLibraryImportsAll() {
+        for (String value : mll.getImportLocalLibraryAll()) {
+            addImport(value);
+        }
+    }
+    
 }

@@ -300,6 +300,10 @@ public class ProjectBuilder {
      * @return {@code true} if D8 is enabled in build settings
      */
     public boolean isD8Enabled() {
+        String javaVer = buildSettings.getValue(BuildSettings.SETTING_JAVA_VERSION, BuildSettings.SETTING_JAVA_VERSION_1_8);
+        if (javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_1.9) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_10) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_11) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_12) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_13) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_14) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_15) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_16) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_17)) {
+            return true;
+        }
         return buildSettings.getValue(
                 BuildSettings.SETTING_DEXER,
                 BuildSettings.SETTING_DEXER_DX
@@ -754,8 +758,29 @@ public class ProjectBuilder {
              PrintWriter errWriter = new PrintWriter(errOutputStream)) {
 
             ArrayList<String> args = new ArrayList<>();
-            args.add("-" + buildSettings.getValue(BuildSettings.SETTING_JAVA_VERSION,
-                    BuildSettings.SETTING_JAVA_VERSION_1_7));
+            String javaVer = buildSettings.getValue(BuildSettings.SETTING_JAVA_VERSION, BuildSettings.SETTING_JAVA_VERSION_1_8);
+            
+            // Bug fix: --release N is an Oracle JDK flag that requires ct.sym
+            // (cross-compilation tables) at runtime. On Android, ct.sym is not
+            // bundled with the APK, so Eclipse JDT (ECJ) silently produces ZERO
+            // .class files when --release is passed, while globalErrorsCount stays 0.
+            // The result: compiledClassesDir is empty, DexCompiler skips adding
+            // programFiles, and D8 produces classes.dex with no project classes.
+            //
+            // Fix: use -source N -target N for all Java versions. ECJ supports
+            // -source/-target without needing ct.sym, and the behaviour is
+            // equivalent for Sketchware Neo's use case (Android app compilation).
+            if (javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_17)) {
+                args.add("-source"); args.add("17");
+                args.add("-target"); args.add("17");
+            } else if (javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_11)) {
+                args.add("-source"); args.add("11");
+                args.add("-target"); args.add("11");
+            } else {
+                args.add("-source"); args.add(javaVer);
+                args.add("-target"); args.add(javaVer);
+            }
+                            
             args.add("-nowarn");
             if (!buildSettings.getValue(BuildSettings.SETTING_NO_WARNINGS,
                     BuildSettings.SETTING_GENERIC_VALUE_TRUE).equals(BuildSettings.SETTING_GENERIC_VALUE_TRUE)) {

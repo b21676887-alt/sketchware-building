@@ -161,39 +161,40 @@ public class ManageLocalLibrary {
         return genPaths;
     }
         
-    private boolean isImportIndicesEnabled() {
-        return projectSettings != null && projectSettings.getValue(ProjectSettings.SETTING_ENABLE_IMPORT_INDICES_LIBRARY, ProjectSettings.SETTING_GENERIC_VALUE_FALSE).equals(ProjectSettings.SETTING_GENERIC_VALUE_TRUE);
+    
+    
+    public ArrayList<String> getImportLocalLibrary() {
+        ArrayList<String> imports = new ArrayList<>();
+
+        for (String packageName : getPackageNames()) {
+            if (!packageName.isEmpty()) {
+                imports.add(packageName.concat(".*"));
+            }
+        }
+
+        return imports;
     }
 
-    public ArrayList<String> getImportLocalLibrary() {
+    public ArrayList<String> getImportLocalLibraryAll() {
         LinkedHashSet<String> imports = new LinkedHashSet<>();
-        
-        if (isImportIndicesEnabled()) {
 
-            for (int i = 0, listSize = list.size(); i < listSize; i++) {
-                HashMap<String, Object> localLibrary = list.get(i);
-                ArrayList<String> importPackages = getImportPackages(localLibrary, i);
-    
-                if (importPackages.isEmpty()) {
-                    Object packageName = localLibrary.get("packageName");
-                    if (packageName instanceof String && !((String) packageName).isEmpty()) {
-                        imports.add(((String) packageName).concat(".*"));
-                    }
-                    continue;
+        for (int i = 0, listSize = list.size(); i < listSize; i++) {
+            HashMap<String, Object> localLibrary = list.get(i);
+            ArrayList<String> importPackages = getImportPackages(localLibrary, i);
+
+            if (importPackages.isEmpty()) {
+                Object packageName = localLibrary.get("packageName");
+                if (packageName instanceof String && !((String) packageName).isEmpty()) {
+                    imports.add(((String) packageName).concat(".*"));
                 }
-    
-                for (String packageName : importPackages) {
-                    if (!packageName.isEmpty()) {
-                        imports.add(packageName.concat(".*"));
-                    }
-                }
+                continue;
             }
-        } else {
-             for (String packageName : getPackageNames()) {
+
+            for (String packageName : importPackages) {
                 if (!packageName.isEmpty()) {
                     imports.add(packageName.concat(".*"));
                 }
-             }
+            }
         }
 
         return new ArrayList<>(imports);
