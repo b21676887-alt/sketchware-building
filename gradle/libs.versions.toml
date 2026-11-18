@@ -29,7 +29,7 @@ kotlincForSketchware = "2.3.21"
 kotlinCompiler = "2.1.21"
 lottie = "6.7.1"
 material = "1.14.0"
-okhttp = "5.5.0"
+okhttp = "5.5.1"
 okio = "3.18.2"
 preference = "1.2.1"
 #noinspection NewerVersionAvailable
