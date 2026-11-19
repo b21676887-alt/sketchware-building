@@ -67,7 +67,7 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
     }
 
     
-    public static void handleJavaVersionChange(String choice) {
+    public void handleJavaVersionChange(String choice) {
     	if (choice.equals(SETTING_JAVA_VERSION_1_7)) {
     		SketchwareUtil.toast(Helper.getResString(R.string.toast_enable_java1_7_reminder));
     	}
@@ -203,7 +203,7 @@ radioButton.setLayoutParams(params);
                                 || activeJava.equals(SETTING_JAVA_VERSION_17);
                     
                     if (option.equals("Dx") && isJavaVersionAbove18) {
-                        SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dxcannot_used_with_java), activeJava()));
+                        SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dxcannot_used_with_java), activeJava));
                         radioButton.setChecked(false);
                         for (int i = 0; i < radioGroup.getChildCount(); i++) {
                             RadioButton rb = (RadioButton) radioGroup.getChildAt(i);
