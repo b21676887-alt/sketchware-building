@@ -82,7 +82,7 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
     				break;
     			}
     		}
-    		SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dx_dose_notsupport_java), choice()));
+    		SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dx_dose_notsupport_java), choice));
     	}
     }
 
