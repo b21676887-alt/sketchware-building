@@ -190,7 +190,19 @@ radioButton.setLayoutParams(params);
                     handleJavaVersionChange(option);
                 } else if (key.equals(SETTING_DEXER)) {
                     String activeJava = projectSettings.getValue(SETTING_JAVA_VERSION, "1.8");
-                    if (option.equals("Dx") && (activeJava.equals(SETTING_JAVA_VERSION_1.9) || activeJava.equals(SETTING_JAVA_VERSION_10) || activeJava.equals(SETTING_JAVA_VERSION_11) || activeJava.equals(SETTING_JAVA_VERSION_12) || activeJava.equals(SETTING_JAVA_VERSION_13) || activeJava.equals(SETTING_JAVA_VERSION_14) || activeJava.equals(SETTING_JAVA_VERSION_15) || activeJava.equals(SETTING_JAVA_VERSION_16) || activeJava.equals(SETTING_JAVA_VERSION_17))) {
+                    
+                    boolean isJavaVersionAbove18 =
+                        activeJava.equals(SETTING_JAVA_VERSION_1_9)
+                                || activeJava.equals(SETTING_JAVA_VERSION_10)
+                                || activeJava.equals(SETTING_JAVA_VERSION_11)
+                                || activeJava.equals(SETTING_JAVA_VERSION_12)
+                                || activeJava.equals(SETTING_JAVA_VERSION_13)
+                                || activeJava.equals(SETTING_JAVA_VERSION_14)
+                                || activeJava.equals(SETTING_JAVA_VERSION_15)
+                                || activeJava.equals(SETTING_JAVA_VERSION_16)
+                                || activeJava.equals(SETTING_JAVA_VERSION_17);
+                    
+                    if (option.equals("Dx") && isJavaVersionAbove18) {
                         SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dxcannot_used_with_java), activeJava()));
                         radioButton.setChecked(false);
                         for (int i = 0; i < radioGroup.getChildCount(); i++) {

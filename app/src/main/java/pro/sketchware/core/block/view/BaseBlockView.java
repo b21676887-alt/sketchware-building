@@ -653,19 +653,18 @@ public class BaseBlockView extends RelativeLayout {
   }
   
   public int getTotalHeight() {
-    int i = blockHeight;
-    int k = i;
-    if (hasSubstack())
-      k = i + bottomPadding + contentHeight - borderWidth; 
-    i = k;
-    if (hasDoubleSubstack())
-      i = k + topPadding + innerHeight - borderWidth; 
+    int totalH = blockHeight;
+    if (hasSubstack()) {
+      totalH += bottomPadding + contentHeight - borderWidth;
+    }
+    if (hasDoubleSubstack()) {
+      totalH += topPadding + innerHeight - borderWidth;
+    }
     int j = shapeType;
-    if (j != 4 && j != 7 && j != 10) {
-      k = i;
-      return (j == 12) ? (i + borderWidth) : k;
-    } 
-    return i + borderWidth;
+    if (j == 4 || j == 7 || j == 10 || j == 12) {
+      totalH += borderWidth;
+    }
+    return Math.max(totalH, minHeight);
   }
   
   public int getTotalWidth() {
@@ -699,7 +698,6 @@ public class BaseBlockView extends RelativeLayout {
         break;
       case 7:
         drawHatShape(canvas);
-        break;
       case 4:
       case 5:
         drawStatementShape(canvas);

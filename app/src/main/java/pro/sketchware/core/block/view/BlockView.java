@@ -362,7 +362,7 @@ public class BlockView extends BaseBlockView {
   public int getDepth() {
     int b = 0;
     BlockView rs = this;
-    int limit = 500;
+    int limit = 1000;
     while (true) {
       rs = rs.parentBlock;
       if (rs != null && --limit > 0) {
@@ -469,7 +469,7 @@ public class BlockView extends BaseBlockView {
   
   public void layoutChain() {
     BlockView current = this;
-    int limit = 1000;
+    int limit = 2000;
     while (current != null && --limit > 0) {
       current.layoutSingle();
       int next = current.nextBlock;
@@ -676,7 +676,7 @@ public class BlockView extends BaseBlockView {
       current.recalculateSize();
       parent = current.parentBlock;
       count++;
-      if (count > 500) {
+      if (count > 2000) {
         Log.e("BlockView", "m() infinite loop detected! count=" + count + " tag=" + current.getTag() + " E.tag=" + (parent != null ? parent.getTag() : "null"));
         break;
       }

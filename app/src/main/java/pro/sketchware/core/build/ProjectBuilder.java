@@ -301,7 +301,15 @@ public class ProjectBuilder {
      */
     public boolean isD8Enabled() {
         String javaVer = buildSettings.getValue(BuildSettings.SETTING_JAVA_VERSION, BuildSettings.SETTING_JAVA_VERSION_1_8);
-        if (javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_1.9) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_10) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_11) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_12) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_13) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_14) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_15) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_16) || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_17)) {
+        if (javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_1_9)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_10)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_11)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_12)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_13)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_14)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_15)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_16)
+            || javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_17)) {
             return true;
         }
         return buildSettings.getValue(
