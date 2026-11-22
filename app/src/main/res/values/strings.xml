@@ -4602,4 +4602,5 @@ Do you want to continue?</string>
     <string name="toast_enable_java1_7_reminder">Warning: Java 1.7 does not support modern AndroidX libraries</string>
     <string name="toast_dxcannot_used_with_java">Dx cannot be used with Java</string>
     <string name="toast_dx_dose_notsupport_java">D8 compiler auto-selected. Dx does not support Java</string>
+    <string name="common_word_oncreate">onCreate</string>
 </resources>

@@ -70,11 +70,9 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
     public void handleJavaVersionChange(String choice) {
     	if (choice.equals(SETTING_JAVA_VERSION_1_7)) {
     		SketchwareUtil.toast(Helper.getResString(R.string.toast_enable_java1_7_reminder));
-    	}
-    	else if (choice.equals(SETTING_JAVA_VERSION_1_8)) {
+    	} else if (choice.equals(SETTING_JAVA_VERSION_1_8)) {
     		SketchwareUtil.toast(Helper.getResString(R.string.toast_enable_d8_reminder));
-    	}
-    	else if (choice.equals(SETTING_JAVA_VERSION_1_9) || choice.equals(SETTING_JAVA_VERSION_10) || choice.equals(SETTING_JAVA_VERSION_11) || choice.equals(SETTING_JAVA_VERSION_12) || choice.equals(SETTING_JAVA_VERSION_13) || choice.equals(SETTING_JAVA_VERSION_14) || choice.equals(SETTING_JAVA_VERSION_15) || choice.equals(SETTING_JAVA_VERSION_16) || choice.equals(SETTING_JAVA_VERSION_17)) {
+    	} else if (choice.equals(SETTING_JAVA_VERSION_1_9) || choice.equals(SETTING_JAVA_VERSION_10) || choice.equals(SETTING_JAVA_VERSION_11) || choice.equals(SETTING_JAVA_VERSION_12) || choice.equals(SETTING_JAVA_VERSION_13) || choice.equals(SETTING_JAVA_VERSION_14) || choice.equals(SETTING_JAVA_VERSION_15) || choice.equals(SETTING_JAVA_VERSION_16) || choice.equals(SETTING_JAVA_VERSION_17)) {
     		for (int i = 0; i < binding.rgDexer.getChildCount(); i++) {
     			RadioButton rb = (RadioButton) binding.rgDexer.getChildAt(i);
     			if (rb.getText().toString().equals("D8")) {
@@ -85,7 +83,6 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
     		SketchwareUtil.toastError(String.format(Helper.getResString(R.string.toast_dx_dose_notsupport_java), choice));
     	}
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,8 +125,8 @@ public class BuildSettingsBottomSheet extends BottomSheetDialogFragment {
         binding.tilAndroidJar.getEditText().setText(projectSettings.getValue(SETTING_ANDROID_JAR_PATH, ""));
         binding.tilClasspath.getEditText().setText(projectSettings.getValue(SETTING_CLASSPATH, ""));
 
-        setRadioGroupOptions(binding.rgDexer, new String[]{"Dx", "D8"}, SETTING_DEXER, "Dx");
-        setRadioGroupOptions(binding.rgJavaVersion, getAvailableJavaVersions(), SETTING_JAVA_VERSION, "1.7");
+        setRadioGroupOptions(binding.rgDexer, new String[]{"Dx", "D8"}, SETTING_DEXER, "D8");
+        setRadioGroupOptions(binding.rgJavaVersion, getAvailableJavaVersions(), SETTING_JAVA_VERSION, "1.8");
 
         setCheckboxValue(binding.cbNoWarnings, SETTING_NO_WARNINGS, true);
         setCheckboxValue(binding.cbNoHttpLegacy, SETTING_NO_HTTP_LEGACY, false);
@@ -213,6 +210,7 @@ radioButton.setLayoutParams(params);
                 }
             });
             radioGroup.addView(radioButton);
+            
         }
     }
 

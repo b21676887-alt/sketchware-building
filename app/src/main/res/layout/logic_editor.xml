@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:subtitle="onCreate"
-            app:title="Activity" />
+            app:subtitle="@string/common_word_oncreate"
+            app:title="@string/common_word_activity" />
 
         <include layout="@layout/logic_canvas_search_bar" />
         

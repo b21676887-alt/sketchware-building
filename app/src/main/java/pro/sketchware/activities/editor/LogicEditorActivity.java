@@ -2067,38 +2067,6 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lastSelectedPaletteColor = ContextCompat.getColor(this, R.color.palette_variable);
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (isDrawerVisible) {
-                    toggleDrawerVisibility(false);
-                    return;
-                }
-                if (isPaletteVisible) {
-                    togglePaletteVisibility(false);
-                    return;
-                }
-                showLoadingDialog();
-                if (!isTopMenuEnabled()) {
-                    return;
-                }
-                saveProject();
-            }
-        });
-        openResourcesEditor = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        extraPaletteBlock.invalidateStringsCache();
-                        paletteSelector.performClickPalette(-1);
-                    }
-                });
-        makeBlockLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        addMoreBlock(result.getData().getStringExtra("block_name"), result.getData().getStringExtra("block_spec"));
-                    }
-                });
         setContentView(R.layout.logic_editor);
         if (!super.isStoragePermissionGranted()) {
             finish();
@@ -2216,6 +2184,39 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
         extraPaletteBlock = new ExtraPaletteBlock(this, isViewBindingEnabled);
 
         svgUtils = new SvgUtils(this);
+        
+        lastSelectedPaletteColor = ContextCompat.getColor(this, R.color.palette_variable);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isDrawerVisible) {
+                    toggleDrawerVisibility(false);
+                    return;
+                }
+                if (isPaletteVisible) {
+                    togglePaletteVisibility(false);
+                    return;
+                }
+                showLoadingDialog();
+                if (!isTopMenuEnabled()) {
+                    return;
+                }
+                saveProject();
+            }
+        });
+        openResourcesEditor = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        extraPaletteBlock.invalidateStringsCache();
+                        paletteSelector.performClickPalette(-1);
+                    }
+                });
+        makeBlockLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        addMoreBlock(result.getData().getStringExtra("block_name"), result.getData().getStringExtra("block_spec"));
+                    }
+                });
         
 		
 		    // Initialize syntax check UI

@@ -68,6 +68,7 @@
         <activity
             android:name="pro.sketchware.activities.editor.LogicEditorActivity"
             android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="false"
             android:theme="@style/Theme.SketchwarePro.SmallToolbar"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
@@ -205,11 +206,13 @@
         <activity
             android:name="pro.sketchware.activities.editor.manage.ShowBlockCollectionActivity"
             android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Translucent"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name="pro.sketchware.activities.editor.manage.ShowMoreBlockCollectionActivity"
             android:configChanges="orientation|screenSize"
+            android:hardwareAccelerated="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Translucent"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity

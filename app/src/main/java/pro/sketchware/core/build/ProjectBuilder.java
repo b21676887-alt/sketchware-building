@@ -426,9 +426,8 @@ public class ProjectBuilder {
          * Add lambda helper classes
          * Since all versions above java 7 supports lambdas, this should work
          */
-        if (!buildSettings.getValue(BuildSettings.SETTING_JAVA_VERSION,
-                        BuildSettings.SETTING_JAVA_VERSION_1_7)
-                .equals(BuildSettings.SETTING_JAVA_VERSION_1_7)) {
+        String javaVer = buildSettings.getValue(BuildSettings.SETTING_JAVA_VERSION, BuildSettings.SETTING_JAVA_VERSION_1_8);
+        if (!javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_1_7) && !javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_11) && !javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_12) && !javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_13) && !javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_14) && !javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_15) && !javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_16) && !javaVer.equals(BuildSettings.SETTING_JAVA_VERSION_17)) {
             classpath.append(":").append(new File(BuiltInLibraries.EXTRACTED_COMPILE_ASSETS_PATH, "core-lambda-stubs.jar").getAbsolutePath());
         }
 

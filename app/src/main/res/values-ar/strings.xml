@@ -400,6 +400,7 @@
     <string name="common_word_moreblock">Moreblock (بلوك مخصص)</string>
     <string name="common_word_drawer">القائمة الجانبية (Drawer)</string>
     <string name="common_word_activity">نشاط (Activity)</string>
+    <string name="common_word_oncreate">onCreate</string>
     <string name="common_word_warning">تحذير</string>
     <string name="common_word_watch">مشاهدة</string>
     <string name="common_word_widget">أداة (Widget)</string>
